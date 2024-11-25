@@ -1,4 +1,6 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# Angular specific files
+.angular/
+.angular/cache
 
 # Compiled output
 /dist
@@ -13,14 +15,13 @@ yarn-error.log
 
 # IDEs and editors
 .idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
 # Visual Studio Code
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

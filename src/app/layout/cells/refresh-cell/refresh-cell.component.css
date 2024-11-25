@@ -1,0 +1,22 @@
+.refresh-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .refresh-cell span {
+    color: var(--primary-color);
+  }
+  
+  .refresh-cell .refresh-button {
+    color: var(--primary-color);
+  }
+  
+  .refresh-cell .refresh-button:hover {
+    background-color: var(--tum-acordion-blue);
+    border-radius: 50%;
+  }
+  
+  .refresh-cell mat-icon {
+    font-size: 20px;
+  }

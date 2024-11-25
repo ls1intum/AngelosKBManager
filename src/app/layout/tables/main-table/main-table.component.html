@@ -1,0 +1,26 @@
+<mat-card class="table-container">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z1" [trackBy]="trackByFn">
+
+    <!-- Dynamic column definitions -->
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.key">
+      <th class="table-heading" mat-header-cell *matHeaderCellDef> {{ column.header }} </th>
+      <td mat-cell *matCellDef="let element">
+        <!-- Use custom cell component if provided -->
+        <ng-container *ngIf="column.cellComponent; else defaultCell">
+          <ng-container *ngComponentOutlet="column.cellComponent; injector: createInjector(element, column)"></ng-container>
+        </ng-container>
+        <ng-template #defaultCell>
+            <div 
+              class="cell-content"
+              [ngClass]="{ 'primary-cell': column.primary }">
+                {{ column.value ? column.value(element) : element[column.key] }}
+            </div>
+        </ng-template>
+      </td>
+    </ng-container>
+  
+    <!-- Header and Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</mat-card>

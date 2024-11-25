@@ -1,0 +1,122 @@
+<div class="full-screen-container" (click)="onCancel()">
+    <mat-card class="dialog-card" (click)="onDialogClicked($event)">
+      <mat-card-content>
+        <h2 class="dialog-title">
+          {{ editMode ? 'Dokument bearbeiten' : 'Dokument hinzufügen' }}
+        </h2>
+        <form class="dialog-form">
+          <!-- Topic -->
+          <div class="form-field">
+            <label for="topic">Titel</label>
+            <input
+              id="title"
+              matInput
+              [(ngModel)]="data.title"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Titel eingeben"
+              class="main-input"
+            />
+          </div>
+  
+          <!-- Upload/View Document -->
+          <!-- Upload/View Document -->
+        <div class="form-field">
+            <label for="document">Dokument</label>
+  
+            <!-- Show upload button only if there's no selected or existing PDF -->
+            <div *ngIf="!pdfSrc && !isLoading">
+              <input
+                type="file"
+                id="document"
+                accept="application/pdf"
+                (change)="onFileSelected($event)"
+              />
+            </div>
+  
+            <!-- Show loading indicator when fetching existing Document -->
+            <div *ngIf="isLoading" class="loading-container">
+                <div class="loading-wrapper">
+                  <div class="custom-spinner"></div>
+                  <p class="loading-text">Lädt Dokument...</p>
+                </div>
+              </div>
+  
+            <!-- Display the Document -->
+            <div class="doc-row" *ngIf="pdfSrc">
+              <iframe
+                [src]="pdfSrc"
+                width="50%"
+                height="240px"
+                style="border: none;"
+              ></iframe>
+  
+              <!-- Discard Document Button -->
+              <button mat-button (click)="discardPdf()" class="cancel-button">
+                Dokument entfernen
+              </button>
+            </div>
+          </div>
+  
+          <!-- Study Programs -->
+          <div class="study-programs-section">
+            <label for="studyPrograms">Studiengänge</label>
+            <p class="note">
+              Wenn kein Studiengang ausgewählt wird, ist das Dokument
+              gültig für alle betreuten Studiengänge.
+            </p>
+            <div class="study-programs-list">
+              <!-- Selected study programs -->
+              <div
+                class="study-program-chip"
+                *ngFor="let sp of studyProgramsCopy"
+              >
+                {{ sp.name }}
+                <button mat-icon-button (click)="removeStudyProgram(sp)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+              <!-- Add study program -->
+              <button
+                mat-icon-button
+                (click)="toggleMenu($event)"
+                #menuButton 
+                class="study-program-add-button"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </form>
+        <!-- Actions -->
+        <mat-dialog-actions align="end">
+          <button mat-button class="cancel-button" (click)="onCancel()">Abbrechen</button>
+          <button
+            mat-raised-button
+            class="confirm-button"
+            color="primary"
+            (click)="onSave()"
+            [disabled]="!canSave"
+          >
+            {{ editMode ? 'Speichern' : 'Hinzufügen' }}
+          </button>
+        </mat-dialog-actions>
+      </mat-card-content>
+    </mat-card>
+    <!-- Study Program Menu -->
+    <div
+        class="study-program-menu"
+        *ngIf="menuOpen"
+        [style.top.px]="menuPosition.openUpwards ? undefined : menuPosition.top"
+        [style.bottom.px]="menuPosition.openUpwards ? (documentHeight - menuPosition.top) : undefined"
+        [style.left.px]="menuPosition.left"
+        (click)="$event.stopPropagation()"
+        >
+        <div
+            class="menu-item"
+            *ngFor="let sp of studyProgramsToAdd"
+            (click)="addStudyProgram(sp)"
+            >
+            {{ sp.name }}
+        </div>
+    </div>
+  </div>

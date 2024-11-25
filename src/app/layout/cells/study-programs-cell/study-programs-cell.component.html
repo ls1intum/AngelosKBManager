@@ -1,0 +1,25 @@
+<div class="study-programs-list">
+    <!-- Show "Allgemein" tile when no study programs are passed -->
+    <div *ngIf="studyPrograms.length === 0" class="general-chip">
+      Allgemein
+    </div>
+  
+    <!-- Show study programs as individual chips -->
+    <div class="study-program-chip" *ngFor="let sp of studyPrograms">
+      {{ sp.name }}
+      <button mat-icon-button (click)="removeStudyProgram(sp)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Add '+' button -->
+    <button 
+      mat-icon-button 
+      (click)="onAddButtonClick()" 
+      #menuButton 
+      [attr.id]="uniqueID" 
+      class="study-program-add-button">
+        <mat-icon>add</mat-icon>
+    </button>
+   
+  </div>

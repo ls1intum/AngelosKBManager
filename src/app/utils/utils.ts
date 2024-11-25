@@ -1,0 +1,1 @@
+export const GENERAL_STUDY_PROGRAM_ID = '-1';

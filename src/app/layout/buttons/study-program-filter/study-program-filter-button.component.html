@@ -1,0 +1,23 @@
+<div class="dropdown">
+    <button (click)="toggleDropdown()">
+      <mat-icon>filter_list</mat-icon>
+      <span>{{ selectedProgram?.name || 'Studiengang auswählen' }}</span>
+      <mat-icon *ngIf="dropdownOpen">arrow_drop_up</mat-icon>
+      <mat-icon *ngIf="!dropdownOpen">arrow_drop_down</mat-icon>
+    </button>
+  
+    <div *ngIf="dropdownOpen" class="dropdown-menu">
+      <ul>
+        <li (click)="clearSelection()" class="clear-option">
+          <span>Auswahl löschen</span>
+        </li>
+        <li
+          *ngFor="let program of studyPrograms"
+          (click)="selectProgram(program)"
+          [class.selected]="program.id === selectedProgram?.id"
+        >
+          {{ program.name }}
+        </li>
+      </ul>
+    </div>
+  </div>

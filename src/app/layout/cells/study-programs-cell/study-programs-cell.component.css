@@ -1,0 +1,59 @@
+.study-programs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0px;
+  }
+  
+  .study-program-chip {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--tum-acordion-blue);
+    padding-left: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--primary-color);
+  }
+
+  .general-chip {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--tum-light-blue);
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: white;
+  }
+
+  .study-program-add-button {
+    color: var(--primary-color);
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
+  .study-program-add-button:hover {
+    background-color: var(--tum-acordion-blue);
+    border-radius: 50%;
+  }
+  
+  .study-program-add-button mat-icon {
+    font-size: 20px;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  
+  .study-program-chip button {
+    margin-left: 2px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .study-program-chip mat-icon {
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

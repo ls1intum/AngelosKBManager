@@ -1,0 +1,111 @@
+<div class="full-screen-container" (click)="onCancel()">
+    <mat-card class="dialog-card" (click)="onDialogClicked($event)">
+      <mat-card-content class="scrollable-content">
+        <h2 class="dialog-title">
+          {{ editMode ? 'Beispielfrage bearbeiten' : 'Beispielfrage hinzufügen' }}
+        </h2>
+        <form class="dialog-form">
+          <!-- Topic -->
+          <div class="form-field">
+            <label for="topic">Thema</label>
+            <input
+              id="topic"
+              matInput
+              [(ngModel)]="data.topic"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Thema eingeben"
+              class="main-input"
+            />
+          </div>
+  
+          <!-- Question -->
+          <div class="form-field">
+            <label for="question">Frage</label>
+            <textarea
+              id="question"
+              matInput
+              [(ngModel)]="data.question"
+              [ngModelOptions]="{standalone: true}"
+              rows="5"
+              placeholder="Frage eingeben"
+              class="text-area"
+            ></textarea>
+          </div>
+  
+          <!-- Answer -->
+          <div class="form-field">
+            <label for="answer">Antwort</label>
+            <textarea
+              id="answer"
+              matInput
+              [(ngModel)]="data.answer"
+              [ngModelOptions]="{standalone: true}"
+              rows="5"
+              placeholder="Antwort eingeben"
+              class="text-area"
+            ></textarea>
+          </div>
+  
+          <!-- Study Programs -->
+          <div class="study-programs-section">
+            <label for="studyPrograms">Studiengänge</label>
+            <p class="note">
+              Wenn kein Studiengang ausgewählt wird, ist die Beispielfrage
+              gültig für alle betreuten Studiengänge.
+            </p>
+            <div class="study-programs-list">
+              <!-- Selected study programs -->
+              <div
+                class="study-program-chip"
+                *ngFor="let sp of studyProgramsCopy"
+              >
+                {{ sp.name }}
+                <button mat-icon-button (click)="removeStudyProgram(sp)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+              <!-- Add study program -->
+              <button
+                mat-icon-button
+                (click)="toggleMenu($event)"
+                #menuButton 
+                class="study-program-add-button"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </form>
+        <!-- Actions -->
+        <mat-dialog-actions align="end">
+          <button mat-button class="cancel-button" (click)="onCancel()">Abbrechen</button>
+          <button
+            mat-raised-button
+            class="confirm-button"
+            color="primary"
+            (click)="onSave()"
+            [disabled]="!canSave"
+          >
+            {{ editMode ? 'Speichern' : 'Hinzufügen' }}
+          </button>
+        </mat-dialog-actions>
+      </mat-card-content>
+    </mat-card>
+    <!-- Study Program Menu -->
+    <div
+        class="study-program-menu"
+        *ngIf="menuOpen"
+        [style.top.px]="menuPosition.openUpwards ? undefined : menuPosition.top"
+        [style.bottom.px]="menuPosition.openUpwards ? (documentHeight - menuPosition.top) : undefined"
+        [style.left.px]="menuPosition.left"
+        (click)="$event.stopPropagation()"
+        >
+        <div
+            class="menu-item"
+            *ngFor="let sp of studyProgramsToAdd"
+            (click)="addStudyProgram(sp)"
+            >
+            {{ sp.name }}
+        </div>
+    </div>
+  </div>

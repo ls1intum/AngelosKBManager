@@ -1,0 +1,97 @@
+/* General layout styles */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    gap: 0;
+    background-color: var(--background-color); 
+    height: 100%;
+}
+
+/* Header styles */
+.kb-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 14px;
+    height: 40px;
+    padding: 8px 32px;
+}
+
+.kb-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+/* Tabs styles */
+.tabs {
+    display: flex;
+    flex-direction: row; /* Row by default */
+    justify-content: center; /* Center tabs horizontally */
+    gap: 24px;
+    background-color: var(--tum-acordion-blue);
+    padding: 8px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tabs a {
+    color: black;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tabs a.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.tabs a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Content styles */
+.content {
+    flex: 1;
+    width: 80%; /* Default: 80% of available width */
+    margin: 0 auto;
+    overflow-y: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* Main content wrapper */
+.main-content {
+    display: flex;
+    flex: 1;
+    padding: 16px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .content {
+        width: calc(100% - 32px); /* Reduce width to fit smaller screens */
+        margin: 0 16px; /* Add 8px margin on the sides */
+    }
+
+    .kb-header{
+        padding: 8px 8px;
+    }
+
+    .tabs {
+        flex-direction: column; /* Stack tabs vertically */
+        align-items: center; /* Center tabs horizontally when stacked */
+        gap: 0
+    }
+
+    .tabs a {
+        text-align: center; /* Center text in stacked tabs */
+    }
+}

@@ -1,0 +1,12 @@
+<div class="full-screen-container" (click)="onCancel()">
+  <mat-card class="dialog-card" (click)="$event.stopPropagation()">
+    <mat-card-content>
+      <h2 class="dialog-title">{{ data.title }}</h2>
+      <div class="dialog-message">{{ data.message }}</div>
+      <div class="dialog-actions">
+        <button mat-button class="cancel-button" (click)="onCancel()">Abbrechen</button>
+        <button mat-raised-button color="warn" class="confirm-button" (click)="onConfirm()">Bestätigen</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,23 @@
+.add-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+}
+  
+.add-button mat-icon {
+    color: var(--primary-color);
+    font-size: 24px;
+  }
+  
+.add-button:hover {
+    background-color: var(--tum-acordion-blue);
+  }
+  

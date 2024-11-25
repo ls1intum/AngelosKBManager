@@ -1,0 +1,23 @@
+.action-cell {
+    display: flex;
+    gap: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  
+  .action-cell button {
+    color: var(--primary-color);
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
+  .action-cell button:hover {
+    background-color: var(--tum-acordion-blue);
+    border-radius: 50%;
+  }
+  
+  .action-cell mat-icon {
+    font-size: 20px;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
