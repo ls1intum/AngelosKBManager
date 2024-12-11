@@ -1,4 +1,4 @@
 export interface StudyProgram {
-    id: string;
+    id: number;
     name: string;
 }

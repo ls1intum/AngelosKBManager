@@ -65,17 +65,17 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
   ];
 
   override fetchData(): void {
-    this.documentService.getAllDocuments("OrgID").subscribe(
-      (docs) => {
-        this.items = docs;  
-        this.displayedItems = [...docs];
+    this.documentService.getAllDocuments().subscribe({
+      next: (documents: DocumentModel[]) => {
+        this.items = documents;
+        this.displayedItems = [...documents];
       },
-      (error) => {
-        // TODO: Handle error
+      error: (error: any) => {
         console.error('Error fetching documents:', error);
       }
-    );
+    });
   }
+
   override getDialogConfig(item?: DocumentModel | undefined): { data: any; component: any; } {
     return {
       data: {

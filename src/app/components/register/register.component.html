@@ -1,0 +1,58 @@
+<div class="login-container">
+    <h3 class="login-page-header">Registrieren</h3>
+    <form (submit)="onRegister()">
+      <div class="form-group">
+        <label for="email">E-Mail</label>
+        <input type="email" id="email" [(ngModel)]="email" name="email" required />
+      </div>
+  
+      <!-- Custom dropdown for Organisations -->
+      <div class="form-group">
+        <label>Organisation</label>
+        <div class="dropdown">
+          <button type="button" (click)="toggleDropdown()">
+            <span>{{ selectedOrganisation?.name || 'Organisation auswählen' }}</span>
+            <mat-icon *ngIf="dropdownOpen">arrow_drop_up</mat-icon>
+            <mat-icon *ngIf="!dropdownOpen">arrow_drop_down</mat-icon>
+          </button>
+      
+          <div *ngIf="dropdownOpen" class="dropdown-menu">
+            <ul>
+              <li (click)="clearSelection()" class="clear-option">
+                <span>Auswahl löschen</span>
+              </li>
+              <li
+                *ngFor="let org of organisations"
+                (click)="selectOrganisation(org)"
+                [class.selected]="org.id === selectedOrganisation?.id"
+              >
+                {{ org.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Passwort</label>
+        <input type="password" id="password" [(ngModel)]="password" name="password" required />
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Passwort bestätigen</label>
+        <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+      </div>
+      <button type="submit">Registrieren</button>
+    </form>
+  
+    <!-- Success / Error messages -->
+    <div *ngIf="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  
+    <div class="no-account">
+      Bereits einen Account? <a routerLink="/login" class="register-link">Jetzt hier anmelden</a>.
+    </div>
+  </div>

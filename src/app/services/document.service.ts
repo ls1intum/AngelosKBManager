@@ -1,56 +1,116 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DocumentModel } from '../data/model/document.model';
-import { HttpClient } from '@angular/common/http';
+import { DocumentDataDTO } from '../data/dto/document-data.dto';
+import { environment } from '../../environments/environment';
+import { AuthenticationService } from './authentication.service';
+import { DocumentRequestDTO } from '../data/dto/document-request.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocumentService {
-  private documents: DocumentModel[] = [
-    {
-      id: '1',
-      title: 'Allgemeine Prüfungs- und Studienordnung',
-      uploaded: new Date('2023-10-01'),
-      studyPrograms: [],
-      actions: ['view', 'edit', 'delete'],
-    },
-    {
-      id: '2',
-      title: 'Fachprüfungs- und Studienordnung des Studiengangs Information Systems',
-      uploaded: new Date('2023-09-15'),
-      studyPrograms: [
-        { id: '17', name: 'Master Information Systems' },
-      ],
-      actions: ['view', 'edit', 'delete'],
-    },
-  ]
+  constructor(
+    private http: HttpClient,
+    private authService: AuthenticationService
+  ) {}
 
-  constructor(private http: HttpClient) {}
-
-  getAllDocuments(orgID: string): Observable<DocumentModel[]> {
-    // TODO: Implement real method
-    // Simulate fetching metadata
-    return of(this.documents).pipe(delay(200));
+  /**
+   * Fetch all documents metadata for the organization.
+   */
+  getAllDocuments(): Observable<DocumentModel[]> {
+    const headers = this.createAuthHeaders();
+    return this.http
+      .get<DocumentDataDTO[]>(`${environment.backendUrl}/api/documents`, { headers })
+      .pipe(
+        map((response: DocumentDataDTO[]) => this.transformResponse(response))
+      );
   }
 
-  getDocumentById(documentId: string): Observable<Blob> {
-    // TODO: Implement real method
-    const documentFilePaths: Record<string, string> = {
-      '1': 'assets/example.PDF',
-      '2': 'assets/ISMsc_FPSO_28.03.2024.PDF',
-    };  
-    const filePath = documentFilePaths[documentId];
-  
-    if (filePath) {
-      // Simulate fetching a real PDF from assets
-      return this.http.get(filePath, { responseType: 'blob' }).pipe(delay(200));
-    } else {
-      // Simulate returning an empty placeholder PDF
-      console.log('No file path found. Returning placeholder PDF.');
-      const simulatedPdfBlob = new Blob(['%PDF-1.4\n%...'], { type: 'application/pdf' });
-      return of(simulatedPdfBlob).pipe(delay(200));
+  /**
+   * Fetch a single document by ID as a PDF Blob.
+   */
+  getDocumentById(documentId: number): Observable<Blob> {
+    const headers = this.createAuthHeaders();
+    return this.http.get(`${environment.backendUrl}/api/documents/${documentId}/download`, {
+      headers,
+      responseType: 'blob',
+    });
+  }
+
+  /**
+   * Edit a document's title and study programs.
+   */
+  editDocument(docId: number, documentRequest: DocumentRequestDTO): Observable<DocumentModel> {
+    const headers = this.createAuthHeaders();
+    return this.http
+      .put<DocumentDataDTO>(`${environment.backendUrl}/api/documents/${docId}`, documentRequest, { headers })
+      .pipe(
+        map((dto) => this.transformSingleResponse(dto))
+      );
+  }
+
+  /**
+   * Add a new document with metadata (JSON) and PDF file.
+   */
+  addDocument(documentRequest: DocumentRequestDTO, file: File): Observable<DocumentModel> {
+    const headers = this.createAuthHeaders();
+
+    const formData = new FormData();
+    // Add the JSON metadata. We must stringify it since `@RequestPart` expects JSON.
+    formData.append('documentRequestDTO', new Blob([JSON.stringify(documentRequest)], { type: 'application/json' }));
+    formData.append('file', file, file.name);
+
+    return this.http
+      .post<DocumentDataDTO>(`${environment.backendUrl}/api/documents`, formData, { headers })
+      .pipe(
+        map((dto) => this.transformSingleResponse(dto))
+      );
+  }
+
+  /**
+   * Delete a document by ID.
+   */
+  deleteDocument(docId: number): Observable<void> {
+    const headers = this.createAuthHeaders();
+    return this.http.delete<void>(`${environment.backendUrl}/api/documents/${docId}`, { headers });
+  }
+
+  /**
+   * Transform a list of responses.
+   */
+  private transformResponse(response: DocumentDataDTO[]): DocumentModel[] {
+    return response.map((dto) => this.transformSingleResponse(dto));
+  }
+
+  /**
+   * Transform a single DTO to a DocumentModel.
+   */
+  private transformSingleResponse(dto: DocumentDataDTO): DocumentModel {
+    return {
+      id: dto.id,
+      title: dto.title,
+      uploaded: new Date(dto.createdAt),
+      studyPrograms: dto.studyPrograms.map((sp) => ({
+        id: sp.id,
+        name: sp.name,
+      })),
+      actions: ['view', 'edit', 'delete'],
+    };
+  }
+
+  /**
+   * Create headers with the Authorization token if available.
+   */
+  private createAuthHeaders(): HttpHeaders {
+    const token = this.authService.getAccessToken();
+
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
+    return headers;
   }
 }

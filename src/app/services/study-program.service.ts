@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, filter, first, map, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, map, shareReplay, tap } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StudyProgram } from '../data/model/study-program.model';
+import { AuthenticationService } from './authentication.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,18 +17,29 @@ export class StudyProgramService {
     shareReplay(1)
   );
 
-  constructor() {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthenticationService // Inject AuthenticationService
+  ) {}
 
-  // Fetch programs only if they are not already fetched
   fetchStudyPrograms(): Observable<StudyProgram[]> {
+    // Return cached data if available
     if (this.studyProgramsSubject.value) {
       console.log('Returning cached study programs.');
       return this.studyPrograms$;
     }
 
-    console.log('Fetching study programs from the simulated backend...');
-    return of(this.getMockStudyPrograms()).pipe(
-      delay(200),
+    console.log('Fetching study programs from the backend...');
+    
+    const token = this.authService.getAccessToken(); // Get token from service
+
+    // Prepare headers with the retrieved token, if available
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/api/study-programs`, { headers }).pipe(
       tap((programs) => {
         this.studyProgramsSubject.next(programs);
       }),
@@ -33,39 +47,7 @@ export class StudyProgramService {
     );
   }
 
-  // Synchronous access to cached data
   getStudyPrograms(): StudyProgram[] | null {
     return this.studyProgramsSubject.value;
-  }
-
-  // Mock data
-  private getMockStudyPrograms(): StudyProgram[] {
-    return [
-      { id: '1', name: 'Bachelor Bioinformatik' },
-      { id: '2', name: 'Bachelor Elektrotechnik Informationstechnik' },
-      { id: '3', name: 'Bachelor Informatik' },
-      { id: '4', name: 'Bachelor Informatik Games Engineering' },
-      { id: '5', name: 'Bachelor Information Engineering' },
-      { id: '6', name: 'Bachelor Mathematik' },
-      { id: '7', name: 'Bachelor Wirtschaftsinformatik' },
-      { id: '8', name: 'Master Bioinformatik' },
-      { id: '9', name: 'Master Biomedical Computing' },
-      { id: '10', name: 'Master Communications Electronics Engineering' },
-      { id: '11', name: 'Master Computational Science Engineering' },
-      { id: '12', name: 'Master Data Engineering Analytics' },
-      { id: '13', name: 'Master Elektrotechnik Informationstechnik' },
-      { id: '14', name: 'Master Informatik' },
-      { id: '15', name: 'Master Informatik Games Engineering' },
-      { id: '16', name: 'Master Information Engineering' },
-      { id: '17', name: 'Master Information Systems' },
-      { id: '18', name: 'Master Mathematical Finance Actuarial Science' },
-      { id: '19', name: 'Master Mathematics Data Science' },
-      { id: '20', name: 'Master Mathematics Operations Research' },
-      { id: '21', name: 'Master Mathematics Science Engineering' },
-      { id: '22', name: 'Master Mathematik' },
-      { id: '23', name: 'Master Robotics Cognition Intelligence' },
-      { id: '24', name: 'Neuroengineering' },
-      { id: '25', name: 'TopMath' },
-    ];
   }
 }

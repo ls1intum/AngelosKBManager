@@ -73,17 +73,17 @@ export class WebsitesComponent extends BaseComponent<Website> {
   ];
 
   override fetchData(): void {
-    this.websiteService.getAllWebsites("OrgID").subscribe(
+    this.websiteService.getAllWebsites().subscribe(
       (websites) => {
         this.items = websites;  
         this.displayedItems = [...websites];
       },
       (error) => {
-        // TODO: Handle error
         console.error('Error fetching websites:', error);
       }
     );
   }
+
   override getDialogConfig(item?: Website | undefined): { data: any; component: any; } {
     return {
       data: {

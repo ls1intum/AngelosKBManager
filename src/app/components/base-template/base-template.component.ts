@@ -43,21 +43,29 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     if (this.document) {
       this.documentHeight = this.document.documentElement.scrollHeight;
     }
-    this.studyProgramService.studyPrograms$.subscribe((programs) => {
-      this.availableStudyPrograms = programs;
-      const general: StudyProgram = {
-        id: '-1',
-        name: 'Allgemein'
-      }
-      this.filterOptions = [general, ...this.availableStudyPrograms]
+  
+    this.studyProgramService.fetchStudyPrograms().subscribe({
+      next: (programs) => {
+        this.availableStudyPrograms = programs;
+        const general: StudyProgram = {
+          id: -1,
+          name: 'Allgemein',
+        };
+        this.filterOptions = [general, ...this.availableStudyPrograms];
+        
+        // Fetch component-specific data after study programs are loaded
+        this.fetchData();
+      },
+      error: (err) => {
+        console.error('Error fetching study programs:', err);
+      },
     });
-    this.fetchData();
   }
 
   onProgramSelected(program: StudyProgram | null): void {
     this.selectedProgram = program;
     if (program) {
-      if (program.id !== '-1') {
+      if (program.id !== -1) {
         this.displayedItems = this.items.filter((item) =>
           item.studyPrograms.some((sp) => sp.id === program.id)
         );

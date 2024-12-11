@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { StudyProgramService } from './services/study-program.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     RouterOutlet,
-    RouterModule
+    RouterModule,
+    NgIf
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
@@ -15,11 +17,9 @@ import { StudyProgramService } from './services/study-program.service';
 export class AppComponent {
   title = 'CIT Knowledge Base Manager';
 
-  constructor(private studyProgramService: StudyProgramService) {}
+  constructor(private studyProgramService: StudyProgramService, private router: Router) {}
 
-  ngOnInit(): void {
-    this.studyProgramService.fetchStudyPrograms().subscribe(() => {
-      console.log('Study programs pre-fetched on application startup.');
-    });
+  get showTabs(): boolean {
+    return this.router.url !== '/login' && this.router.url !== '/register';
   }
 }

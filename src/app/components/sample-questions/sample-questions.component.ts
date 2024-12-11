@@ -46,17 +46,15 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
   }
   
   override fetchData(): void {
-    // TODO: Use real org ID after login
-    this.sampleQuestionService.getAllSampleQuestions("OrgID").subscribe(
-      (sampleQuestions) => {
-        this.items = sampleQuestions;  
+    this.sampleQuestionService.getAllSampleQuestions().subscribe({
+      next: (sampleQuestions: SampleQuestion[]) => {
+        this.items = sampleQuestions;
         this.displayedItems = [...sampleQuestions];
       },
-      (error) => {
-        // TODO: Handle error
-        console.error('Error fetching sample questions:', error);
+      error: (error: any) => {
+        console.error('Error sample questions:', error);
       }
-    );
+    });
   }
 
   columns: TableColumn<SampleQuestion>[] = [

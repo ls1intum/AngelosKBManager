@@ -1,0 +1,167 @@
+.login-container {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 400px;
+    margin: 100px auto 0 auto;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.login-page-header {
+    color: var(--primary-color);
+    font-size: x-large;
+    margin-top: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    color: var(--primary-color);
+    font-size: smaller;
+    font-weight: bolder;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* Dropdown Container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%; /* Make dropdown full width */
+}
+
+.dropdown button {
+    display: flex;
+    justify-content: space-between; /* distribute space between label and icon */
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    white-space: nowrap;
+    width: 100%; /* Full width */
+    box-sizing: border-box;
+}
+
+.dropdown button:hover {
+    background-color: var(--tum-acordion-blue);
+}
+
+.dropdown button mat-icon {
+    color: var(--primary-color);
+    font-size: 24px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    margin-top: 4px;
+    min-width: 100%; /* Match width of parent */
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+/* List inside the dropdown menu */
+.dropdown-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Individual items */
+.dropdown-menu li {
+    padding: 8px 16px;
+    cursor: pointer;
+    color: var(--primary-color);
+}
+
+.dropdown-menu li:hover {
+    background-color: var(--tum-acordion-blue);
+}
+
+.dropdown-menu li.selected {
+    background-color: var(--tum-light-blue);
+    color: white;
+}
+
+.clear-option {
+    background-color: var(--background-color);
+}
+
+.clear-option span {
+    color: darkgray;
+}
+
+button {
+    background-color: var(--tum-light-blue);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: var(--tum-blue-light-dark);
+}
+
+.success-message {
+    margin-top: 15px;
+    color: green;
+    font-size: 14px;
+}
+
+.error-message {
+    margin-top: 15px;
+    color: red;
+    font-size: 14px;
+}
+
+.no-account {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--primary-color);
+}
+
+.register-link {
+    color: var(--tum-light-blue);
+    text-decoration: none;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
