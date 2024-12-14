@@ -1,0 +1,30 @@
+.confirm-container {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 400px;
+    margin: 100px auto 0 auto; /* Increased top margin */
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; /* Ensures padding and border are included in total width */
+}
+
+.confirm-container h1.page-header {
+    margin-top: 0; /* Ensure no unnecessary spacing above heading */
+}
+
+.confirm-page-header {
+    color: var(--primary-color);
+    font-size: x-large
+}
+  
+.login-link {
+    color: var(--tum-light-blue);
+    text-decoration: none; /* no underline by default */
+}
+
+.login-link:hover {
+    text-decoration: underline; /* underline on hover */
+    cursor: pointer;
+}

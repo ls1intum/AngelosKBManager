@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { of, Observable, Subject } from 'rxjs';
+import { catchError, finalize, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { RegisterRequestDTO } from '../data/dto/register-request.dto';
@@ -12,6 +12,10 @@ import { UserDTO } from '../data/dto/user.dto';
 })
 export class AuthenticationService {
   private accessToken: string | null = null;
+
+  // Subject to track ongoing refresh request
+  private isRefreshing = false;
+  private refreshTokenSubject: Subject<string | null> = new Subject<string | null>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -29,16 +33,40 @@ export class AuthenticationService {
   }
 
   refreshToken(): Observable<string> {
+    if (this.isRefreshing) {
+      // If a refresh is already in progress, return the existing Observable
+      return this.refreshTokenSubject.pipe(
+        switchMap(token => {
+          if (token) {
+            return of(token); // Use the new token once available
+          } else {
+            throw new Error('Refresh token failed'); // Handle edge case
+          }
+        })
+      );
+    }
+
+    this.isRefreshing = true;
+    this.refreshTokenSubject.next(null); // Notify observers that refresh is in progress
+
     return this.http.post<{ accessToken: string }>(
       `${environment.backendUrl}/api/users/refresh`,
-      {}, // No body needed since refresh token is in cookie
+      {}, 
       { withCredentials: true }
     ).pipe(
-        tap(response => {
-          this.accessToken = response.accessToken;
-        }),
-        map(response => response.accessToken)
-      );
+      tap(response => {
+        this.accessToken = response.accessToken;
+        this.refreshTokenSubject.next(response.accessToken); // Notify observers with new token
+      }),
+      map(response => response.accessToken),
+      catchError(error => {
+        this.refreshTokenSubject.next(null); // Notify observers of failure
+        throw error; // Propagate the error
+      }),
+      finalize(() => {
+        this.isRefreshing = false; // Reset the flag once complete
+      })
+    );
   }
 
   getAccessToken(): string | null {
@@ -46,11 +74,10 @@ export class AuthenticationService {
   }
 
   logout() {
-    // Call backend to clear the refresh token
     this.http.post(
         `${environment.backendUrl}/api/users/logout`, 
         {}, 
-        { withCredentials: true } // Ensure the refresh token cookie is included
+        { withCredentials: true }
     ).subscribe({
         next: () => {
             console.log('Logged out successfully.');
@@ -59,7 +86,6 @@ export class AuthenticationService {
             console.error('Logout failed:', err);
         },
         complete: () => {
-            // Clear access token and redirect to login regardless of backend response
             this.accessToken = null;
             this.router.navigate(['/login']);
         }

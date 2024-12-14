@@ -48,7 +48,11 @@ export class ActionsCellComponent {
       case 'refresh':
         return 'refresh';
       case 'view':
-        return 'visibility'; // Eye icon for view action
+        return 'visibility';
+      case 'approve':
+        return 'check_circle';
+      case 'setAdmin':
+        return 'admin_panel_settings';
       default:
         return 'help';
     }

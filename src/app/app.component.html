@@ -2,7 +2,11 @@
   <!-- Top Bar -->
   <div class="kb-header">
     <h2>CIT Knowledge Base Manager</h2>
-    <img src="assets/logo.png" alt="Logo" class="kb-logo" />
+    <div class="header-right">
+      <!-- Conditionally show logout link if tabs are visible (i.e., user is logged in) -->
+      <a *ngIf="showTabs" class="logout-link" (click)="logout()">Abmelden</a>
+      <img src="assets/logo.png" alt="Logo" class="kb-logo" />
+    </div>
   </div>
 
   <!-- Tabs -->

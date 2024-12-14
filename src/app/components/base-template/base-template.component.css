@@ -1,0 +1,10 @@
+.admin-container {
+    display: flex;
+    flex-direction: row;
+    gap: 32px; /* space between the two tables */
+  }
+  
+  /* You can further customize .admin-table if needed */
+  .admin-table {
+    flex: 1;
+  }

@@ -14,6 +14,7 @@ import { BaseComponent } from '../base-template/base-template.component';
 import { DOCUMENT, NgFor, NgIf } from '@angular/common';
 import { WebsiteService } from '../../services/website.service';
 import { WebsiteDialogComponent } from '../../layout/dialogs/website-dialog/website-dialog.component';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-websites',
@@ -73,15 +74,19 @@ export class WebsitesComponent extends BaseComponent<Website> {
   ];
 
   override fetchData(): void {
-    this.websiteService.getAllWebsites().subscribe(
-      (websites) => {
+    this.websiteService.getAllWebsites().subscribe({
+      next: (websites) => {
         this.items = websites;  
         this.displayedItems = [...websites];
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching websites:', error);
       }
-    );
+    });
+  }
+
+  override deleteData(id: number): Observable<void> {
+    return this.websiteService.deleteWebsite(id);
   }
 
   override getDialogConfig(item?: Website | undefined): { data: any; component: any; } {

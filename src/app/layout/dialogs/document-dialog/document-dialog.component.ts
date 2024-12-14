@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { DOCUMENT, NgFor, NgIf } from '@angular/common';
 import { DocumentService } from '../../../services/document.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DocumentRequestDTO } from '../../../data/dto/document-request.dto';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -112,13 +114,28 @@ export class DocumentDialogComponent extends BaseDialogDirective<DocumentModel> 
     }
   }
 
-  override addData(): void {
-    this.data.uploaded = new Date();
-    this.data.actions = ['view', 'delete'];
-
-    if (this.selectedFile) {
-      this.data.file = this.selectedFile;
+  protected override makeAddRequest(data: DocumentModel): Observable<DocumentModel> {
+    const documentRequestDTO = this.createDTO(data);
+    if (!this.selectedFile) {
+      // TODO: This can never happen but still handle error
+      throw new Error('No file selected for upload.');
     }
+
+    return this.documentService.addDocument(documentRequestDTO, this.selectedFile);
+  }
+
+  protected override makeEditRequest(data: DocumentModel): Observable<DocumentModel> {
+    const documentRequestDTO = this.createDTO(data);
+    
+    return this.documentService.editDocument(data.id, documentRequestDTO);
+  }
+
+  private createDTO(data: DocumentModel): DocumentRequestDTO {
+    const dto: DocumentRequestDTO = {
+      title: data.title,
+      studyProgramIds: data.studyPrograms.map(sp => sp.id),
+    };
+    return dto;
   }
 
   override get canSave(): boolean {

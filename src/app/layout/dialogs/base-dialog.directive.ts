@@ -4,6 +4,7 @@ import { StudyProgram } from '../../data/model/study-program.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DOCUMENT } from '@angular/common';
 import { BaseItem } from '../../data/model/base-item.model';
+import { Observable } from 'rxjs';
 
 @Directive({
   selector: '[appBaseDialog]',
@@ -12,8 +13,8 @@ import { BaseItem } from '../../data/model/base-item.model';
 export abstract class BaseDialogDirective<T extends BaseItem> {
   abstract get canSave(): boolean;
 
-  // TODO: Remove once API requests are implemented
-  abstract addData(): void;
+  protected abstract makeAddRequest(data: T): Observable<T>;
+  protected abstract makeEditRequest(data: T): Observable<T>;
 
   @ViewChild('menuButton', { static: false }) menuButton!: MatIconButton;
 
@@ -87,8 +88,28 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
 
   onSave(): void {
     this.data.studyPrograms = [...this.studyProgramsCopy];
-    this.addData();
-    this.dialogRef.close(this.data);
+
+    if (this.editMode) {
+      this.makeEditRequest(this.data).subscribe({
+        next: (updatedItem) => {
+          this.dialogRef.close(updatedItem);
+        },
+        error: (err) => {
+          console.error('Error editing item:', err);
+          // TODO: Handle error (e.g., show a message)
+        }
+      });
+    } else {
+      this.makeAddRequest(this.data).subscribe({
+        next: (newItem) => {
+          this.dialogRef.close(newItem);
+        },
+        error: (err) => {
+          console.error('Error adding item:', err);
+          // TODO: Handle error
+        }
+      });
+    }
   }
 
   onDialogClicked(event: MouseEvent) {

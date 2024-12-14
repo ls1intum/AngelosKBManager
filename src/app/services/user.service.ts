@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { UserDTO } from '../data/dto/user.dto';
 import { environment } from '../../environments/environment';
+import { User } from '../data/model/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,13 @@ export class UserService {
   /**
    * Get all users for the authenticated organisation.
    */
-  getAllUsers(): Observable<UserDTO[]> {
+  getAllUsers(): Observable<User[]> {
     const headers = this.createAuthHeaders();
-    return this.http.get<UserDTO[]>(`${environment.backendUrl}/api/users`, { headers });
+    return this.http
+      .get<UserDTO[]>(`${environment.backendUrl}/api/users`, { headers })
+      .pipe(
+        map((response: UserDTO[]) => this.transformResponse(response))
+      );;
   }
 
   /**
@@ -27,15 +32,23 @@ export class UserService {
    */
   approveUser(userId: number): Observable<UserDTO> {
     const headers = this.createAuthHeaders();
-    return this.http.patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/approve`, null, { headers });
+    return this.http
+      .patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/approve`, null, { headers })
+      .pipe(
+        map((response: UserDTO) => this.transformSingleResponse(response))
+      );
   }
 
   /**
    * Set a user to admin by ID.
    */
-  setUserToAdmin(userId: number): Observable<UserDTO> {
+  setUserToAdmin(userId: number): Observable<User> {
     const headers = this.createAuthHeaders();
-    return this.http.patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/set-admin`, null, { headers });
+    return this.http
+      .patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/set-admin`, null, { headers })
+      .pipe(
+        map((response: UserDTO) => this.transformSingleResponse(response))
+      );
   }
 
   /**
@@ -59,5 +72,25 @@ export class UserService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  /**
+   * Transform a list of responses.
+   */
+  private transformResponse(response: UserDTO[]): User[] {
+    return response.map((dto) => this.transformSingleResponse(dto));
+  }
+
+  /**
+   * Transform a single response.
+   */
+  private transformSingleResponse(dto: UserDTO): User {
+    return {
+      id: dto.id,
+      mail: dto.mail,
+      isApproved: dto.isApproved,
+      isAdmin: dto.isAdmin,
+      actions: ['approve', 'setAdmin'],
+    };
   }
 }

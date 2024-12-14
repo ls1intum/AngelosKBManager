@@ -10,11 +10,12 @@ import { ActionsCellComponent } from '../../layout/cells/actions-cell/actions-ce
 import { StudyProgramService } from '../../services/study-program.service';
 import { NgFor, NgIf } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
-import { DeleteDialogComponent } from '../../layout/dialogs/delete-dialog/delete-dialog.component';
+import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
 import { SampleQuestionDialogComponent } from '../../layout/dialogs/sample-question-dialog/sample-question-dialog.component';
 import { GENERAL_STUDY_PROGRAM_ID } from '../../utils/utils';
 import { BaseComponent } from '../base-template/base-template.component';
 import { SampleQuestionService } from '../../services/sample-question.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-samplequestions',
@@ -101,6 +102,10 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
       title: 'Beispielsfrage löschen',
       message: `Sind Sie sicher, dass Sie die Beispielsfrage zu dem Thema "${item.topic}" löschen wollen?`
     }
+  }
+
+  override deleteData(id: number): Observable<void> {
+    return this.sampleQuestionService.deleteSampleQuestion(id);
   }
 
   onEdit(sampleQuestion: SampleQuestion): void {

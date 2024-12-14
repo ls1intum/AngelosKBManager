@@ -11,6 +11,7 @@ import { BaseComponent } from '../base-template/base-template.component';
 import { DocumentService } from '../../services/document.service';
 import { DocumentModel } from '../../data/model/document.model';
 import { DocumentDialogComponent } from '../../layout/dialogs/document-dialog/document-dialog.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-documents',
@@ -91,6 +92,10 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
       title: 'Dokument löschen',
       message: `Sind Sie sicher, dass Sie das Dokument mit dem Titel "${item.title}" aus der Wissensbasis löschen wollen?`
     }
+  }
+
+  override deleteData(id: number): Observable<void> {
+    return this.documentService.deleteDocument(id);
   }
 
   onView(rowData: DocumentModel) {

@@ -1,0 +1,12 @@
+<div class="confirm-container">
+    <h3 class="confirm-page-header">E-Mail bestätigen</h3>
+    <div *ngIf="isLoading">
+      <p>Bitte warten...</p>
+    </div>
+    <div *ngIf="!isLoading && successMessage">
+      <p>{{successMessage}} <br/> <br/> <a routerLink="/login" class="login-link">Jetzt anmelden</a>.</p>
+    </div>
+    <div *ngIf="!isLoading && errorMessage">
+      <p>{{errorMessage}}</p>
+    </div>
+  </div>

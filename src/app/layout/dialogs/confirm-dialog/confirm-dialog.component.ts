@@ -4,19 +4,19 @@ import { MatCard, MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogConfig, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-dialog',
+  selector: 'app-confirm-dialog',
   standalone: true,
   imports: [
     MatDialogModule,
     MatCardModule,
     MatButtonModule
   ],
-  templateUrl: './delete-dialog.component.html',
-  styleUrls: ['./delete-dialog.component.css', '../dialog-styles.css']
+  templateUrl: './confirm-dialog.component.html',
+  styleUrls: ['./confirm-dialog.component.css', '../dialog-styles.css']
 })
-export class DeleteDialogComponent {
+export class ConfirmDialogComponent {
   constructor(
-    public dialogRef: MatDialogRef<DeleteDialogComponent>,
+    public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { title: string; message: string }
   ) {}
 

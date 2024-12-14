@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(): Observable<boolean | UrlTree> {
+    console.log("Can activate?")
     const accessToken = this.authService.getAccessToken();
     if (accessToken) {
       return of(true);
@@ -25,7 +26,7 @@ export class AuthGuard implements CanActivate {
         return true;
       }),
       catchError((err) => {
-        return of(this.router.createUrlTree(['/login']));
+        return of(this.router.createUrlTree(['/session-expired']));
       })
     );
   }

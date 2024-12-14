@@ -4,8 +4,9 @@ import { StudyProgram } from '../../data/model/study-program.model';
 import { MatDialog } from '@angular/material/dialog';
 import { StudyProgramService } from '../../services/study-program.service';
 import { DOCUMENT } from '@angular/common';
-import { DeleteDialogComponent } from '../../layout/dialogs/delete-dialog/delete-dialog.component';
+import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
 import { TableColumn } from '../../layout/tables/main-table/main-table.component';
+import { Observable } from 'rxjs';
 
 @Directive()
 export abstract class BaseComponent<T extends BaseItem> implements OnInit {
@@ -30,6 +31,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   abstract addButtonText: string;
 
   abstract fetchData(): void;
+  abstract deleteData(id: number): Observable<void>;
   abstract getDialogConfig(item?: T): { data: any; component: any };
   abstract getDeleteDialogText(item: T): { title: string; message: string };
 
@@ -91,7 +93,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
           Object.assign(item, result);
         } else {
           // TODO: Make API request to add new item
-          const newItem: T = { id: 'placeholder', ...result };
+          const newItem: T = result;
           this.items = [newItem, ...this.items];
           this.displayedItems = [newItem, ...this.displayedItems];
         }
@@ -102,14 +104,23 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   onDelete(item: T): void {
     const { title, message } = this.getDeleteDialogText(item);
 
-    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: { title, message },
     });
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
-        this.items = this.items.filter((i) => i.id !== item.id);
-        this.displayedItems = this.displayedItems.filter((i) => i.id !== item.id);
+        this.deleteData(item.id).subscribe({
+          next: () => {
+              // Successful deletion: update the state
+              this.items = this.items.filter((i) => i.id !== item.id);
+              this.displayedItems = this.displayedItems.filter((i) => i.id !== item.id);
+          },
+          error: (error) => {
+              console.error('Delete failed:', error);
+              this.handleError("Löschen nicht möglich. Bitte versuchen Sie es noch einmal.");
+          }
+      });
       }
     });
   }
@@ -179,5 +190,9 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     this.menuPosition = { top: 0, left: 0, openUpwards: false };
     this.currentMenuButton = null;
     document.removeEventListener('click', this.onDocumentClick);
+  }
+
+  handleError(error: string) {
+
   }
 }

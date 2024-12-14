@@ -11,11 +11,14 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+
+  private refreshUrl = `${environment.backendUrl}/api/users/refresh`;
 
   constructor(
     private authService: AuthenticationService,
@@ -23,8 +26,15 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('AuthInterceptor: Request URL', req.url);
+
     let authReq = req;
     const accessToken = this.authService.getAccessToken();
+
+    if (req.url === this.refreshUrl) {
+      console.log('not intercepting refresh');
+      return next.handle(req);
+    }
 
     // Add Authorization header if we have an access token
     if (accessToken) {

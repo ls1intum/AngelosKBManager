@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { StudyProgramService } from './services/study-program.service';
 import { NgIf } from '@angular/common';
+import { AuthenticationService } from './services/authentication.service';
 
 @Component({
   selector: 'app-root',
@@ -17,9 +17,13 @@ import { NgIf } from '@angular/common';
 export class AppComponent {
   title = 'CIT Knowledge Base Manager';
 
-  constructor(private studyProgramService: StudyProgramService, private router: Router) {}
+  constructor(private authService: AuthenticationService, private router: Router) {}
 
   get showTabs(): boolean {
-    return this.router.url !== '/login' && this.router.url !== '/register';
+    return this.router.url !== '/login' && this.router.url !== '/register' && this.router.url !== '/session-expired' && !this.router.url.startsWith('/confirm');
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

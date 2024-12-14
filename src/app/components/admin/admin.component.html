@@ -1,3 +1,22 @@
 <div>
     <h1 class="page-header">Administration</h1>
+    <div class="admin-container">
+        <div class="admin-table">
+          <h3 class="page-header">Benutzer</h3>
+          <app-main-table
+            [dataSource]="users"
+            [columns]="userColumns"
+            [parentComponent]="this">
+          </app-main-table>
+        </div>
+      
+        <div class="admin-table">
+          <h3 class="page-header">Studiengänge</h3>
+          <app-main-table
+            [dataSource]="studyPrograms"
+            [columns]="studyProgramColumns"
+            [parentComponent]="this">
+          </app-main-table>
+        </div>
+      </div>
 </div>

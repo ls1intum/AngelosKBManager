@@ -27,6 +27,26 @@
     object-fit: contain;
 }
 
+.header-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+}
+
+.logout-link {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: text-decoration 0.2s ease;
+}
+
+.logout-link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 /* Tabs styles */
 .tabs {
     display: flex;
