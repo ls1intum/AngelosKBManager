@@ -7,6 +7,7 @@ import { DOCUMENT } from '@angular/common';
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
 import { TableColumn } from '../../layout/tables/main-table/main-table.component';
 import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Directive()
 export abstract class BaseComponent<T extends BaseItem> implements OnInit {
@@ -40,6 +41,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   constructor(
     protected dialog: MatDialog,
     protected studyProgramService: StudyProgramService,
+    protected snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected document: Document,
   ) {}
 
@@ -194,11 +196,11 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     document.removeEventListener('click', this.onDocumentClick);
   }
 
-  handleError(error: string) {
-
-  }
-
-  handleSuccess(error: string) {
-    
+  handleError(errorMessage: string) {
+    this.snackBar.open(errorMessage, 'Schließen', {
+      duration: 5000, // Show the snackbar for 5 seconds
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
   }
 }

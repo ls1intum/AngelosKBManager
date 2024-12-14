@@ -51,3 +51,8 @@
   .menu-item:hover {
     background-color: var(--tum-acordion-blue);
   }
+
+  .success-snackbar {
+    background-color: #4caf50; /* Green background for success */
+    color: white; /* White text */
+  }

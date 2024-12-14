@@ -16,6 +16,7 @@ import { WebsiteService } from '../../services/website.service';
 import { WebsiteDialogComponent } from '../../layout/dialogs/website-dialog/website-dialog.component';
 import { catchError, map, Observable, of } from 'rxjs';
 import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-websites',
@@ -27,6 +28,7 @@ import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
     MainTableComponent,
     NgIf,
     NgFor,
+    MatSnackBarModule
 ],
   templateUrl: '../base-template/base-template.component.html',
   styleUrl: '../base-template/base-template.component.css'
@@ -39,10 +41,11 @@ export class WebsitesComponent extends BaseComponent<Website> {
   constructor(
     protected override dialog: MatDialog,
     protected override studyProgramService: StudyProgramService,
+    protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
-    private websiteService: WebsiteService
+    private websiteService: WebsiteService,
   ) {
-    super(dialog, studyProgramService, document);
+    super(dialog, studyProgramService, snackBar, document);
   }
 
   columns: TableColumn<Website>[] = [
@@ -130,5 +133,14 @@ export class WebsitesComponent extends BaseComponent<Website> {
       studyProgramIds: data.studyPrograms.map(s => s.id)
     };
     return request;
+  }
+
+  private handleSuccess(successMessage: string): void {
+    this.snackBar.open(successMessage, 'Schließen', {
+      duration: 4000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['success-snackbar'],
+    });
   }
 }

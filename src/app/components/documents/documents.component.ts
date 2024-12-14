@@ -13,6 +13,7 @@ import { DocumentModel } from '../../data/model/document.model';
 import { DocumentDialogComponent } from '../../layout/dialogs/document-dialog/document-dialog.component';
 import { Observable } from 'rxjs';
 import { DocumentRequestDTO } from '../../data/dto/document-request.dto';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-documents',
@@ -23,7 +24,8 @@ import { DocumentRequestDTO } from '../../data/dto/document-request.dto';
     MatDialogModule,
     MainTableComponent,
     NgIf,
-    NgFor
+    NgFor,
+    MatSnackBarModule
 ],
   templateUrl: '../base-template/base-template.component.html',
   styleUrl: '../base-template/base-template.component.css'
@@ -36,10 +38,11 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
   constructor(
     protected override dialog: MatDialog,
     protected override studyProgramService: StudyProgramService,
+    protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
     private documentService: DocumentService
   ) {
-    super(dialog, studyProgramService, document);
+    super(dialog, studyProgramService, snackBar, document);
   }
 
   columns: TableColumn<DocumentModel>[] = [

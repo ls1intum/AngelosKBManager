@@ -18,6 +18,7 @@ import { SampleQuestionService } from '../../services/sample-question.service';
 import { Observable } from 'rxjs';
 import { StudyProgramDTO } from '../../data/dto/study-program.dto';
 import { SampleQuestionDTO } from '../../data/dto/sample-question.dto';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-samplequestions',
@@ -29,6 +30,7 @@ import { SampleQuestionDTO } from '../../data/dto/sample-question.dto';
     MainTableComponent,
     NgIf,
     NgFor,
+    MatSnackBarModule
 ],
   templateUrl: '../base-template/base-template.component.html',
   styleUrl: '../base-template/base-template.component.css'
@@ -42,10 +44,11 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
   constructor(
     protected override dialog: MatDialog,
     protected override studyProgramService: StudyProgramService,
+    protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
     private sampleQuestionService: SampleQuestionService
   ) {
-    super(dialog, studyProgramService, document);
+    super(dialog, studyProgramService, snackBar, document);
   }
   
   override fetchData(): void {
