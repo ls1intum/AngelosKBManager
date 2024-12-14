@@ -8,3 +8,8 @@
   .admin-table {
     flex: 1;
   }
+
+  .success-snackbar {
+    background-color: #4caf50; /* Green background for success */
+    color: white; /* White text */
+  }

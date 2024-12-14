@@ -1,8 +1,10 @@
 import { Component, NgModule } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
-import { FormControl, FormControlDirective, FormsModule, NgModel } from '@angular/forms';
-import { CommonModule, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-login',
@@ -10,7 +12,8 @@ import { RouterLink } from '@angular/router';
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    MatSnackBarModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -19,7 +22,10 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private snackBar: MatSnackBar
+  ) {}
 
   onLogin() {
     this.authService.login(this.email, this.password).subscribe({
@@ -28,6 +34,11 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Login failed:', err);
+        this.snackBar.open('Login fehlgeschlagen. Bitte stellen Sie sicher, dass Ihre E-Mail-Adresse bestätigt ist, Ihr Passwort korrekt ist und Ihr Konto von einem Administrator freigegeben wurde', 'Schließen', {
+          duration: 4000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+        });
       },
     });
   }

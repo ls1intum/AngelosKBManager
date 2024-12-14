@@ -32,6 +32,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
   abstract fetchData(): void;
   abstract deleteData(id: number): Observable<void>;
+  abstract editItem(item: T): Observable<T>
+
   abstract getDialogConfig(item?: T): { data: any; component: any };
   abstract getDeleteDialogText(item: T): { title: string; message: string };
 
@@ -89,14 +91,14 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (item) {
-          // TODO: Make API request to update existing item
           Object.assign(item, result);
         } else {
-          // TODO: Make API request to add new item
           const newItem: T = result;
           this.items = [newItem, ...this.items];
           this.displayedItems = [newItem, ...this.displayedItems];
         }
+      } else {
+        this.handleError("Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.")
       }
     });
   }
@@ -163,7 +165,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
       this.selectedItem.studyPrograms.push(program);
     }
     this.menuOpen = false;
-    // TODO: Backend request
+    
   }
 
   onRemoveStudyProgram(item: T, program: StudyProgram) {
@@ -194,5 +196,9 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
   handleError(error: string) {
 
+  }
+
+  handleSuccess(error: string) {
+    
   }
 }

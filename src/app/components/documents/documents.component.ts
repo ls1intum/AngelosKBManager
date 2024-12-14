@@ -12,6 +12,7 @@ import { DocumentService } from '../../services/document.service';
 import { DocumentModel } from '../../data/model/document.model';
 import { DocumentDialogComponent } from '../../layout/dialogs/document-dialog/document-dialog.component';
 import { Observable } from 'rxjs';
+import { DocumentRequestDTO } from '../../data/dto/document-request.dto';
 
 @Component({
   selector: 'app-documents',
@@ -72,7 +73,7 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
         this.displayedItems = [...documents];
       },
       error: (error: any) => {
-        console.error('Error fetching documents:', error);
+        this.handleError("Fehler beim Laden der Websites. Bitte laden Sie die Seite erneut.")
       }
     });
   }
@@ -115,5 +116,17 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
 
   onEdit(doc: DocumentModel): void {
     this.openAddOrEditDialog(doc);
+  }
+
+  override editItem(item: DocumentModel): Observable<DocumentModel> {
+    return this.documentService.editDocument(item.id, this.createDTO(item));
+  }
+
+  private createDTO(data: DocumentModel): DocumentRequestDTO {
+    const dto: DocumentRequestDTO = {
+      title: data.title,
+      studyProgramIds: data.studyPrograms.map(sp => sp.id),
+    };
+    return dto;
   }
 }

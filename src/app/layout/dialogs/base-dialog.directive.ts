@@ -95,8 +95,7 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
           this.dialogRef.close(updatedItem);
         },
         error: (err) => {
-          console.error('Error editing item:', err);
-          // TODO: Handle error (e.g., show a message)
+          this.dialogRef.close();
         }
       });
     } else {
@@ -105,8 +104,7 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
           this.dialogRef.close(newItem);
         },
         error: (err) => {
-          console.error('Error adding item:', err);
-          // TODO: Handle error
+          this.dialogRef.close();
         }
       });
     }

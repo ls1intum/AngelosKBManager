@@ -9,6 +9,7 @@ import { StudyProgram } from '../../data/model/study-program.model';
 import { TableColumn, MainTableComponent } from '../../layout/tables/main-table/main-table.component';
 import { ActionsCellComponent } from '../../layout/cells/actions-cell/actions-cell.component';
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin',
@@ -16,6 +17,7 @@ import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/conf
   imports: [
     MatDialogModule,
     MainTableComponent,
+    MatSnackBarModule
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -57,11 +59,11 @@ export class AdminComponent implements OnInit {
     protected dialog: MatDialog,
     protected studyProgramService: StudyProgramService,
     protected userService: UserService,
+    protected snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected document: Document
   ) {}
 
   ngOnInit(): void {
-    console.log('initializing')
     // Fetch study programs
     this.studyProgramService.fetchStudyPrograms().subscribe({
       next: (programs) => {
@@ -69,6 +71,7 @@ export class AdminComponent implements OnInit {
         //this.displayedStudyPrograms = [...programs];
       },
       error: (err) => {
+        this.handleError('Fehler beim Abrufen der Studiengänge. Bitte versuchen Sie es später erneut.');
         console.error('Error fetching study programs for Admin:', err);
       },
     });
@@ -79,6 +82,7 @@ export class AdminComponent implements OnInit {
         this.users = users
       },
       error: (err) => {
+        this.handleError('Fehler beim Abrufen der Benutzerliste. Bitte versuchen Sie es später erneut.');
         console.error('Error fetching users for Admin:', err);
       }
     });
@@ -100,9 +104,11 @@ export class AdminComponent implements OnInit {
         this.userService.setUserToAdmin(user.id).subscribe({
           next: (updatedUser: User) => {
             this.updateUserInArray(updatedUser);
+            this.handleSuccess('Das Teammitglied wurde erfolgreich bestätigt.');
           },
           error: (error) => {
-            console.error('Error setting user as admin:', error);
+            console.error("Error during approve user", error)
+            this.handleError("Es ist ein Fehler aufgetreten. Der Benutzer konnte nicht als Teammitglied hinzugefügt werden. Bitte versuchen Sie es später erneut.")
           }
         });
       }
@@ -125,9 +131,11 @@ export class AdminComponent implements OnInit {
         this.userService.setUserToAdmin(user.id).subscribe({
           next: (updatedUser: User) => {
             this.updateUserInArray(updatedUser);
+            this.handleSuccess('Das Teammitglied wurde erfolgreich zum Administrator gemacht.');
           },
           error: (error) => {
-            this.handleError("Fehler beim Setzen des Benutzers als Administrator. Bitte versuchen Sie es erneut.");
+            console.error("Error during set admin", error)
+            this.handleError("Fehler beim Festlegen des Benutzers als Administrator. Bitte versuchen Sie es später erneut.");
           }
         });
       }
@@ -142,7 +150,20 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  private handleError(error: string): void {
-    // TODO
+  private handleError(errorMessage: string): void {
+    this.snackBar.open(errorMessage, 'Schließen', {
+      duration: 4000, 
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
+  private handleSuccess(successMessage: string): void {
+    this.snackBar.open(successMessage, 'Schließen', {
+      duration: 4000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['success-snackbar'],
+    });
   }
 }

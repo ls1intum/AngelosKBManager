@@ -40,11 +40,11 @@ export class SampleQuestionDialogComponent extends BaseDialogDirective<SampleQue
     );
   }
 
-  protected makeAddRequest(data: SampleQuestion): Observable<SampleQuestion> {
+  protected override makeAddRequest(data: SampleQuestion): Observable<SampleQuestion> {
     return this.sampleQuestionService.addSampleQuestion(this.createDTO(data, false));
   }
 
-  protected makeEditRequest(data: SampleQuestion): Observable<SampleQuestion> {
+  protected override makeEditRequest(data: SampleQuestion): Observable<SampleQuestion> {
     return this.sampleQuestionService.editSampleQuestion(data.id, this.createDTO(data, false));
   }
 

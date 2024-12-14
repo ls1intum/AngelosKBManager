@@ -38,11 +38,11 @@ export class WebsiteDialogComponent extends BaseDialogDirective<Website> {
     );
   }
 
-  protected makeAddRequest(data: Website): Observable<Website> {
+  protected override makeAddRequest(data: Website): Observable<Website> {
     return this.websiteService.addWebsite(this.createRequest(data));
   }
 
-  protected makeEditRequest(data: Website): Observable<Website> {
+  protected override makeEditRequest(data: Website): Observable<Website> {
     return this.websiteService.editWebsite(data.id, this.createRequest(data));
   }
 

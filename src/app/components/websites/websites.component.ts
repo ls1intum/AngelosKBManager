@@ -15,6 +15,7 @@ import { DOCUMENT, NgFor, NgIf } from '@angular/common';
 import { WebsiteService } from '../../services/website.service';
 import { WebsiteDialogComponent } from '../../layout/dialogs/website-dialog/website-dialog.component';
 import { catchError, map, Observable, of } from 'rxjs';
+import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
 
 @Component({
   selector: 'app-websites',
@@ -80,7 +81,7 @@ export class WebsitesComponent extends BaseComponent<Website> {
         this.displayedItems = [...websites];
       },
       error: (error) => {
-        console.error('Error fetching websites:', error);
+        this.handleError("Fehler beim Laden der Websites. Bitte laden Sie die Seite erneut.")
       }
     });
   }
@@ -99,6 +100,7 @@ export class WebsitesComponent extends BaseComponent<Website> {
       component: WebsiteDialogComponent
     }
   }
+
   override getDeleteDialogText(item: Website): { title: string; message: string; } {
     return {
       title: 'Website löschen',
@@ -106,8 +108,27 @@ export class WebsitesComponent extends BaseComponent<Website> {
     }
   }
 
+  override editItem(data: Website): Observable<Website> {
+    return this.websiteService.editWebsite(data.id, this.createRequest(data));
+  }
+
   onRefresh(website: Website) {
-    // TODO: Implement web scraping specific website via API request
     console.log("Refreshing...", website);
+    this.websiteService.editWebsite(website.id, this.createRequest(website)).subscribe({
+      next: (value: Website) => { 
+        Object.assign(website, value);
+        this.handleSuccess("Der Inhalt der Website wurde erfolgreich aktualisiert.")
+      },
+      error: (error) => { this.handleError("Website konnte nicht aktualisiert werden. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut.") }
+    });
+  }
+
+  private createRequest(data: Website): WebsiteRequestDTO {
+    const request: WebsiteRequestDTO = {
+      title: data.title,
+      link: data.link,
+      studyProgramIds: data.studyPrograms.map(s => s.id)
+    };
+    return request;
   }
 }

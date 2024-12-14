@@ -16,6 +16,8 @@ import { GENERAL_STUDY_PROGRAM_ID } from '../../utils/utils';
 import { BaseComponent } from '../base-template/base-template.component';
 import { SampleQuestionService } from '../../services/sample-question.service';
 import { Observable } from 'rxjs';
+import { StudyProgramDTO } from '../../data/dto/study-program.dto';
+import { SampleQuestionDTO } from '../../data/dto/sample-question.dto';
 
 @Component({
   selector: 'app-samplequestions',
@@ -53,7 +55,7 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
         this.displayedItems = [...sampleQuestions];
       },
       error: (error: any) => {
-        console.error('Error sample questions:', error);
+        this.handleError("Fehler beim Laden der Websites. Bitte laden Sie die Seite erneut.")
       }
     });
   }
@@ -108,8 +110,29 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
     return this.sampleQuestionService.deleteSampleQuestion(id);
   }
 
+  override editItem(item: SampleQuestion): Observable<SampleQuestion> {
+    return this.sampleQuestionService.editSampleQuestion(item.id, this.createDTO(item))
+  }
+
   onEdit(sampleQuestion: SampleQuestion): void {
     this.openAddOrEditDialog(sampleQuestion);
   }
 
+  private createDTO(data: SampleQuestion): SampleQuestionDTO {
+    const dto: SampleQuestionDTO = {
+      id: data.id,
+      topic: data.topic,
+      question: data.question,
+      answer: data.answer,
+      studyPrograms: data.studyPrograms.map(this.toSPDTO),
+    }
+    return dto;
+  }
+
+  private toSPDTO(sp: StudyProgram): StudyProgramDTO {
+    return {
+      id: sp.id,
+      name: sp.name,
+    };
+  }
 }
