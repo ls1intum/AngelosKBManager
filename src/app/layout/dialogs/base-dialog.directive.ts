@@ -95,7 +95,7 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
           this.dialogRef.close(updatedItem);
         },
         error: (err) => {
-          this.dialogRef.close();
+          this.dialogRef.close(null);
         }
       });
     } else {
@@ -104,7 +104,8 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
           this.dialogRef.close(newItem);
         },
         error: (err) => {
-          this.dialogRef.close();
+          console.log("closing with null")
+          this.dialogRef.close(null);
         }
       });
     }

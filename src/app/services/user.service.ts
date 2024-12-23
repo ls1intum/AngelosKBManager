@@ -16,14 +16,22 @@ export class UserService {
   ) {}
 
   /**
+   * Get the current authenticated user.
+   */
+  getCurrentUser(): Observable<UserDTO> {
+    const headers = this.createAuthHeaders();
+    return this.http.get<UserDTO>(`${environment.backendUrl}/api/users/me`, { headers });
+  }
+
+  /**
    * Get all users for the authenticated organisation.
    */
-  getAllUsers(): Observable<User[]> {
+  getAllUsers(isAdmin: boolean): Observable<User[]> {
     const headers = this.createAuthHeaders();
     return this.http
       .get<UserDTO[]>(`${environment.backendUrl}/api/users`, { headers })
       .pipe(
-        map((response: UserDTO[]) => this.transformResponse(response))
+        map((response: UserDTO[]) => this.transformResponse(response, isAdmin))
       );;
   }
 
@@ -35,7 +43,7 @@ export class UserService {
     return this.http
       .patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/approve`, null, { headers })
       .pipe(
-        map((response: UserDTO) => this.transformSingleResponse(response))
+        map((response: UserDTO) => this.transformSingleResponse(response, true))
       );
   }
 
@@ -47,7 +55,7 @@ export class UserService {
     return this.http
       .patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/set-admin`, null, { headers })
       .pipe(
-        map((response: UserDTO) => this.transformSingleResponse(response))
+        map((response: UserDTO) => this.transformSingleResponse(response, true))
       );
   }
 
@@ -77,20 +85,24 @@ export class UserService {
   /**
    * Transform a list of responses.
    */
-  private transformResponse(response: UserDTO[]): User[] {
-    return response.map((dto) => this.transformSingleResponse(dto));
+  private transformResponse(response: UserDTO[], isAdmin: boolean): User[] {
+    return response.map((dto) => this.transformSingleResponse(dto, isAdmin));
   }
 
   /**
    * Transform a single response.
    */
-  private transformSingleResponse(dto: UserDTO): User {
+  private transformSingleResponse(dto: UserDTO, isAdmin: boolean): User {
     return {
       id: dto.id,
       mail: dto.mail,
       isApproved: dto.isApproved,
       isAdmin: dto.isAdmin,
-      actions: ['approve', 'setAdmin'],
+      actions: isAdmin && !dto.isAdmin ? this.getActions(dto) : []
     };
+  }
+
+  private getActions(dto: UserDTO): string[] {
+    return [dto.isApproved ? "revoke" : "approve", "setAdmin"];
   }
 }

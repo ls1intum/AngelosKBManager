@@ -55,7 +55,7 @@ export class WebsiteService {
   /**
    * Edit an existing website by ID.
    */
-  editWebsite(websiteId: number, request: WebsiteRequestDTO): Observable<Website> {
+  editWebsite(websiteId: string, request: WebsiteRequestDTO): Observable<Website> {
     const token = this.authService.getAccessToken();
 
     let headers = new HttpHeaders();
@@ -73,7 +73,7 @@ export class WebsiteService {
   /**
    * Delete a website by ID.
    */
-  deleteWebsite(websiteId: number): Observable<void> {
+  deleteWebsite(websiteId: string): Observable<void> {
     const token = this.authService.getAccessToken();
 
     let headers = new HttpHeaders();

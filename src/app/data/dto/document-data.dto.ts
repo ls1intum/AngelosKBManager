@@ -1,7 +1,7 @@
 import { StudyProgramDTO } from "./study-program.dto";
 
 export interface DocumentDataDTO {
-    id: number;
+    id: string;
     title: string;
     studyPrograms: StudyProgramDTO[];
     createdAt: string;

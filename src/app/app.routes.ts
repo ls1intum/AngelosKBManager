@@ -8,9 +8,13 @@ import { AuthGuard } from './guards/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
 import { ConfirmMailComponent } from './components/confirm-mail/confirm-mail.component';
 import { GuardComponent } from './components/guard/guard.component';
+import { RedirectGuard } from './guards/redirect.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'login', 
+    component: LoginComponent,
+    canActivate: [RedirectGuard]
+ },
   {
     path: 'register',
     component: RegisterComponent
@@ -43,5 +47,9 @@ export const routes: Routes = [
     component: WebsitesComponent,
     canActivate: [AuthGuard]
   },
-  { path: '', redirectTo: 'websites', pathMatch: 'full' }
+  {
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full'
+  }
 ];

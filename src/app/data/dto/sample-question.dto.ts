@@ -1,7 +1,7 @@
 import { StudyProgramDTO } from "./study-program.dto";
 
 export interface SampleQuestionDTO {
-    id: number;
+    id: string;
     topic: string;
     question: string;
     answer: string;

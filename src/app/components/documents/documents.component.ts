@@ -98,7 +98,7 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
     }
   }
 
-  override deleteData(id: number): Observable<void> {
+  override deleteData(id: string): Observable<void> {
     return this.documentService.deleteDocument(id);
   }
 

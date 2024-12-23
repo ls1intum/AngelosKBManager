@@ -32,7 +32,7 @@ export class DocumentService {
   /**
    * Fetch a single document by ID as a PDF Blob.
    */
-  getDocumentById(documentId: number): Observable<Blob> {
+  getDocumentById(documentId: string): Observable<Blob> {
     const headers = this.createAuthHeaders();
     return this.http.get(`${environment.backendUrl}/api/documents/${documentId}/download`, {
       headers,
@@ -43,7 +43,7 @@ export class DocumentService {
   /**
    * Edit a document's title and study programs.
    */
-  editDocument(docId: number, documentRequest: DocumentRequestDTO): Observable<DocumentModel> {
+  editDocument(docId: string, documentRequest: DocumentRequestDTO): Observable<DocumentModel> {
     const headers = this.createAuthHeaders();
     return this.http
       .put<DocumentDataDTO>(`${environment.backendUrl}/api/documents/${docId}`, documentRequest, { headers })
@@ -73,7 +73,7 @@ export class DocumentService {
   /**
    * Delete a document by ID.
    */
-  deleteDocument(docId: number): Observable<void> {
+  deleteDocument(docId: string): Observable<void> {
     const headers = this.createAuthHeaders();
     return this.http.delete<void>(`${environment.backendUrl}/api/documents/${docId}`, { headers });
   }

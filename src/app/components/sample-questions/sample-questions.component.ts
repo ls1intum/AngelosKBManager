@@ -109,7 +109,7 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
     }
   }
 
-  override deleteData(id: number): Observable<void> {
+  override deleteData(id: string): Observable<void> {
     return this.sampleQuestionService.deleteSampleQuestion(id);
   }
 

@@ -55,7 +55,7 @@ export class SampleQuestionService {
   /**
    * Edit an existing sample question.
    */
-  editSampleQuestion(sampleQuestionId: number, request: SampleQuestionDTO): Observable<SampleQuestion> {
+  editSampleQuestion(sampleQuestionId: string, request: SampleQuestionDTO): Observable<SampleQuestion> {
     const token = this.authService.getAccessToken();
 
     let headers = new HttpHeaders();
@@ -73,7 +73,7 @@ export class SampleQuestionService {
   /**
    * Delete a sample question by ID.
    */
-  deleteSampleQuestion(sampleQuestionId: number): Observable<void> {
+  deleteSampleQuestion(sampleQuestionId: string): Observable<void> {
     const token = this.authService.getAccessToken();
 
     let headers = new HttpHeaders();

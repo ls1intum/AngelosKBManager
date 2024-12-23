@@ -50,7 +50,7 @@ export class SampleQuestionDialogComponent extends BaseDialogDirective<SampleQue
 
   private createDTO(data: SampleQuestion, add: boolean): SampleQuestionDTO {
     const dto: SampleQuestionDTO = {
-      id: add ? -1 : data.id, // Placeholder for add request (ID does not exist yet)
+      id: add ? "placeholder" : data.id, // Placeholder for add request (ID does not exist yet)
       topic: data.topic,
       question: data.question,
       answer: data.answer,

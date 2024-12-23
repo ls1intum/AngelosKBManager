@@ -32,7 +32,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   abstract addButtonText: string;
 
   abstract fetchData(): void;
-  abstract deleteData(id: number): Observable<void>;
+  abstract deleteData(id: string): Observable<void>;
   abstract editItem(item: T): Observable<T>
 
   abstract getDialogConfig(item?: T): { data: any; component: any };
@@ -91,7 +91,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     const dialogRef = this.dialog.open(component, { data });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      console.log(result);
+      if (result !== null && result !== undefined) {
         if (item) {
           Object.assign(item, result);
         } else {
@@ -99,7 +100,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
           this.items = [newItem, ...this.items];
           this.displayedItems = [newItem, ...this.displayedItems];
         }
-      } else {
+      } else if (result === null) {
+        console.log(result == null);
         this.handleError("Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.")
       }
     });
@@ -201,6 +203,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
       duration: 5000, // Show the snackbar for 5 seconds
       horizontalPosition: 'right',
       verticalPosition: 'top',
+      panelClass: ['error-snack-bar']
     });
   }
 }

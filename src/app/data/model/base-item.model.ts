@@ -1,7 +1,7 @@
 import { StudyProgram } from "./study-program.model";
 
 export interface BaseItem {
-    id: number;
+    id: string;
     studyPrograms: StudyProgram[];
     actions: string[];
   }

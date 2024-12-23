@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 :root {
     --primary-color: #072140;
@@ -15,6 +16,28 @@
     padding: 0;
     height: 100%;
     font-family: roboto, sans-serif;
+}
+
+/* Target the simple-snack-bar content */
+mat-snack-bar-container.error-snack-bar simple-snack-bar {
+  background-color: #d32f2f !important;
+  color: #ffffff !important;
+  padding: 8px
+}
+
+/* Customize the text label inside the snackbar */
+mat-snack-bar-container.error-snack-bar simple-snack-bar .mat-mdc-snack-bar-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: inherit;
+}
+
+/* Customize the action button */
+mat-snack-bar-container.error-snack-bar simple-snack-bar .mat-mdc-snack-bar-action {
+  color: #ffffff !important;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .page-header {

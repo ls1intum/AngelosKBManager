@@ -7,7 +7,7 @@ import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class RedirectGuard implements CanActivate {
   constructor(
     private authService: AuthenticationService,
     private router: Router
@@ -15,18 +15,11 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): Observable<boolean | UrlTree> {
     const accessToken = this.authService.getAccessToken();
+    console.log("accessToken", accessToken);
     if (accessToken) {
-      return of(true);
+        return of(this.router.createUrlTree(['/websites']));
+    } else {
+        return of(true);
     }
-
-    // No token, try to refresh silently
-    return this.authService.refreshToken().pipe(
-      map(token => {
-        return true;
-      }),
-      catchError((err) => {
-        return of(this.router.createUrlTree(['/session-expired']));
-      })
-    );
   }
 }

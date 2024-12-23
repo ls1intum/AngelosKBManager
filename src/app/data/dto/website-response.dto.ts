@@ -1,7 +1,7 @@
 import { StudyProgramDTO } from "./study-program.dto";
 
 export interface WebsiteResponseDTO {
-    id: number;
+    id: string;
     title: string;
     link: string;
     lastUpdated: string;

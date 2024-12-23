@@ -10,6 +10,7 @@ import { TableColumn, MainTableComponent } from '../../layout/tables/main-table/
 import { ActionsCellComponent } from '../../layout/cells/actions-cell/actions-cell.component';
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { concatMap } from 'rxjs';
 
 @Component({
   selector: 'app-admin',
@@ -23,6 +24,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './admin.component.css'
 })
 export class AdminComponent implements OnInit {
+
+  currentUser: UserDTO | null = null;
 
   users: User[] = [];
   //displayedUsers: User[] = [];
@@ -64,28 +67,27 @@ export class AdminComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Fetch study programs
-    this.studyProgramService.fetchStudyPrograms().subscribe({
-      next: (programs) => {
-        this.studyPrograms = programs;
-        //this.displayedStudyPrograms = [...programs];
-      },
-      error: (err) => {
-        this.handleError('Fehler beim Abrufen der Studiengänge. Bitte versuchen Sie es später erneut.');
-        console.error('Error fetching study programs for Admin:', err);
-      },
-    });
-
-    // Fetch users
-    this.userService.getAllUsers().subscribe({
-      next: (users) => {
-        this.users = users
-      },
-      error: (err) => {
-        this.handleError('Fehler beim Abrufen der Benutzerliste. Bitte versuchen Sie es später erneut.');
-        console.error('Error fetching users for Admin:', err);
-      }
-    });
+    this.userService
+      .getCurrentUser()
+      .pipe(
+        concatMap((userDTO) => {
+          this.currentUser = userDTO;
+          return this.studyProgramService.fetchStudyPrograms();
+        }),
+        concatMap((programs) => {
+          this.studyPrograms = programs;
+          return this.userService.getAllUsers(this.currentUser ? this.currentUser.isAdmin : false);
+        })
+      )
+      .subscribe({
+        next: (users) => {
+          this.users = users;
+        },
+        error: (err) => {
+          console.error('Error in data fetching sequence:', err);
+          this.handleError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+        },
+      });
   }
 
   onApprove(user: User) {
@@ -140,7 +142,6 @@ export class AdminComponent implements OnInit {
         });
       }
     });
-    // ...
   }
 
   private updateUserInArray(updatedUser: User): void {
@@ -155,6 +156,7 @@ export class AdminComponent implements OnInit {
       duration: 4000, 
       horizontalPosition: 'right',
       verticalPosition: 'top',
+      panelClass: ['error-snack-bar']
     });
   }
 

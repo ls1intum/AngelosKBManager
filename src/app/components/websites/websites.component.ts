@@ -89,7 +89,7 @@ export class WebsitesComponent extends BaseComponent<Website> {
     });
   }
 
-  override deleteData(id: number): Observable<void> {
+  override deleteData(id: string): Observable<void> {
     return this.websiteService.deleteWebsite(id);
   }
 
