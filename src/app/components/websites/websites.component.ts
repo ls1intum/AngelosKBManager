@@ -140,7 +140,7 @@ export class WebsitesComponent extends BaseComponent<Website> {
       duration: 4000,
       horizontalPosition: 'right',
       verticalPosition: 'top',
-      panelClass: ['success-snackbar'],
+      panelClass: ['success-snack-bar'],
     });
   }
 }

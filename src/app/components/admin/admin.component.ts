@@ -165,7 +165,7 @@ export class AdminComponent implements OnInit {
       duration: 4000,
       horizontalPosition: 'right',
       verticalPosition: 'top',
-      panelClass: ['success-snackbar'],
+      panelClass: ['success-snack-bar'],
     });
   }
 }

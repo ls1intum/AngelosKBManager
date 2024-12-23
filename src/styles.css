@@ -40,6 +40,28 @@ mat-snack-bar-container.error-snack-bar simple-snack-bar .mat-mdc-snack-bar-acti
   text-transform: uppercase;
 }
 
+/* Target the simple-snack-bar content */
+mat-snack-bar-container.success-snack-bar simple-snack-bar {
+  background-color: #4caf50!important;
+  color: #ffffff !important;
+  padding: 8px
+}
+
+/* Customize the text label inside the snackbar */
+mat-snack-bar-container.success-snack-bar simple-snack-bar .mat-mdc-snack-bar-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: inherit;
+}
+
+/* Customize the action button */
+mat-snack-bar-container.success-snack-bar simple-snack-bar .mat-mdc-snack-bar-action {
+  color: #ffffff !important;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
 .page-header {
     color: var(--primary-color)
 }
@@ -76,6 +98,6 @@ mat-snack-bar-container.error-snack-bar simple-snack-bar .mat-mdc-snack-bar-acti
   }
 
   .success-snackbar {
-    background-color: #4caf50; /* Green background for success */
-    color: white; /* White text */
+    background-color: #4caf50 !important;
+    color: white !important;
   }
