@@ -103,18 +103,17 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
   }
 
   onView(rowData: DocumentModel) {
-    this.documentService.getDocumentById(rowData.id).subscribe(
-      (pdfBlob) => {
+    this.documentService.getDocumentById(rowData.id).subscribe({
+      next: (pdfBlob) => {
         const url = URL.createObjectURL(pdfBlob);
         window.open(url, '_blank');
   
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       },
-      (error) => {
-        // TODO: Error handling
-        console.error('Error fetching document:', error);
+      error: (error) => {
+        this.handleError("Dokument konnte nicht geladen werden.")
       }
-    );
+    });
   }
 
   onEdit(doc: DocumentModel): void {

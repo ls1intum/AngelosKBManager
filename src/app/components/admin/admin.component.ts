@@ -11,6 +11,9 @@ import { ActionsCellComponent } from '../../layout/cells/actions-cell/actions-ce
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { concatMap } from 'rxjs';
+import { AddButtonComponent } from "../../layout/buttons/add-button/add-button.component";
+import { StudyProgramDialogComponent } from '../../layout/dialogs/study-program-dialog/study-program-dialog.component';
+import { StudyProgramDTO } from '../../data/dto/study-program.dto';
 
 @Component({
   selector: 'app-admin',
@@ -18,8 +21,9 @@ import { concatMap } from 'rxjs';
   imports: [
     MatDialogModule,
     MainTableComponent,
-    MatSnackBarModule
-  ],
+    MatSnackBarModule,
+    AddButtonComponent
+],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
@@ -140,6 +144,37 @@ export class AdminComponent implements OnInit {
             this.handleError("Fehler beim Festlegen des Benutzers als Administrator. Bitte versuchen Sie es später erneut.");
           }
         });
+      }
+    });
+  }
+
+  addStudyProgram() {
+    const dialogRef = this.dialog.open(StudyProgramDialogComponent, {
+      data: { name: '' }
+    });
+  
+    dialogRef.afterClosed().subscribe((result: StudyProgramDTO) => {
+      if (result !== null && result !== undefined) {
+        this.handleSuccess("Studiengang erfolgreich hinzugefügt.");
+        // Refresh the list of study programs after adding
+        this.studyProgramService.fetchStudyPrograms().subscribe({
+          next: (programs) => {
+            this.studyPrograms = (programs as StudyProgram[]).sort((a, b) => {
+              const nameA = a.name.toLowerCase();
+              const nameB = b.name.toLowerCase();
+      
+              if (nameA < nameB) return -1;
+              if (nameA > nameB) return 1;
+              return 0;
+            });
+          },
+          error: (err) => {
+            console.error("Error fetching study programs", err);
+            this.handleError("Studiengänge konnten nicht neu geladen werden.");
+          }
+        });
+      } else if (result === null) {
+        this.handleError('Studiengang konnte nicht hinzugefügt werden.');
       }
     });
   }

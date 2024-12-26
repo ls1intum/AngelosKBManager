@@ -1,8 +1,11 @@
 .study-programs-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-start; /* Ensures proper alignment */
+    align-items: center;
     gap: 8px;
     margin: 8px 0px;
+    min-width: 200px;
   }
   
   .study-program-chip {

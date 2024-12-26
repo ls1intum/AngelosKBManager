@@ -1,5 +1,12 @@
 <div class="full-screen-container" (click)="onCancel()">
     <mat-card class="dialog-card" (click)="onDialogClicked($event)">
+      <!-- Loading Container -->
+      <app-loading-container 
+        *ngIf="loading" 
+        [text]="editMode ? 'Beispielfrage bearbeiten' : 'Beispielfrage hinzufügen'"
+        class="overlay-loading-container">
+      </app-loading-container>
+
       <mat-card-content class="scrollable-content">
         <h2 class="dialog-title">
           {{ editMode ? 'Beispielfrage bearbeiten' : 'Beispielfrage hinzufügen' }}

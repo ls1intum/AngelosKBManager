@@ -91,17 +91,17 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     const dialogRef = this.dialog.open(component, { data });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result !== null && result !== undefined) {
         if (item) {
+          this.handleSuccess("Bearbeiten erfolgreich.")
           Object.assign(item, result);
         } else {
+          this.handleSuccess("Hinzufügen zur Knowledge Base erfolgreich.")
           const newItem: T = result;
           this.items = [newItem, ...this.items];
           this.displayedItems = [newItem, ...this.displayedItems];
         }
       } else if (result === null) {
-        console.log(result == null);
         this.handleError("Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.")
       }
     });
@@ -119,6 +119,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
         this.deleteData(item.id).subscribe({
           next: () => {
               // Successful deletion: update the state
+              this.handleSuccess("Löschen erfolgreich.")
               this.items = this.items.filter((i) => i.id !== item.id);
               this.displayedItems = this.displayedItems.filter((i) => i.id !== item.id);
           },
@@ -166,7 +167,22 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   addStudyProgram(program: StudyProgram) {
     // Add the study program to the items's studyPrograms array
     if (this.selectedItem) {
-      this.selectedItem.studyPrograms.push(program);
+      // Deep copy of item
+      const selectedItemCopy: T = { 
+        ...this.selectedItem, 
+        studyPrograms: [...this.selectedItem.studyPrograms]
+      };
+      selectedItemCopy.studyPrograms.push(program);
+
+      this.editItem(selectedItemCopy).subscribe({
+        next: (value) => {
+          this.selectedItem = value;
+        },
+        error: (error) => {
+          console.error('Study program edit failed:', error);
+          this.handleError("Bearbeiten der Studiengänge nicht möglich. Bitte versuchen Sie es später erneut.");
+      }
+      });
     }
     this.menuOpen = false;
     
@@ -204,6 +220,15 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
       horizontalPosition: 'right',
       verticalPosition: 'top',
       panelClass: ['error-snack-bar']
+    });
+  }
+
+  handleSuccess(successMessage: string): void {
+    this.snackBar.open(successMessage, 'Schließen', {
+      duration: 4000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: ['success-snack-bar'],
     });
   }
 }

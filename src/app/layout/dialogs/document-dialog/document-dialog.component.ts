@@ -12,6 +12,7 @@ import { DocumentService } from '../../../services/document.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentRequestDTO } from '../../../data/dto/document-request.dto';
 import { Observable } from 'rxjs';
+import { LoadingContainerComponent } from '../../containers/loading-container/loading-container.component';
 
 
 @Component({
@@ -25,7 +26,8 @@ import { Observable } from 'rxjs';
     FormsModule,
     NgIf,
     NgFor,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    LoadingContainerComponent
   ],
   templateUrl: './document-dialog.component.html',
   styleUrls: ['./document-dialog.component.css', '../dialog-styles.css', '../../cells/study-programs-cell/study-programs-cell.component.css']

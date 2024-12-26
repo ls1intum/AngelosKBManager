@@ -12,6 +12,7 @@ import { SampleQuestionService } from '../../../services/sample-question.service
 import { SampleQuestionDTO } from '../../../data/dto/sample-question.dto';
 import { Observable } from 'rxjs';
 import { StudyProgramDTO } from '../../../data/dto/study-program.dto';
+import { LoadingContainerComponent } from "../../containers/loading-container/loading-container.component";
 
 @Component({
   selector: 'app-sample-question-dialog',
@@ -23,8 +24,9 @@ import { StudyProgramDTO } from '../../../data/dto/study-program.dto';
     MatButtonModule,
     FormsModule,
     NgIf,
-    NgFor
-  ],
+    NgFor,
+    LoadingContainerComponent
+],
   templateUrl: './sample-question-dialog.component.html',
   styleUrls: ['./sample-question-dialog.component.css', '../dialog-styles.css', '../../cells/study-programs-cell/study-programs-cell.component.css']
 })

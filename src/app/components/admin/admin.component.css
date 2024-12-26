@@ -3,6 +3,12 @@
     flex-direction: row;
     gap: 32px; /* space between the two tables */
   }
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   
   /* You can further customize .admin-table if needed */
   .admin-table {

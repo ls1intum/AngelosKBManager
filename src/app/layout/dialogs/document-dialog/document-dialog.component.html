@@ -1,6 +1,12 @@
 <div class="full-screen-container" (click)="onCancel()">
     <mat-card class="dialog-card" (click)="onDialogClicked($event)">
-      <mat-card-content>
+      <!-- Loading Container -->
+      <app-loading-container 
+        *ngIf="loading" 
+        [text]="editMode ? 'Dokument bearbeiten' : 'Dokument hinzufügen'"
+        class="overlay-loading-container">
+      </app-loading-container>
+      <mat-card-content [class.loading-overlay]="loading">
         <h2 class="dialog-title">
           {{ editMode ? 'Dokument bearbeiten' : 'Dokument hinzufügen' }}
         </h2>
@@ -34,12 +40,7 @@
             </div>
   
             <!-- Show loading indicator when fetching existing Document -->
-            <div *ngIf="isLoading" class="loading-container">
-                <div class="loading-wrapper">
-                  <div class="custom-spinner"></div>
-                  <p class="loading-text">Lädt Dokument...</p>
-                </div>
-              </div>
+            <app-loading-container *ngIf="isLoading" [text]="'Lädt Dokument...'"></app-loading-container>
   
             <!-- Display the Document -->
             <div class="doc-row" *ngIf="pdfSrc">

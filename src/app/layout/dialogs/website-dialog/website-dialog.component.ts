@@ -11,6 +11,7 @@ import { Website } from '../../../data/model/website.model';
 import { WebsiteService } from '../../../services/website.service';
 import { Observable } from 'rxjs';
 import { WebsiteRequestDTO } from '../../../data/dto/website-request.dto';
+import { LoadingContainerComponent } from "../../containers/loading-container/loading-container.component";
 
 @Component({
   selector: 'app-website-dialog',
@@ -22,8 +23,9 @@ import { WebsiteRequestDTO } from '../../../data/dto/website-request.dto';
     MatButtonModule,
     FormsModule,
     NgIf,
-    NgFor
-  ],
+    NgFor,
+    LoadingContainerComponent
+],
   templateUrl: './website-dialog.component.html',
   styleUrls: ['./website-dialog.component.css', '../dialog-styles.css', '../../cells/study-programs-cell/study-programs-cell.component.css']
 })

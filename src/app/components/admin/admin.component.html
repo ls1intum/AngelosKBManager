@@ -11,7 +11,13 @@
         </div>
       
         <div class="admin-table">
-          <h3 class="page-header">Studiengänge</h3>
+          <div class="header-container">
+            <h3 class="page-header">Studiengänge</h3>
+            <app-add-button
+              [text]="'Studiengang hinzufügen'"
+              (click)="addStudyProgram()"
+            ></app-add-button>
+          </div>
           <app-main-table
             [dataSource]="studyPrograms"
             [columns]="studyProgramColumns"

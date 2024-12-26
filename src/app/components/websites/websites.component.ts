@@ -14,7 +14,7 @@ import { BaseComponent } from '../base-template/base-template.component';
 import { DOCUMENT, NgFor, NgIf } from '@angular/common';
 import { WebsiteService } from '../../services/website.service';
 import { WebsiteDialogComponent } from '../../layout/dialogs/website-dialog/website-dialog.component';
-import { catchError, map, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -133,14 +133,5 @@ export class WebsitesComponent extends BaseComponent<Website> {
       studyProgramIds: data.studyPrograms.map(s => s.id)
     };
     return request;
-  }
-
-  private handleSuccess(successMessage: string): void {
-    this.snackBar.open(successMessage, 'Schließen', {
-      duration: 4000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['success-snack-bar'],
-    });
   }
 }

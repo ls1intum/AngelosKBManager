@@ -1,6 +1,8 @@
 a {
     color: var(--primary-color);
     text-decoration: none;
+    text-overflow: ellipsis;
+    max-width: 640px;
   }
   
   a:hover {

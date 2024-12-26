@@ -19,6 +19,7 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
   @ViewChild('menuButton', { static: false }) menuButton!: MatIconButton;
 
   menuOpen = false;
+  loading = false;
   documentHeight = 0;
   menuPosition = { top: 0, left: 0, openUpwards: true };
   studyProgramsCopy: StudyProgram[] = [];
@@ -87,24 +88,29 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
   }
 
   onSave(): void {
+    this.loading = true;
     this.data.studyPrograms = [...this.studyProgramsCopy];
 
     if (this.editMode) {
       this.makeEditRequest(this.data).subscribe({
         next: (updatedItem) => {
+          this.loading = false;
           this.dialogRef.close(updatedItem);
         },
         error: (err) => {
+          this.loading = false;
           this.dialogRef.close(null);
         }
       });
     } else {
       this.makeAddRequest(this.data).subscribe({
         next: (newItem) => {
+          this.loading = false;
           this.dialogRef.close(newItem);
         },
         error: (err) => {
           console.log("closing with null")
+          this.loading = false;
           this.dialogRef.close(null);
         }
       });
