@@ -52,6 +52,7 @@
     display: flex;
     flex-direction: row; /* Row by default */
     justify-content: center; /* Center tabs horizontally */
+    align-items: center;
     gap: 24px;
     background-color: var(--tum-acordion-blue);
     padding: 8px 0;
@@ -59,6 +60,9 @@
 }
 
 .tabs a {
+    display: flex; /* Flex for icon and text alignment */
+    align-items: center; /* Vertically align items */
+    justify-content: center;
     color: black;
     text-decoration: none;
     font-size: 16px;

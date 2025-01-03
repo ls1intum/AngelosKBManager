@@ -14,7 +14,15 @@
     <a routerLink="/websites" routerLinkActive="active">Websites</a>
     <a routerLink="/documents" routerLinkActive="active">Dokumente</a>
     <a routerLink="/sample-questions" routerLinkActive="active">Beispielsfragen</a>
-    <a routerLink="/admin" routerLinkActive="active">Administration</a>
+    <a routerLink="/admin" routerLinkActive="active">
+      Administration
+      <mat-icon
+        *ngIf="showWarnIcon"
+        style="margin-left: 4px; color: orange;"
+      >
+        error
+      </mat-icon>
+    </a>
   </div>
 
   <!-- Main Content Area -->

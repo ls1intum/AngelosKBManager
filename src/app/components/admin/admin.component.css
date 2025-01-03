@@ -1,16 +1,51 @@
 .admin-container {
-    display: flex;
-    flex-direction: row;
-    gap: 32px; /* space between the two tables */
-  }
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.left-pane,
+.right-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-table {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.mail-section {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  border: 2px solid transparent;
+  margin-top: 8px;
+}
+
+.mail-section-content p {
+  margin: 8px 0;
+}
+
+.status-active {
+  border-color: green;
+}
+
+.status-inactive {
+  border-color: orange;
+}
+
+.status-error {
+  border-color: red;
+}
 
 .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  /* You can further customize .admin-table if needed */
-  .admin-table {
-    flex: 1;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+}

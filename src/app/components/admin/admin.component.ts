@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DOCUMENT, NgFor, NgIf } from '@angular/common';
+import { DOCUMENT, NgClass, NgFor, NgIf } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { StudyProgramService } from '../../services/study-program.service';
 import { UserDTO } from '../../data/dto/user.dto';
@@ -14,6 +14,8 @@ import { concatMap } from 'rxjs';
 import { AddButtonComponent } from "../../layout/buttons/add-button/add-button.component";
 import { StudyProgramDialogComponent } from '../../layout/dialogs/study-program-dialog/study-program-dialog.component';
 import { StudyProgramDTO } from '../../data/dto/study-program.dto';
+import { MailService, MailStatus } from '../../services/mail.service';
+import { MailDialogComponent } from '../../layout/dialogs/mail-dialog/mail-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -22,14 +24,20 @@ import { StudyProgramDTO } from '../../data/dto/study-program.dto';
     MatDialogModule,
     MainTableComponent,
     MatSnackBarModule,
+    NgClass,
     AddButtonComponent
 ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
 export class AdminComponent implements OnInit {
+  public MailStatus = MailStatus;
 
   currentUser: UserDTO | null = null;
+
+  mailStatus: MailStatus | null = null;
+  mailCredentials: string | null = null;
+  statusText: string = "";
 
   users: User[] = [];
   //displayedUsers: User[] = [];
@@ -67,6 +75,7 @@ export class AdminComponent implements OnInit {
     protected studyProgramService: StudyProgramService,
     protected userService: UserService,
     protected snackBar: MatSnackBar,
+    protected mailService: MailService,
     @Inject(DOCUMENT) protected document: Document
   ) {}
 
@@ -81,11 +90,19 @@ export class AdminComponent implements OnInit {
         concatMap((programs) => {
           this.studyPrograms = programs;
           return this.userService.getAllUsers(this.currentUser ? this.currentUser.isAdmin : false);
+        }),
+        concatMap((users) => {
+          this.users = users;
+          return this.mailService.getMailCredentials();
         })
       )
       .subscribe({
-        next: (users) => {
-          this.users = users;
+        next: (mailCredentialsResponse) => {
+          this.mailCredentials = mailCredentialsResponse.mailAccount;
+          this.mailService.mailStatus$.subscribe((status) => {
+            this.mailStatus = status;
+            this.statusText = this.getStatusText(status);
+          });
         },
         error: (err) => {
           console.error('Error in data fetching sequence:', err);
@@ -96,7 +113,6 @@ export class AdminComponent implements OnInit {
 
   onApprove(user: User) {
     // Call a userService method to approve user
-    console.log('Approving user', user);
     const title = "Bestätigen"
     // Resourcen verwalten
     const message = "Wollen Sie dieses Teammitglied bestätigen?"
@@ -179,6 +195,27 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  configureMail(): void {
+    const dialogRef = this.dialog.open(MailDialogComponent, {
+      data: {
+        mailAccount: this.mailCredentials || '',
+        password: '',
+        confirmPassword: ''
+      },
+      width: '600px'
+    });
+  
+    dialogRef.afterClosed().subscribe((result: boolean | null) => {
+      if (result === true) {
+        this.mailService.setMailStatus(MailStatus.ACTIVE);
+        this.handleSuccess("E-Mail-Account erfolgreich konfiguriert.");
+      } else if (result == false) {
+        this.mailService.setMailStatus(MailStatus.INACTIVE);
+        this.handleError("Fehler bei der Konfiguration des E-Mail-Accounts.");
+      }
+    });
+  }
+
   private updateUserInArray(updatedUser: User): void {
     const index = this.users.findIndex(user => user.id === updatedUser.id);
     if (index !== -1) {
@@ -202,5 +239,15 @@ export class AdminComponent implements OnInit {
       verticalPosition: 'top',
       panelClass: ['success-snack-bar'],
     });
+  }
+
+  private getStatusText(status: MailStatus | null): string {
+    if (status === MailStatus.ACTIVE) {
+        return "Der konfigurierte E-Mail-Account für die automatische Beantwortung von E-Mails ist aktiv.";
+    } else if (status === MailStatus.INACTIVE) {
+        return "Der konfigurierte E-Mail-Account ist inaktiv. Bitte geben Sie die Zugangsdaten erneut ein, um die Pipeline zu reaktivieren.";
+    } else {
+        return "Es ist ein Fehler beim Abrufen des E-Mail-Account-Status aufgetreten. Bitte versuchen Sie es später erneut oder geben Sie die Zugangsdaten erneut ein, um die Pipeline zu reaktivieren.";
+    }
   }
 }

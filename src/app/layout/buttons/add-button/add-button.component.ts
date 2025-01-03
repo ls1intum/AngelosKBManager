@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class AddButtonComponent {
   @Input() text: string = 'Add';
+  @Input() icon: string = 'add';
   @Output() onClick = new EventEmitter<void>();
 
   handleClick() {
