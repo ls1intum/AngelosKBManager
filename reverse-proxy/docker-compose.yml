@@ -13,9 +13,6 @@ services:
         target: /etc/nginx/conf.d/default.conf
     networks:
       - angelos-network
-    depends_on:
-      - chatbot
-      - knowledge-manager
 
 networks:
   angelos-network:
