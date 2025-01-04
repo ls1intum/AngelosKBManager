@@ -76,7 +76,7 @@ jobs:
           proxy_port: ${{ vars.DEPLOYMENT_GATEWAY_PORT }}
 
           source: "./docker-compose.yml"
-          target: "/home/${{ vars.VM_USERNAME }}/knowledge-manager/docker-compose.yml"
+          target: "/home/${{ vars.VM_USERNAME }}/${{ github.repository }}"
 
       # -------------------------------------------------
       # COPY REVERSE-PROXY DOCKER COMPOSE + nginx.conf
@@ -93,7 +93,7 @@ jobs:
           proxy_port: ${{ vars.DEPLOYMENT_GATEWAY_PORT }}
 
           source: "./reverse-proxy/docker-compose.yml"
-          target: "/home/${{ vars.VM_USERNAME }}/knowledge-manager/reverse-proxy/docker-compose.yml"
+          target: "/home/${{ vars.VM_USERNAME }}/${{ github.repository }}/reverse-proxy"
 
       - name: Copy Reverse Proxy nginx.conf to VM
         uses: appleboy/scp-action@v0.1.7
@@ -107,7 +107,7 @@ jobs:
           proxy_port: ${{ vars.DEPLOYMENT_GATEWAY_PORT }}
 
           source: "./reverse-proxy/nginx.conf"
-          target: "/home/${{ vars.VM_USERNAME }}/knowledge-manager/reverse-proxy/nginx.conf"
+          target: "/home/${{ vars.VM_USERNAME }}/${{ github.repository }}/reverse-proxy"
 
       # -------------------------------------------------
       # SSH INTO VM, RUN BOTH KNOWLEDGE MANAGER AND REVERSE PROXY
@@ -130,7 +130,7 @@ jobs:
             fi
 
             # 2) Spin up Knowledge Manager
-            cd /home/${{ vars.VM_USERNAME }}/knowledge-manager
+            cd /home/${{ vars.VM_USERNAME }}/${{ github.repository }}
             docker compose pull knowledge-manager
             docker compose up -d --force-recreate --remove-orphans
 
