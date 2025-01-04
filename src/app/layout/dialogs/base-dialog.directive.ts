@@ -109,7 +109,6 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
           this.dialogRef.close(newItem);
         },
         error: (err) => {
-          console.log("closing with null")
           this.loading = false;
           this.dialogRef.close(null);
         }

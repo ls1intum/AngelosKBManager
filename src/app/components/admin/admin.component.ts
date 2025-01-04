@@ -139,7 +139,6 @@ export class AdminComponent implements OnInit {
   }
 
   onSetAdmin(user: User) {
-    console.log('Approving user', user);
     const title = "Bestätigen"
     // Erklärung?
     const message = "Wollen Sie dieses Teammitglied zum Administrator für Ihre Organisation machen?"

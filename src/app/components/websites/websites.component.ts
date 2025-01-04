@@ -116,7 +116,6 @@ export class WebsitesComponent extends BaseComponent<Website> {
   }
 
   onRefresh(website: Website) {
-    console.log("Refreshing...", website);
     this.websiteService.editWebsite(website.id, this.createRequest(website)).subscribe({
       next: (value: Website) => { 
         Object.assign(website, value);

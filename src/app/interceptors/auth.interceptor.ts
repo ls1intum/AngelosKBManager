@@ -26,13 +26,10 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('AuthInterceptor: Request URL', req.url);
-
     let authReq = req;
     const accessToken = this.authService.getAccessToken();
 
     if (req.url === this.refreshUrl) {
-      console.log('not intercepting refresh');
       return next.handle(req);
     }
 

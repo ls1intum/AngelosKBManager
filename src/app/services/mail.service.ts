@@ -32,7 +32,6 @@ export class MailService {
       .subscribe({
         next: (response) => {
           // Next the value into the subject to update subscribers
-          console.log("MAIL STATUS RESPONSE", response);
           this.mailStatusSubject.next(response.status);
         },
         error: (error) => {
@@ -49,8 +48,6 @@ export class MailService {
       mailAccount: account,
       mailPassword: password
     };
-    console.log("headers sent to backend", headers);
-    console.log("credentials being sent to backend:", credentials);
   
     return this.http.post<void>(
       `${environment.backendUrl}/mail/set-credentials`,

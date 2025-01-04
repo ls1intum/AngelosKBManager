@@ -15,7 +15,6 @@ export class RedirectGuard implements CanActivate {
 
   canActivate(): Observable<boolean | UrlTree> {
     const accessToken = this.authService.getAccessToken();
-    console.log("accessToken", accessToken);
     if (accessToken) {
         return of(this.router.createUrlTree(['/websites']));
     } else {

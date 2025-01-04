@@ -93,7 +93,7 @@ jobs:
           proxy_port: ${{ vars.DEPLOYMENT_GATEWAY_PORT }}
 
           source: "./reverse-proxy/docker-compose.yml"
-          target: "/home/${{ vars.VM_USERNAME }}/${{ github.repository }}/reverse-proxy"
+          target: "/home/${{ vars.VM_USERNAME }}/${{ github.repository }}"
 
       - name: Copy Reverse Proxy nginx.conf to VM
         uses: appleboy/scp-action@v0.1.7
@@ -107,7 +107,7 @@ jobs:
           proxy_port: ${{ vars.DEPLOYMENT_GATEWAY_PORT }}
 
           source: "./reverse-proxy/nginx.conf"
-          target: "/home/${{ vars.VM_USERNAME }}/${{ github.repository }}/reverse-proxy"
+          target: "/home/${{ vars.VM_USERNAME }}/${{ github.repository }}"
 
       # -------------------------------------------------
       # SSH INTO VM, RUN BOTH KNOWLEDGE MANAGER AND REVERSE PROXY
