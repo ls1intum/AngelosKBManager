@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  private refreshUrl = `${environment.backendUrl}/api/users/refresh`;
+  private refreshUrl = `${environment.backendUrl}/users/refresh`;
 
   constructor(
     private authService: AuthenticationService,

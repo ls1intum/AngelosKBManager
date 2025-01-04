@@ -28,7 +28,7 @@ export class MailService {
   fetchMailStatus(): void {
     const headers = this.createAuthHeaders();
 
-    this.http.get<MailStatusDTO>(`${environment.backendUrl}/api/mail/status`, { headers })
+    this.http.get<MailStatusDTO>(`${environment.backendUrl}/mail/status`, { headers })
       .subscribe({
         next: (response) => {
           // Next the value into the subject to update subscribers
@@ -53,7 +53,7 @@ export class MailService {
     console.log("credentials being sent to backend:", credentials);
   
     return this.http.post<void>(
-      `${environment.backendUrl}/api/mail/set-credentials`,
+      `${environment.backendUrl}/mail/set-credentials`,
       credentials,
       { headers }
     );
@@ -63,7 +63,7 @@ export class MailService {
     const headers = this.createAuthHeaders();
 
     return this.http.get<MailCredentialsResponseDTO>(
-      `${environment.backendUrl}/api/mail/credentials`,
+      `${environment.backendUrl}/mail/credentials`,
       { headers }
     );
   }

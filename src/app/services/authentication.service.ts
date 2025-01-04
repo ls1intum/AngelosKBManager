@@ -21,7 +21,7 @@ export class AuthenticationService {
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<{ accessToken: string }>(
-      `${environment.backendUrl}/api/users/login`,
+      `${environment.backendUrl}/users/login`,
       { email, password }, 
       { withCredentials: true } // Ensure refresh cookie is set
     ).pipe(
@@ -50,7 +50,7 @@ export class AuthenticationService {
     this.refreshTokenSubject.next(null); // Notify observers that refresh is in progress
 
     return this.http.post<{ accessToken: string }>(
-      `${environment.backendUrl}/api/users/refresh`,
+      `${environment.backendUrl}/users/refresh`,
       {}, 
       { withCredentials: true }
     ).pipe(
@@ -75,7 +75,7 @@ export class AuthenticationService {
 
   logout() {
     this.http.post(
-        `${environment.backendUrl}/api/users/logout`, 
+        `${environment.backendUrl}/users/logout`, 
         {}, 
         { withCredentials: true }
     ).subscribe({
@@ -95,7 +95,7 @@ export class AuthenticationService {
   register(email: string, password: string, orgId: number): Observable<UserDTO> {
     const registerRequest: RegisterRequestDTO = { email, password, orgId };
     return this.http.post<UserDTO>(
-      `${environment.backendUrl}/api/users/register`,
+      `${environment.backendUrl}/users/register`,
       registerRequest,
       { withCredentials: true }
     );

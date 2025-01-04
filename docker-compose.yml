@@ -1,0 +1,12 @@
+services:
+  knowledge-manager:
+    image: "ghcr.io/ls1intum/knowledge-manager:latest"
+    container_name: knowledge-manager
+    expose:
+      - "80"
+    networks:
+      - angelos-network
+
+networks:
+  angelos-network:
+    external: true

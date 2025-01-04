@@ -28,7 +28,7 @@ export class SampleQuestionService {
     }
 
     return this.http
-      .get<SampleQuestionDTO[]>(`${environment.backendUrl}/api/sample-questions`, { headers })
+      .get<SampleQuestionDTO[]>(`${environment.backendUrl}/sample-questions`, { headers })
       .pipe(
         map((response: SampleQuestionDTO[]) => this.transformResponse(response))
       );
@@ -46,7 +46,7 @@ export class SampleQuestionService {
     }
 
     return this.http
-      .post<SampleQuestionDTO>(`${environment.backendUrl}/api/sample-questions`, request, { headers })
+      .post<SampleQuestionDTO>(`${environment.backendUrl}/sample-questions`, request, { headers })
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -64,7 +64,7 @@ export class SampleQuestionService {
     }
 
     return this.http
-      .put<SampleQuestionDTO>(`${environment.backendUrl}/api/sample-questions/${sampleQuestionId}`, request, { headers })
+      .put<SampleQuestionDTO>(`${environment.backendUrl}/sample-questions/${sampleQuestionId}`, request, { headers })
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -81,7 +81,7 @@ export class SampleQuestionService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
-    return this.http.delete<void>(`${environment.backendUrl}/api/sample-questions/${sampleQuestionId}`, { headers });
+    return this.http.delete<void>(`${environment.backendUrl}/sample-questions/${sampleQuestionId}`, { headers });
   }
 
   /**

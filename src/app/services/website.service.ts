@@ -28,7 +28,7 @@ export class WebsiteService {
     }
 
     return this.http
-      .get<WebsiteResponseDTO[]>(`${environment.backendUrl}/api/websites`, { headers })
+      .get<WebsiteResponseDTO[]>(`${environment.backendUrl}/websites`, { headers })
       .pipe(
         map((response) => this.transformResponse(response))
       );
@@ -46,7 +46,7 @@ export class WebsiteService {
     }
 
     return this.http
-      .post<WebsiteResponseDTO>(`${environment.backendUrl}/api/websites`, request, { headers })
+      .post<WebsiteResponseDTO>(`${environment.backendUrl}/websites`, request, { headers })
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -64,7 +64,7 @@ export class WebsiteService {
     }
 
     return this.http
-      .put<WebsiteResponseDTO>(`${environment.backendUrl}/api/websites/${websiteId}`, request, { headers })
+      .put<WebsiteResponseDTO>(`${environment.backendUrl}/websites/${websiteId}`, request, { headers })
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -81,7 +81,7 @@ export class WebsiteService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
-    return this.http.delete<void>(`${environment.backendUrl}/api/websites/${websiteId}`, { headers });
+    return this.http.delete<void>(`${environment.backendUrl}/websites/${websiteId}`, { headers });
   }
 
   /**

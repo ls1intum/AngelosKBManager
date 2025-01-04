@@ -23,7 +23,7 @@ export class DocumentService {
   getAllDocuments(): Observable<DocumentModel[]> {
     const headers = this.createAuthHeaders();
     return this.http
-      .get<DocumentDataDTO[]>(`${environment.backendUrl}/api/documents`, { headers })
+      .get<DocumentDataDTO[]>(`${environment.backendUrl}/documents`, { headers })
       .pipe(
         map((response: DocumentDataDTO[]) => this.transformResponse(response))
       );
@@ -34,7 +34,7 @@ export class DocumentService {
    */
   getDocumentById(documentId: string): Observable<Blob> {
     const headers = this.createAuthHeaders();
-    return this.http.get(`${environment.backendUrl}/api/documents/${documentId}/download`, {
+    return this.http.get(`${environment.backendUrl}/documents/${documentId}/download`, {
       headers,
       responseType: 'blob',
     });
@@ -46,7 +46,7 @@ export class DocumentService {
   editDocument(docId: string, documentRequest: DocumentRequestDTO): Observable<DocumentModel> {
     const headers = this.createAuthHeaders();
     return this.http
-      .put<DocumentDataDTO>(`${environment.backendUrl}/api/documents/${docId}`, documentRequest, { headers })
+      .put<DocumentDataDTO>(`${environment.backendUrl}/documents/${docId}`, documentRequest, { headers })
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -64,7 +64,7 @@ export class DocumentService {
     formData.append('file', file, file.name);
 
     return this.http
-      .post<DocumentDataDTO>(`${environment.backendUrl}/api/documents`, formData, { headers })
+      .post<DocumentDataDTO>(`${environment.backendUrl}/documents`, formData, { headers })
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -75,7 +75,7 @@ export class DocumentService {
    */
   deleteDocument(docId: string): Observable<void> {
     const headers = this.createAuthHeaders();
-    return this.http.delete<void>(`${environment.backendUrl}/api/documents/${docId}`, { headers });
+    return this.http.delete<void>(`${environment.backendUrl}/documents/${docId}`, { headers });
   }
 
   /**

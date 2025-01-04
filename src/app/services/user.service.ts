@@ -20,7 +20,7 @@ export class UserService {
    */
   getCurrentUser(): Observable<UserDTO> {
     const headers = this.createAuthHeaders();
-    return this.http.get<UserDTO>(`${environment.backendUrl}/api/users/me`, { headers });
+    return this.http.get<UserDTO>(`${environment.backendUrl}/users/me`, { headers });
   }
 
   /**
@@ -29,7 +29,7 @@ export class UserService {
   getAllUsers(isAdmin: boolean): Observable<User[]> {
     const headers = this.createAuthHeaders();
     return this.http
-      .get<UserDTO[]>(`${environment.backendUrl}/api/users`, { headers })
+      .get<UserDTO[]>(`${environment.backendUrl}/users`, { headers })
       .pipe(
         map((response: UserDTO[]) => this.transformResponse(response, isAdmin))
       );;
@@ -41,7 +41,7 @@ export class UserService {
   approveUser(userId: number): Observable<UserDTO> {
     const headers = this.createAuthHeaders();
     return this.http
-      .patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/approve`, null, { headers })
+      .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/approve`, null, { headers })
       .pipe(
         map((response: UserDTO) => this.transformSingleResponse(response, true))
       );
@@ -53,7 +53,7 @@ export class UserService {
   setUserToAdmin(userId: number): Observable<User> {
     const headers = this.createAuthHeaders();
     return this.http
-      .patch<UserDTO>(`${environment.backendUrl}/api/users/${userId}/set-admin`, null, { headers })
+      .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/set-admin`, null, { headers })
       .pipe(
         map((response: UserDTO) => this.transformSingleResponse(response, true))
       );
@@ -64,7 +64,7 @@ export class UserService {
    */
   confirmEmail(token: string): Observable<string> {
     // This endpoint probably doesn't require auth headers since it's a confirmation endpoint
-    return this.http.get(`${environment.backendUrl}/api/users/confirm`, {
+    return this.http.get(`${environment.backendUrl}/users/confirm`, {
       params: { token },
       responseType: 'text' // The endpoint returns a String message
     });

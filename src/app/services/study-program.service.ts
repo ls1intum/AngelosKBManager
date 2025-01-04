@@ -38,7 +38,7 @@ export class StudyProgramService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
-    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/api/study-programs`, { headers }).pipe(
+    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`, { headers }).pipe(
       tap((programs) => {
         const programsCopy = (programs as StudyProgram[]).sort((a, b) => {
           const nameA = a.name.toLowerCase();
@@ -69,7 +69,7 @@ export class StudyProgramService {
     }
   
     // Backend API endpoint for creating study programs
-    const url = `${environment.backendUrl}/api/study-programs/create`;
+    const url = `${environment.backendUrl}/study-programs/create`;
   
     // Set up query parameters
     const params = {

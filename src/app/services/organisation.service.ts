@@ -11,6 +11,6 @@ export class OrganisationService {
   constructor(private http: HttpClient) {}
 
   getAllOrganisations(): Observable<OrganisationDTO[]> {
-    return this.http.get<OrganisationDTO[]>(`${environment.backendUrl}/api/organisations`);
+    return this.http.get<OrganisationDTO[]>(`${environment.backendUrl}/organisations`);
   }
 }
