@@ -12,6 +12,7 @@ RUN npm run build -- --configuration=production --base-href=/knowledge-manager/
 
 # Stage 2: Serve the app with NGINX
 FROM nginx:stable-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist/knowledge-manager /usr/share/nginx/html
 
 # Expose port 80 for internal communication
