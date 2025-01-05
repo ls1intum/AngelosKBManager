@@ -17,7 +17,7 @@ jobs:
       - name: Create Environment File
         run: |
           echo "export const environment = {
-            production: false,
+            production: true,
             backendUrl: '/api',
             angelosAppApiKey: '${{secrets.ANGELOS_APP_API_KEY}}'
           };" > src/environments/environment.prod.ts
