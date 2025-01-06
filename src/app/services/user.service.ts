@@ -27,6 +27,7 @@ export class UserService {
    * Get all users for the authenticated organisation.
    */
   getAllUsers(isAdmin: boolean): Observable<User[]> {
+    console.log(isAdmin);
     const headers = this.createAuthHeaders();
     return this.http
       .get<UserDTO[]>(`${environment.backendUrl}/users`, { headers })
@@ -103,6 +104,6 @@ export class UserService {
   }
 
   private getActions(dto: UserDTO): string[] {
-    return [dto.isApproved ? "revoke" : "approve", "setAdmin"];
+    return [! dto.isApproved ? "approve" : "setAdmin"];
   }
 }
