@@ -27,6 +27,7 @@ export class AuthenticationService {
     ).pipe(
       tap(response => {
         this.accessToken = response.accessToken;
+        console.log("Login successful", this.accessToken);
         this.router.navigate(['/']);
       })
     );
