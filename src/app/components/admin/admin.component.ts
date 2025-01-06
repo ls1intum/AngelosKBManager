@@ -89,7 +89,6 @@ export class AdminComponent implements OnInit {
         }),
         concatMap((programs) => {
           this.studyPrograms = programs;
-          console.log(this.currentUser);
           return this.userService.getAllUsers(this.currentUser ? this.currentUser.isAdmin : false);
         }),
         concatMap((users) => {
