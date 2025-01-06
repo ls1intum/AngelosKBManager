@@ -27,7 +27,6 @@ export class UserService {
    * Get all users for the authenticated organisation.
    */
   getAllUsers(isAdmin: boolean): Observable<User[]> {
-    console.log(isAdmin);
     const headers = this.createAuthHeaders();
     return this.http
       .get<UserDTO[]>(`${environment.backendUrl}/users`, { headers })
@@ -39,7 +38,7 @@ export class UserService {
   /**
    * Approve a user by ID.
    */
-  approveUser(userId: number): Observable<UserDTO> {
+  approveUser(userId: number): Observable<User> {
     const headers = this.createAuthHeaders();
     return this.http
       .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/approve`, null, { headers })
