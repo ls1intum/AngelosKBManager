@@ -17,6 +17,7 @@ import { WebsiteDialogComponent } from '../../layout/dialogs/website-dialog/webs
 import { Observable } from 'rxjs';
 import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-websites',
@@ -40,12 +41,13 @@ export class WebsitesComponent extends BaseComponent<Website> {
 
   constructor(
     protected override dialog: MatDialog,
+    protected override authService: AuthenticationService,
     protected override studyProgramService: StudyProgramService,
     protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
     private websiteService: WebsiteService,
   ) {
-    super(dialog, studyProgramService, snackBar, document);
+    super(dialog, authService, studyProgramService, snackBar, document);
   }
 
   columns: TableColumn<Website>[] = [

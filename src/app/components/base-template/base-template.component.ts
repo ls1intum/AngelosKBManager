@@ -8,6 +8,7 @@ import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/conf
 import { TableColumn } from '../../layout/tables/main-table/main-table.component';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Directive()
 export abstract class BaseComponent<T extends BaseItem> implements OnInit {
@@ -40,6 +41,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
   constructor(
     protected dialog: MatDialog,
+    protected authService: AuthenticationService,
     protected studyProgramService: StudyProgramService,
     protected snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected document: Document,
@@ -49,8 +51,10 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     if (this.document) {
       this.documentHeight = this.document.documentElement.scrollHeight;
     }
+
+    const accessToken = this.authService.getAccessToken();
   
-    this.studyProgramService.fetchStudyPrograms().subscribe({
+    this.studyProgramService.fetchStudyPrograms(accessToken).subscribe({
       next: (programs) => {
         this.availableStudyPrograms = programs;
         const general: StudyProgram = {

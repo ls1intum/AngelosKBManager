@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { StudyProgramDTO } from '../../data/dto/study-program.dto';
 import { SampleQuestionDTO } from '../../data/dto/sample-question.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-samplequestions',
@@ -43,12 +44,13 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
 
   constructor(
     protected override dialog: MatDialog,
+    protected override authService: AuthenticationService,
     protected override studyProgramService: StudyProgramService,
     protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
     private sampleQuestionService: SampleQuestionService
   ) {
-    super(dialog, studyProgramService, snackBar, document);
+    super(dialog, authService, studyProgramService, snackBar, document);
   }
   
   override fetchData(): void {

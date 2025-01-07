@@ -21,21 +21,18 @@ export class StudyProgramService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthenticationService // Inject AuthenticationService
   ) {}
 
-  fetchStudyPrograms(): Observable<StudyProgram[]> {
+  fetchStudyPrograms(accessToken: string | null): Observable<StudyProgram[]> {
     // Return cached data if available
     if (this.studyProgramsSubject.value) {
       return this.studyPrograms$;
     }
-    
-    const token = this.authService.getAccessToken(); // Get token from service
 
     // Prepare headers with the retrieved token, if available
     let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+    if (accessToken) {
+      headers = headers.set('Authorization', `Bearer ${accessToken}`);
     }
 
     return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`, { headers }).pipe(
@@ -58,14 +55,11 @@ export class StudyProgramService {
     return this.studyProgramsSubject.value;
   }
 
-  addStudyProgram(studyProgramName: string): Observable<StudyProgramDTO> {
-    // Fetch token for authorization
-    const token = this.authService.getAccessToken();
-  
+  addStudyProgram(studyProgramName: string, accessToken: string | null): Observable<StudyProgramDTO> {  
     // Prepare headers with the token
     let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+    if (accessToken) {
+      headers = headers.set('Authorization', `Bearer ${accessToken}`);
     }
   
     // Backend API endpoint for creating study programs
@@ -84,5 +78,9 @@ export class StudyProgramService {
         this.studyProgramsSubject.next([...currentPrograms, newProgram]);
       })
     );
+  }
+
+  reset(): void {
+    this.studyProgramsSubject.next(null);
   }
 }

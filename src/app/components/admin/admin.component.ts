@@ -16,6 +16,7 @@ import { StudyProgramDialogComponent } from '../../layout/dialogs/study-program-
 import { StudyProgramDTO } from '../../data/dto/study-program.dto';
 import { MailService, MailStatus } from '../../services/mail.service';
 import { MailDialogComponent } from '../../layout/dialogs/mail-dialog/mail-dialog.component';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-admin',
@@ -73,6 +74,7 @@ export class AdminComponent implements OnInit {
   constructor(
     protected dialog: MatDialog,
     protected studyProgramService: StudyProgramService,
+    protected authService: AuthenticationService,
     protected userService: UserService,
     protected snackBar: MatSnackBar,
     protected mailService: MailService,
@@ -85,7 +87,7 @@ export class AdminComponent implements OnInit {
       .pipe(
         concatMap((userDTO) => {
           this.currentUser = userDTO;
-          return this.studyProgramService.fetchStudyPrograms();
+          return this.studyProgramService.fetchStudyPrograms(this.authService.getAccessToken());
         }),
         concatMap((programs) => {
           this.studyPrograms = programs;
@@ -164,15 +166,16 @@ export class AdminComponent implements OnInit {
   }
 
   addStudyProgram() {
+    const accessToken = this.authService.getAccessToken();
     const dialogRef = this.dialog.open(StudyProgramDialogComponent, {
-      data: { name: '' }
+      data: { name: '', token: accessToken }
     });
   
     dialogRef.afterClosed().subscribe((result: StudyProgramDTO) => {
       if (result !== null && result !== undefined) {
         this.handleSuccess("Studiengang erfolgreich hinzugefügt.");
         // Refresh the list of study programs after adding
-        this.studyProgramService.fetchStudyPrograms().subscribe({
+        this.studyProgramService.fetchStudyPrograms(accessToken).subscribe({
           next: (programs) => {
             this.studyPrograms = (programs as StudyProgram[]).sort((a, b) => {
               const nameA = a.name.toLowerCase();

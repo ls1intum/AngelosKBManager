@@ -86,7 +86,7 @@ export class StudyProgramDialogComponent {
    * Called when saving a new study program
    */
   makeAddRequest(name: string): Observable<StudyProgram> {
-    return this.studyProgramService.addStudyProgram(name);
+    return this.studyProgramService.addStudyProgram(name, this.data.token);
   }
 
   /**

@@ -14,6 +14,7 @@ import { DocumentDialogComponent } from '../../layout/dialogs/document-dialog/do
 import { Observable } from 'rxjs';
 import { DocumentRequestDTO } from '../../data/dto/document-request.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-documents',
@@ -37,12 +38,13 @@ export class DocumentsComponent extends BaseComponent<DocumentModel> {
 
   constructor(
     protected override dialog: MatDialog,
+    protected override authService: AuthenticationService,
     protected override studyProgramService: StudyProgramService,
     protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
     private documentService: DocumentService
   ) {
-    super(dialog, studyProgramService, snackBar, document);
+    super(dialog, authService, studyProgramService, snackBar, document);
   }
 
   columns: TableColumn<DocumentModel>[] = [

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { RegisterRequestDTO } from '../data/dto/register-request.dto';
 import { UserDTO } from '../data/dto/user.dto';
+import { StudyProgramService } from './study-program.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class AuthenticationService {
   private isRefreshing = false;
   private refreshTokenSubject: Subject<string | null> = new Subject<string | null>();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private studyProgramService: StudyProgramService) {}
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<{ accessToken: string }>(
@@ -88,6 +89,8 @@ export class AuthenticationService {
         },
         complete: () => {
             this.accessToken = null;
+            this.reset();
+            this.studyProgramService.reset();
             this.router.navigate(['/login']);
         }
     });
@@ -100,5 +103,9 @@ export class AuthenticationService {
       registerRequest,
       { withCredentials: true }
     );
+  }
+
+  reset(): void {
+    this.refreshTokenSubject.next(null);
   }
 }
