@@ -39,8 +39,8 @@ import { AuthenticationService } from '../../services/authentication.service';
 export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
   items: SampleQuestion[] = [];
   
-  headerText = "Beispielsfragen"
-  addButtonText = "Beispielsfrage hinzufügen"
+  headerText = "Beispielfragen"
+  addButtonText = "Beispielfrage hinzufügen"
 
   constructor(
     protected override dialog: MatDialog,
@@ -106,8 +106,8 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
   }
   override getDeleteDialogText(item: SampleQuestion): { title: string; message: string; } {
     return {
-      title: 'Beispielsfrage löschen',
-      message: `Sind Sie sicher, dass Sie die Beispielsfrage zu dem Thema "${item.topic}" löschen wollen?`
+      title: 'Beispielfrage löschen',
+      message: `Sind Sie sicher, dass Sie die Beispielfrage zu dem Thema "${item.topic}" löschen wollen?`
     }
   }
 
