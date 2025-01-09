@@ -1,0 +1,93 @@
+  
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  .filter-title {
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+  }
+  
+  .clear-button {
+    background: none;
+    border: none;
+    color: var(--tum-light-blue);
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+  
+  /* Divider */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--border-color);
+  }
+  
+  /* Filter Group */
+  .filter-group {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .filter-group-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 14px; /* Adds horizontal spacing */
+    position: relative;
+  }
+  
+  .filter-group-header:hover {
+    background-color: var(--tum-acordion-blue);
+  }
+  
+  .filter-group-icon,
+  .filter-group-label,
+  .filter-group-dropdown {
+    color: var(--tum-light-blue);
+  }
+  
+  .filter-group-icon {
+    margin-right: 8px;
+  }
+  
+  .filter-group-label {
+    flex: 1;
+    font-weight: 500;
+  }
+  
+  .filter-group-content {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  
+  /* List of Study Programs */
+  .study-program-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .study-program-item {
+    padding: 8px 0;
+    cursor: pointer;
+    color: var(--primary-color);
+    padding: 8px 14px;
+    position: relative;
+  }
+  
+  .study-program-item.selected {
+    font-weight: bold;
+    color: var(--tum-light-blue);
+  }
+  
+  .study-program-item:hover {
+    background-color: var(--tum-acordion-blue);
+  }

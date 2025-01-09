@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
     // No token, try to refresh silently
     return this.authService.refreshToken().pipe(
       map(token => {
-        this.mailService.fetchMailStatus();
+        this.mailService.fetchMailStatus(token);
         return true;
       }),
       catchError((err) => {

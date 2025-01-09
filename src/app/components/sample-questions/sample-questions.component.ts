@@ -20,12 +20,13 @@ import { StudyProgramDTO } from '../../data/dto/study-program.dto';
 import { SampleQuestionDTO } from '../../data/dto/sample-question.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../../services/authentication.service';
+import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sidebar-filter.component';
 
 @Component({
   selector: 'app-samplequestions',
   standalone: true,
   imports: [
-    StudyProgramFilterButtonComponent,
+    SidebarFilterComponent,
     AddButtonComponent,
     MatDialogModule,
     MainTableComponent,

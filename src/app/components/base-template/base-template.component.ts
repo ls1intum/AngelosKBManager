@@ -1,10 +1,11 @@
-import { Component, Directive, Inject, OnInit } from '@angular/core';
+import { Component, Directive, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { BaseItem } from '../../data/model/base-item.model';
 import { StudyProgram } from '../../data/model/study-program.model';
 import { MatDialog } from '@angular/material/dialog';
 import { StudyProgramService } from '../../services/study-program.service';
 import { DOCUMENT } from '@angular/common';
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
+import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sidebar-filter.component';
 import { TableColumn } from '../../layout/tables/main-table/main-table.component';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,6 +25,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   documentHeight = 0;
   menuOpen = false;
   menuPosition = { top: 0, left: 0, openUpwards: false };
+
+  @ViewChild('containerRef', { static: true }) containerRef!: ElementRef;
 
   // Abstract properties/methods to be implemented by child components
   abstract items: T[];
@@ -62,7 +65,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
           name: 'Allgemein',
         };
         this.filterOptions = [general, ...this.availableStudyPrograms];
-        
+        console.log("filterOptions", this.filterOptions)
         // Fetch component-specific data after study programs are loaded
         this.fetchData();
       },
@@ -73,6 +76,13 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   }
 
   onProgramSelected(program: StudyProgram | null): void {
+    // If we choose the same program again, we unselect
+    if (this.selectedProgram && program && this.selectedProgram.id == program.id) {
+      this.selectedProgram = null;
+      this.displayedItems = [...this.items];
+      return;
+    }
+    // Else we either remove the filter, filter for "Allgemein" or the specific study program
     this.selectedProgram = program;
     if (program) {
       if (program.id !== -1) {
@@ -147,9 +157,15 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
     this.selectedItem = rowData;
 
+    const containerRect = this.containerRef.nativeElement.getBoundingClientRect();
+
+    // Calculate offsets relative to container
+    const offsetTop = buttonPosition.bottom - containerRect.top;
+    const offsetLeft = buttonPosition.left - containerRect.left;
+
     this.menuPosition = {
-      top: buttonPosition.bottom + window.scrollY,
-      left: buttonPosition.left + window.scrollX,
+      top: offsetTop,
+      left: offsetLeft,
       openUpwards: buttonPosition.bottom > middleY,
     };
     this.currentMenuButton = button;
@@ -181,6 +197,13 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
       this.editItem(selectedItemCopy).subscribe({
         next: (value) => {
           this.selectedItem = value;
+          this.displayedItems = this.displayedItems.map((item) =>
+            item.id === value.id ? value : item
+          );
+
+          this.items = this.items.map((item) =>
+            item.id === value.id ? value : item
+          );
         },
         error: (error) => {
           console.error('Study program edit failed:', error);
@@ -193,12 +216,23 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   }
 
   onRemoveStudyProgram(item: T, program: StudyProgram) {
-    // Remove the study program from the items's studyPrograms array
-    const index = item.studyPrograms.findIndex(sp => sp.id === program.id);
-    if (index !== -1) {
-      item.studyPrograms.splice(index, 1);
-    }
-    // TODO: Backend request
+    const updatedItem: T = {
+      ...item,
+      studyPrograms: item.studyPrograms.filter((sp) => sp.id !== program.id),
+    };
+
+    // Call the backend edit function
+    this.editItem(updatedItem).subscribe({
+      next: (value) => {
+        Object.assign(item, value);
+      },
+      error: (error) => {
+        console.error('Study program removal failed:', error);
+        this.handleError(
+          'Entfernen des Studiengangs nicht möglich. Bitte versuchen Sie es später erneut.'
+        );
+      },
+    });
   }
 
   onDocumentClick = (event: MouseEvent) => {

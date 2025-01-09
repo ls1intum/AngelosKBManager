@@ -18,12 +18,13 @@ import { Observable } from 'rxjs';
 import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../../services/authentication.service';
+import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sidebar-filter.component';
 
 @Component({
   selector: 'app-websites',
   standalone: true,
   imports: [
-    StudyProgramFilterButtonComponent,
+    SidebarFilterComponent,
     AddButtonComponent,
     MatDialogModule,
     MainTableComponent,
