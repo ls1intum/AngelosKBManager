@@ -80,7 +80,7 @@ export abstract class BaseDialogDirective<T extends BaseItem> {
     this.studyProgramsCopy = this.studyProgramsCopy.filter(
       (program: StudyProgram) => program.id !== sp.id
     );
-    this.availableStudyPrograms.push(sp);
+    //this.availableStudyPrograms.push(sp);
   }
 
   onCancel(): void {

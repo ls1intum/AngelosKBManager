@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MailService } from '../../services/mail.service';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthenticationService,
+    private mailService: MailService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}
@@ -31,6 +33,7 @@ export class LoginComponent {
   onLogin() {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
+        this.mailService.fetchMailStatus(this.authService.getAccessToken());
         this.router.navigate(['/websites']);
       },
       error: (err) => {

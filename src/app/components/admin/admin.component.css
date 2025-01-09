@@ -1,3 +1,9 @@
+.page-wrapper {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 8px;
+}
+
 .admin-container {
   display: flex;
   flex-direction: row;

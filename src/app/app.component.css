@@ -84,10 +84,9 @@
 /* Content styles */
 .content {
     flex: 1;
-    width: 80%; /* Default: 80% of available width */
+    width: 100%;
     margin: 0 auto;
     overflow-y: hidden;
-    padding-top: 8px;
     padding-bottom: 8px;
 }
 
@@ -101,7 +100,7 @@
 /* Responsive styles */
 @media (max-width: 768px) {
     .content {
-        width: calc(100% - 32px); /* Reduce width to fit smaller screens */
+        width: calc(100% - 16px); /* Reduce width to fit smaller screens */
         margin: 0 16px; /* Add 8px margin on the sides */
     }
 

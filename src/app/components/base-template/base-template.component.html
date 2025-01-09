@@ -1,43 +1,50 @@
-<div>
-    <!-- Page Header -->
-    <h1 class="page-header">{{ headerText }}</h1>
-  
-    <!-- Action Row -->
-    <div class="page-action-row">
-      <!-- Filter Button -->
-      <app-study-program-filter
-        [studyPrograms]="filterOptions"
-        [selectedProgram]="selectedProgram"
-        (programSelected)="onProgramSelected($event)"
-      ></app-study-program-filter>
-  
-      <!-- Add Button -->
-      <app-add-button
-        [text]="addButtonText"
-        (click)="openAddOrEditDialog()"
-      ></app-add-button>
-    </div>
-  
-    <!-- Table -->
-    <app-main-table
-      [dataSource]="displayedItems"
-      [columns]="columns"
-      [parentComponent]="this"
-      [availableStudyPrograms]="availableStudyPrograms">
-    </app-main-table>
-  
-    <!-- Study Program Menu -->
-    <div
+<div class="base-component-container" #containerRef>
+
+  <!-- Sidebar (absolutely pinned to the left within this child) -->
+  <aside class="sidebar-filter-container">
+    <app-sidebar-filter
+      [studyPrograms]="filterOptions"
+      [selectedProgram]="selectedProgram"
+      (programSelected)="onProgramSelected($event)"
+    >
+    </app-sidebar-filter>
+  </aside>
+
+  <!-- Main content area (to the right of the sidebar) -->
+  <div class="child-main-content">
+    <div class="child-main-content-inner">
+      <h1 class="page-header">{{ headerText }}</h1>
+
+      <div class="page-action-row">
+        <app-add-button
+          [text]="addButtonText"
+          (click)="openAddOrEditDialog()"
+        ></app-add-button>
+      </div>
+
+      <app-main-table
+        [dataSource]="displayedItems"
+        [columns]="columns"
+        [parentComponent]="this"
+        [availableStudyPrograms]="availableStudyPrograms"
+      ></app-main-table>
+
+      <!-- Study Program Menu -->
+      <div
         class="study-program-menu"
         *ngIf="menuOpen"
         [style.top.px]="menuPosition.openUpwards ? undefined : menuPosition.top"
         [style.bottom.px]="menuPosition.openUpwards ? (documentHeight - menuPosition.top) : undefined"
-        [style.left.px]="menuPosition.left">
-      <div
+        [style.left.px]="menuPosition.left"
+      >
+        <div
           class="menu-item"
           *ngFor="let sp of studyProgramsToAdd"
-          (click)="addStudyProgram(sp)">
+          (click)="addStudyProgram(sp)"
+        >
           {{ sp.name }}
+        </div>
       </div>
     </div>
   </div>
+</div>

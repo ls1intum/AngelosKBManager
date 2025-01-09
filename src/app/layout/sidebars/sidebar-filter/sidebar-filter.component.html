@@ -1,0 +1,45 @@
+<div>
+    <!-- Header -->
+    <div class="filter-header">
+      <span class="filter-title">Filter</span>
+      <button class="clear-button" (click)="clearFilter()">Entfernen</button>
+    </div>
+    
+    <!-- Divider -->
+    <div class="divider"></div>
+    
+    <!-- Filter Group -->
+    <div class="filter-group">
+      <!-- Filter Group Header -->
+      <div class="filter-group-header" (click)="toggleStudiengaenge()">
+        <!-- Left icon -->
+        <span class="filter-group-icon">
+          <mat-icon>school</mat-icon>
+        </span>
+        
+        <!-- Filter name -->
+        <span class="filter-group-label">Studiengänge</span>
+        
+        <!-- Dropdown arrow -->
+        <span class="filter-group-dropdown">
+          <mat-icon>
+            {{ isStudiengaengeOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+          </mat-icon>
+        </span>
+      </div>
+      
+      <!-- Filter Content (list of study programs) -->
+      <div class="filter-group-content" *ngIf="isStudiengaengeOpen">
+        <ul class="study-program-list">
+          <li
+            class="study-program-item"
+            *ngFor="let sp of studyPrograms"
+            [class.selected]="selectedProgram?.id === sp.id"
+            (click)="selectProgram(sp)"
+          >
+            {{ sp.name }}
+          </li>
+        </ul>
+      </div>
+    </div>
+</div>

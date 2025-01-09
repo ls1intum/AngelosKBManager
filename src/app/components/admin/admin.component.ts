@@ -55,6 +55,20 @@ export class AdminComponent implements OnInit {
       primary: true
     },
     {
+      key: 'isApproved',
+      header: 'Status',
+      value: (user: User) => {
+        if (! user.isApproved) {
+          return "Unbestätigt";
+        } else if (user.isApproved && ! user.isAdmin) {
+          return "Teammitglied";
+        } else {
+          return "Administrator";
+        }
+      },
+      primary: false
+    },
+    {
       key: 'actions',
       header: '',
       cellComponent: ActionsCellComponent,
@@ -95,7 +109,7 @@ export class AdminComponent implements OnInit {
         }),
         concatMap((users) => {
           this.users = users;
-          return this.mailService.getMailCredentials();
+          return this.mailService.getMailCredentials(this.authService.getAccessToken());
         })
       )
       .subscribe({

@@ -1,0 +1,34 @@
+.base-component-container {
+    position: relative;  
+    min-height: 100vh;
+    width: 100%; 
+  }
+  
+  .sidebar-filter-container {
+    position: absolute; 
+    top: 0;            
+    left: 0;           
+    bottom: 0;
+    width: 240px;
+    background-color: #fff;
+    border-right: 1px solid var(--border-color);
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    box-sizing: border-box;
+  }
+  
+  .child-main-content {
+    margin-left: 240px; 
+    min-height: 100vh;
+    display: block;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  .child-main-content-inner {
+    width: 90%;
+    margin: 0 auto;
+    padding-top: 8px;
+    box-sizing: border-box;
+  }

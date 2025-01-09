@@ -20,13 +20,13 @@ export class MailService {
   private mailStatusSubject = new BehaviorSubject<MailStatus | null>(null);
   public mailStatus$ = this.mailStatusSubject.asObservable();
 
-  constructor(private http: HttpClient, private authService: AuthenticationService) {}
+  constructor(private http: HttpClient) {}
 
   /**
    * Fetch mail pipeline status from server
    */
-  fetchMailStatus(): void {
-    const headers = this.createAuthHeaders();
+  fetchMailStatus(token: string | null): void {
+    const headers = this.createAuthHeaders(token);
 
     this.http.get<MailStatusDTO>(`${environment.backendUrl}/mail/status`, { headers })
       .subscribe({
@@ -41,8 +41,8 @@ export class MailService {
       });
   }
 
-  setMailCredentials(account: string, password: string): Observable<void> {
-    const headers = this.createAuthHeaders().set('Content-Type', 'application/json');
+  setMailCredentials(account: string, password: string, token: string | null): Observable<void> {
+    const headers = this.createAuthHeaders(token).set('Content-Type', 'application/json');
 
     const credentials : MailCredentialsDTO = {
       mailAccount: account,
@@ -56,8 +56,8 @@ export class MailService {
     );
   }
 
-  getMailCredentials(): Observable<MailCredentialsResponseDTO> {
-    const headers = this.createAuthHeaders();
+  getMailCredentials(token: string | null): Observable<MailCredentialsResponseDTO> {
+    const headers = this.createAuthHeaders(token);
 
     return this.http.get<MailCredentialsResponseDTO>(
       `${environment.backendUrl}/mail/credentials`,
@@ -73,12 +73,14 @@ export class MailService {
     return this.mailStatusSubject.value;
   }
 
+  reset(): void {
+    this.mailStatusSubject.next(null);
+  }
+
   /**
    * Create headers with the Authorization token if available.
    */
-  private createAuthHeaders(): HttpHeaders {
-    const token = this.authService.getAccessToken();
-
+  private createAuthHeaders(token: string | null): HttpHeaders {
     let headers = new HttpHeaders();
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);

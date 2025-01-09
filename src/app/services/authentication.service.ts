@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import { RegisterRequestDTO } from '../data/dto/register-request.dto';
 import { UserDTO } from '../data/dto/user.dto';
 import { StudyProgramService } from './study-program.service';
+import { MailService } from './mail.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,12 @@ export class AuthenticationService {
   private isRefreshing = false;
   private refreshTokenSubject: Subject<string | null> = new Subject<string | null>();
 
-  constructor(private http: HttpClient, private router: Router, private studyProgramService: StudyProgramService) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router, 
+    private studyProgramService: StudyProgramService, 
+    private mailService: MailService
+  ) {}
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<{ accessToken: string }>(
@@ -29,7 +35,6 @@ export class AuthenticationService {
       tap(response => {
         this.accessToken = response.accessToken;
         console.log("Login successful", this.accessToken);
-        this.router.navigate(['/']);
       })
     );
   }
@@ -58,7 +63,7 @@ export class AuthenticationService {
     ).pipe(
       tap(response => {
         this.accessToken = response.accessToken;
-        this.refreshTokenSubject.next(response.accessToken); // Notify observers with new token
+        this.refreshTokenSubject.next(response.accessToken);
       }),
       map(response => response.accessToken),
       catchError(error => {
@@ -91,6 +96,7 @@ export class AuthenticationService {
             this.accessToken = null;
             this.reset();
             this.studyProgramService.reset();
+            this.mailService.reset();
             this.router.navigate(['/login']);
         }
     });

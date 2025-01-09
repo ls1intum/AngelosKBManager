@@ -8,6 +8,7 @@ import { LoadingContainerComponent } from '../../containers/loading-container/lo
 import { NgIf } from '@angular/common';
 import { MailService } from '../../../services/mail.service';
 import { Observable, of } from 'rxjs';
+import { AuthenticationService } from '../../../services/authentication.service';
 
 @Component({
   selector: 'app-mail-dialog',
@@ -34,6 +35,7 @@ export class MailDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<MailDialogComponent>,
     private mailService: MailService,
+    private authService: AuthenticationService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.editMode = !!data.mailAccount; 
@@ -77,7 +79,7 @@ export class MailDialogComponent {
   }
 
   setMailCredentials(mail: string, password: string): Observable<void> {
-    return this.mailService.setMailCredentials(mail, password);
+    return this.mailService.setMailCredentials(mail, password, this.authService.getAccessToken());
   }
 
   /**

@@ -15,18 +15,19 @@ import { Observable } from 'rxjs';
 import { DocumentRequestDTO } from '../../data/dto/document-request.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../../services/authentication.service';
+import { SidebarFilterComponent } from "../../layout/sidebars/sidebar-filter/sidebar-filter.component";
 
 @Component({
   selector: 'app-documents',
   standalone: true,
   imports: [
-    StudyProgramFilterButtonComponent,
+    SidebarFilterComponent,
     AddButtonComponent,
     MatDialogModule,
     MainTableComponent,
     NgIf,
     NgFor,
-    MatSnackBarModule
+    MatSnackBarModule,
 ],
   templateUrl: '../base-template/base-template.component.html',
   styleUrl: '../base-template/base-template.component.css'
