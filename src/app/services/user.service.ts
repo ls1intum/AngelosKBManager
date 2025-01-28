@@ -13,7 +13,7 @@ export class UserService {
   constructor(
     private http: HttpClient,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   /**
    * Get the current authenticated user.
@@ -103,6 +103,6 @@ export class UserService {
   }
 
   private getActions(dto: UserDTO): string[] {
-    return [! dto.isApproved ? "approve" : "setAdmin"];
+    return [!dto.isApproved ? "approve" : "setAdmin"];
   }
 }

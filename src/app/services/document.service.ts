@@ -15,7 +15,7 @@ export class DocumentService {
   constructor(
     private http: HttpClient,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   /**
    * Fetch all documents metadata for the organization.

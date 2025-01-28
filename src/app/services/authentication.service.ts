@@ -20,16 +20,16 @@ export class AuthenticationService {
   private refreshTokenSubject: Subject<string | null> = new Subject<string | null>();
 
   constructor(
-    private http: HttpClient, 
-    private router: Router, 
-    private studyProgramService: StudyProgramService, 
+    private http: HttpClient,
+    private router: Router,
+    private studyProgramService: StudyProgramService,
     private mailService: MailService
-  ) {}
+  ) { }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<{ accessToken: string }>(
       `${environment.backendUrl}/users/login`,
-      { email, password }, 
+      { email, password },
       { withCredentials: true } // Ensure refresh cookie is set
     ).pipe(
       tap(response => {
@@ -58,7 +58,7 @@ export class AuthenticationService {
 
     return this.http.post<{ accessToken: string }>(
       `${environment.backendUrl}/users/refresh`,
-      {}, 
+      {},
       { withCredentials: true }
     ).pipe(
       tap(response => {
@@ -82,23 +82,23 @@ export class AuthenticationService {
 
   logout() {
     this.http.post(
-        `${environment.backendUrl}/users/logout`, 
-        {}, 
-        { withCredentials: true }
+      `${environment.backendUrl}/users/logout`,
+      {},
+      { withCredentials: true }
     ).subscribe({
-        next: () => {
-            console.log('Logged out successfully.');
-        },
-        error: (err) => {
-            console.error('Logout failed:', err);
-        },
-        complete: () => {
-            this.accessToken = null;
-            this.reset();
-            this.studyProgramService.reset();
-            this.mailService.reset();
-            this.router.navigate(['/login']);
-        }
+      next: () => {
+        console.log('Logged out successfully.');
+      },
+      error: (err) => {
+        console.error('Logout failed:', err);
+      },
+      complete: () => {
+        this.accessToken = null;
+        this.reset();
+        this.studyProgramService.reset();
+        this.mailService.reset();
+        this.router.navigate(['/login']);
+      }
     });
   }
 
