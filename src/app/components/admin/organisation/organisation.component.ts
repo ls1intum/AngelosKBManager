@@ -1,11 +1,10 @@
 import { Component } from "@angular/core";
 import { AddButtonComponent } from "../../../layout/buttons/add-button/add-button.component";
-import { MainTableComponent } from "../../../layout/tables/main-table/main-table.component";
 import { OrganisationDialogComponent } from "./dialog/organisation-dialog.component";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { OrganisationService } from "@app/services/organisation.service";
+import { MatDialog } from "@angular/material/dialog";
 import { Organisation } from "@app/data/model/organisation.model";
 import { SimpleTableComponent } from "@app/layout/tables/simple-table/simple-table.component";
+import { OrganisationService } from "@app/services/organisation.service";
 
 
 @Component({
@@ -19,11 +18,13 @@ import { SimpleTableComponent } from "@app/layout/tables/simple-table/simple-tab
     styleUrls: [
         './organisation.component.css',
         '../../../layout/dialogs/dialog-styles.css'
-    ]
+    ],
+    providers: [OrganisationService]
+
 })
 export class OrganisationComponent {
 
-    loading: boolean;
+    protected loading: boolean = false;
     organisations: Organisation[] = [];
     tableHeaders: { [key: string]: string } = {
         id: 'ID',
@@ -31,12 +32,7 @@ export class OrganisationComponent {
     };
     displayedColumns: string[] = ['id', 'name'];
 
-    constructor(
-        private dialog: MatDialog,
-        private organisationService: OrganisationService
-    ) {
-        this.loading = false;
-    }
+    constructor(private dialog: MatDialog, private organisationService: OrganisationService) { }
 
     ngOnInit() {
         this.organisationService.getOrganisations().subscribe({
@@ -44,15 +40,37 @@ export class OrganisationComponent {
             error: (err) => this.organisations = []
         });
     }
+
     protected addOrganisation() {
         this.dialog.open(OrganisationDialogComponent, {
             data: { name: '' }
+        }).afterClosed().subscribe({
+            next: (result) => {
+                if (result) {
+                    this.organisations = [...this.organisations, result];
+                }
+            },
+            error: (err) => {
+                console.error('Error adding organisation:', err);
+            }
         });
+
     }
 
     protected editOrganisation(org: Organisation) {
         this.dialog.open(OrganisationDialogComponent, {
             data: { name: org.name, id: org.id }
-        });
+        }).afterClosed().subscribe({
+            next: (result) => {
+                if (result) {
+                    this.organisations = this.organisations.map(org =>
+                        org.id === result.id ? result : org
+                    );
+                }
+            },
+            error: (err) => {
+                console.error('Error editing organisation:', err);
+            }
+        });;
     }
 }

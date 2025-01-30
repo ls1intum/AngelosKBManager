@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Organisation } from '../data/model/organisation.model';
@@ -8,7 +8,7 @@ import { Organisation } from '../data/model/organisation.model';
   providedIn: 'root'
 })
 export class OrganisationService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getOrganisations(): Observable<Organisation[]> {
     return this.http.get<Organisation[]>(`${environment.backendUrl}/organisations`);
@@ -20,5 +20,10 @@ export class OrganisationService {
       name: orgName,
     };
     return this.http.post<Organisation>(url, {}, { params });
+  }
+
+  editOrganisation(organisation: Organisation): Observable<Organisation> {
+    const url = `${environment.backendUrl}/organisations/${organisation.id}`;
+    return this.http.put<Organisation>(url, organisation);
   }
 }

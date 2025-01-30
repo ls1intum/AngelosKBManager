@@ -9,6 +9,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import { OrganisationDTO } from '../../data/dto/organisation.dto';
 import { AuthenticationService } from '../../services/authentication.service'; // Import the service and UserDTO
 import { UserDTO } from '../../data/dto/user.dto';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -29,6 +30,7 @@ export class RegisterComponent implements OnInit {
 
   successMessage: string | null = null;
   errorMessage: string | null = null;
+  protected loading: boolean = false;
 
   constructor(
     private organisationService: OrganisationService,
@@ -64,7 +66,10 @@ export class RegisterComponent implements OnInit {
   onRegister() {
     this.successMessage = null;
     this.errorMessage = null;
-
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
     if (this.password !== this.confirmPassword) {
       this.errorMessage = 'Die Passwörter stimmen nicht überein.';
       return;
@@ -76,7 +81,9 @@ export class RegisterComponent implements OnInit {
     }
 
     // Call the authService.register method instead of http.post
-    this.authService.register(this.email, this.password, this.selectedOrganisation.id)
+    this.authService.register(this.email, this.password, this.selectedOrganisation.id).pipe(
+      finalize(() => this.loading = false),
+    )
       .subscribe({
         next: (user: UserDTO) => {
           this.successMessage = `Eine E-Mail wurde an ${user.mail} gesendet. Bitte bestätigen Sie Ihr Konto.`;

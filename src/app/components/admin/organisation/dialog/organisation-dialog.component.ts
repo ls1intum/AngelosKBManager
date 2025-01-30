@@ -74,11 +74,7 @@ export class OrganisationDialogComponent {
     return this.organisationService.addOrganisation(name);
   }
 
-  /**
-   * TODO
-   * Called when editing an existing study program
-   */
-  editOrganisation(data: string): Observable<Organisation> {
-    return throwError(() => new Error('makeEditRequest is not implemented.'));
+  editOrganisation(organisation: Organisation): Observable<Organisation> {
+    return this.organisationService.editOrganisation(organisation);
   }
 }

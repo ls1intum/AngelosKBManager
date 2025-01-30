@@ -1,5 +1,5 @@
 import { CommonModule, NgClass, NgComponentOutlet, NgFor, NgForOf, NgIf } from '@angular/common';
-import { Component, Injector, Input, TemplateRef, Type } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, Output, TemplateRef, Type } from '@angular/core';
 import { MatTableModule } from '@angular/material/table'
 import { MatCardModule } from '@angular/material/card'
 import { ActionsCellComponent } from '../../cells/actions-cell/actions-cell.component';
@@ -21,8 +21,13 @@ import { StudyProgram } from '../../../data/model/study-program.model';
   styleUrl: './simple-table.component.css'
 })
 export class SimpleTableComponent<T> {
+
   @Input() dataSource: T[] = [];
   @Input() displayedColumns: string[] = [];
   @Input() columnHeaders: { [key: string]: string } = {};
+  @Output() rowClicked = new EventEmitter<T>();
 
+  protected onRowClick(row: T) {
+    this.rowClicked.emit(row);
+  }
 }

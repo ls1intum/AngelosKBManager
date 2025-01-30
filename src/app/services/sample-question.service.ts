@@ -5,7 +5,6 @@ import { SampleQuestion } from '../data/model/sample-question.model';
 import { SampleQuestionDTO } from '../data/dto/sample-question.dto';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root',
