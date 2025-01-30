@@ -75,6 +75,6 @@ export class OrganisationDialogComponent {
   }
 
   editOrganisation(organisation: Organisation): Observable<Organisation> {
-    return this.organisationService.editOrganisation(organisation);
+    return this.organisationService.updateOrganisation(organisation);
   }
 }

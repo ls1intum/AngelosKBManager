@@ -22,7 +22,7 @@ export class OrganisationService {
     return this.http.post<Organisation>(url, {}, { params });
   }
 
-  editOrganisation(organisation: Organisation): Observable<Organisation> {
+  updateOrganisation(organisation: Organisation): Observable<Organisation> {
     const url = `${environment.backendUrl}/organisations/${organisation.id}`;
     return this.http.put<Organisation>(url, organisation);
   }
