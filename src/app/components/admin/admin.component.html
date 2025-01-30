@@ -4,26 +4,19 @@
   <div class="admin-container">
     <!-- LEFT PANE: Mail + Benutzer -->
     <div class="left-pane">
-      
+
       <!-- MAIL SECTION -->
       <div class="admin-table">
         <div class="header-container">
           <h3 class="page-header">E-Mail Account</h3>
-          <app-add-button
-            [text]="'Mailzugang verwalten'"
-            [icon]="'edit'"
-            (click)="configureMail()"
-          ></app-add-button>
+          <app-add-button [text]="'Mailzugang verwalten'" [icon]="'edit'" (click)="configureMail()"></app-add-button>
         </div>
 
-        <div
-          class="mail-section"
-          [ngClass]="{
+        <div class="mail-section" [ngClass]="{
             'status-active': mailStatus === MailStatus.ACTIVE,
             'status-inactive': mailStatus === MailStatus.INACTIVE,
             'status-error': mailStatus === MailStatus.ERROR
-          }"
-        >
+          }">
           <div class="mail-section-content">
             <p>
               <strong>E-Mail Adresse:</strong>
@@ -37,14 +30,12 @@
         </div>
       </div>
 
+      <organisation-table></organisation-table>
+
       <!-- BENUTZER SECTION -->
       <div class="admin-table">
-        <h3 class="page-header">Team</h3>
-        <app-main-table
-          [dataSource]="users"
-          [columns]="userColumns"
-          [parentComponent]="this"
-        ></app-main-table>
+        <h3 class="page-header">Nutzer</h3>
+        <app-main-table [dataSource]="users" [columns]="userColumns" [parentComponent]="this"></app-main-table>
       </div>
     </div>
 
@@ -53,16 +44,10 @@
       <div class="admin-table">
         <div class="header-container">
           <h3 class="page-header">Studiengänge</h3>
-          <app-add-button
-            [text]="'Studiengang hinzufügen'"
-            (click)="addStudyProgram()"
-          ></app-add-button>
+          <app-add-button [text]="'Studiengang hinzufügen'" (click)="addStudyProgram()"></app-add-button>
         </div>
-        <app-main-table
-          [dataSource]="studyPrograms"
-          [columns]="studyProgramColumns"
-          [parentComponent]="this"
-        ></app-main-table>
+        <app-main-table [dataSource]="studyPrograms" [columns]="studyProgramColumns"
+          [parentComponent]="this"></app-main-table>
       </div>
     </div>
   </div>

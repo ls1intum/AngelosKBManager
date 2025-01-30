@@ -12,11 +12,14 @@ import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/conf
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { concatMap } from 'rxjs';
 import { AddButtonComponent } from "../../layout/buttons/add-button/add-button.component";
-import { StudyProgramDialogComponent } from '../../layout/dialogs/study-program-dialog/study-program-dialog.component';
+import { StudyProgramDialogComponent } from './study-program-dialog/study-program-dialog.component';
 import { StudyProgramDTO } from '../../data/dto/study-program.dto';
 import { MailService, MailStatus } from '../../services/mail.service';
 import { MailDialogComponent } from '../../layout/dialogs/mail-dialog/mail-dialog.component';
 import { AuthenticationService } from '../../services/authentication.service';
+import { Organisation } from '../../data/model/organisation.model';
+import { OrganisationDialogComponent } from './organisation/dialog/organisation-dialog.component';
+import { OrganisationComponent } from "./organisation/organisation.component";
 
 @Component({
   selector: 'app-admin',
@@ -26,12 +29,14 @@ import { AuthenticationService } from '../../services/authentication.service';
     MainTableComponent,
     MatSnackBarModule,
     NgClass,
-    AddButtonComponent
-],
+    AddButtonComponent,
+    OrganisationComponent
+  ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
 export class AdminComponent implements OnInit {
+
   public MailStatus = MailStatus;
 
   currentUser: UserDTO | null = null;
@@ -41,6 +46,7 @@ export class AdminComponent implements OnInit {
   statusText: string = "";
 
   users: User[] = [];
+  protected organisations: Organisation[] = [];
   //displayedUsers: User[] = [];
 
   studyPrograms: StudyProgram[] = [];
@@ -58,9 +64,9 @@ export class AdminComponent implements OnInit {
       key: 'isApproved',
       header: 'Status',
       value: (user: User) => {
-        if (! user.isApproved) {
+        if (!user.isApproved) {
           return "Unbestätigt";
-        } else if (user.isApproved && ! user.isAdmin) {
+        } else if (user.isApproved && !user.isAdmin) {
           return "Teammitglied";
         } else {
           return "Administrator";
@@ -85,6 +91,15 @@ export class AdminComponent implements OnInit {
     },
   ];
 
+  protected organisationColumns: TableColumn<StudyProgram>[] = [
+    {
+      key: 'name',
+      header: 'Name',
+      value: (sp: StudyProgram) => sp.name,
+      primary: true
+    },
+  ];
+
   constructor(
     protected dialog: MatDialog,
     protected studyProgramService: StudyProgramService,
@@ -93,7 +108,7 @@ export class AdminComponent implements OnInit {
     protected snackBar: MatSnackBar,
     protected mailService: MailService,
     @Inject(DOCUMENT) protected document: Document
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userService
@@ -101,7 +116,7 @@ export class AdminComponent implements OnInit {
       .pipe(
         concatMap((userDTO) => {
           this.currentUser = userDTO;
-          return this.studyProgramService.fetchStudyPrograms(this.authService.getAccessToken());
+          return this.studyProgramService.fetchStudyPrograms();
         }),
         concatMap((programs) => {
           this.studyPrograms = programs;
@@ -133,11 +148,9 @@ export class AdminComponent implements OnInit {
     // Resourcen verwalten
     const message = "Wollen Sie dieses Teammitglied bestätigen?"
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    this.dialog.open(ConfirmDialogComponent, {
       data: { title, message },
-    });
-
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+    }).afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
         this.userService.approveUser(user.id).subscribe({
           next: (updatedUser: User) => {
@@ -183,53 +196,51 @@ export class AdminComponent implements OnInit {
     const accessToken = this.authService.getAccessToken();
     const dialogRef = this.dialog.open(StudyProgramDialogComponent, {
       data: { name: '', token: accessToken }
-    });
-  
-    dialogRef.afterClosed().subscribe((result: StudyProgramDTO) => {
-      if (result !== null && result !== undefined) {
-        this.handleSuccess("Studiengang erfolgreich hinzugefügt.");
-        // Refresh the list of study programs after adding
-        this.studyProgramService.fetchStudyPrograms(accessToken).subscribe({
-          next: (programs) => {
-            this.studyPrograms = (programs as StudyProgram[]).sort((a, b) => {
-              const nameA = a.name.toLowerCase();
-              const nameB = b.name.toLowerCase();
-      
-              if (nameA < nameB) return -1;
-              if (nameA > nameB) return 1;
-              return 0;
-            });
-          },
-          error: (err) => {
-            console.error("Error fetching study programs", err);
-            this.handleError("Studiengänge konnten nicht neu geladen werden.");
-          }
-        });
-      } else if (result === null) {
-        this.handleError('Studiengang konnte nicht hinzugefügt werden.');
-      }
-    });
+    })
+      .afterClosed().subscribe((result: StudyProgramDTO) => {
+        if (result !== null && result !== undefined) {
+          this.handleSuccess("Studiengang erfolgreich hinzugefügt.");
+          // Refresh the list of study programs after adding
+          this.studyProgramService.fetchStudyPrograms().subscribe({
+            next: (programs) => {
+              this.studyPrograms = (programs as StudyProgram[]).sort((a, b) => {
+                const nameA = a.name.toLowerCase();
+                const nameB = b.name.toLowerCase();
+
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+                return 0;
+              });
+            },
+            error: (err) => {
+              console.error("Error fetching study programs", err);
+              this.handleError("Studiengänge konnten nicht neu geladen werden.");
+            }
+          });
+        } else if (result === null) {
+          this.handleError('Studiengang konnte nicht hinzugefügt werden.');
+        }
+      });
   }
 
   configureMail(): void {
-    const dialogRef = this.dialog.open(MailDialogComponent, {
+    this.dialog.open(MailDialogComponent, {
       data: {
         mailAccount: this.mailCredentials || '',
         password: '',
         confirmPassword: ''
       },
       width: '600px'
-    });
-  
-    dialogRef.afterClosed().subscribe((result: boolean | null) => {
-      if (result === true) {
-        this.mailService.setMailStatus(MailStatus.ACTIVE);
-        this.handleSuccess("E-Mail-Account erfolgreich konfiguriert.");
-      } else if (result == false) {
-        this.mailService.setMailStatus(MailStatus.INACTIVE);
-        this.handleError("Fehler bei der Konfiguration des E-Mail-Accounts.");
-      }
-    });
+    })
+      .afterClosed().subscribe((result: boolean | null) => {
+        if (result === true) {
+          this.mailService.setMailStatus(MailStatus.ACTIVE);
+          this.handleSuccess("E-Mail-Account erfolgreich konfiguriert.");
+        } else if (result == false) {
+          this.mailService.setMailStatus(MailStatus.INACTIVE);
+          this.handleError("Fehler bei der Konfiguration des E-Mail-Accounts.");
+        }
+      });
   }
 
   private updateUserInArray(updatedUser: User): void {
@@ -241,7 +252,7 @@ export class AdminComponent implements OnInit {
 
   private handleError(errorMessage: string): void {
     this.snackBar.open(errorMessage, 'Schließen', {
-      duration: 4000, 
+      duration: 4000,
       horizontalPosition: 'right',
       verticalPosition: 'top',
       panelClass: ['error-snack-bar']
@@ -259,11 +270,12 @@ export class AdminComponent implements OnInit {
 
   private getStatusText(status: MailStatus | null): string {
     if (status === MailStatus.ACTIVE) {
-        return "Der konfigurierte E-Mail-Account für die automatische Beantwortung von E-Mails ist aktiv.";
+      return "Der konfigurierte E-Mail-Account für die automatische Beantwortung von E-Mails ist aktiv.";
     } else if (status === MailStatus.INACTIVE) {
-        return "Der konfigurierte E-Mail-Account ist inaktiv. Bitte geben Sie die Zugangsdaten erneut ein, um die Pipeline zu reaktivieren.";
+      return "Der konfigurierte E-Mail-Account ist inaktiv. Bitte geben Sie die Zugangsdaten erneut ein, um die Pipeline zu reaktivieren.";
     } else {
-        return "Es ist ein Fehler beim Abrufen des E-Mail-Account-Status aufgetreten. Bitte versuchen Sie es später erneut oder geben Sie die Zugangsdaten erneut ein, um die Pipeline zu reaktivieren.";
+      return "Es ist ein Fehler beim Abrufen des E-Mail-Account-Status aufgetreten. Bitte versuchen Sie es später erneut oder geben Sie die Zugangsdaten erneut ein, um die Pipeline zu reaktivieren.";
     }
   }
+
 }

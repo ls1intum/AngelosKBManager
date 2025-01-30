@@ -23,19 +23,13 @@ export class StudyProgramService {
     private http: HttpClient,
   ) {}
 
-  fetchStudyPrograms(accessToken: string | null): Observable<StudyProgram[]> {
+  fetchStudyPrograms(): Observable<StudyProgram[]> {
     // Return cached data if available
     if (this.studyProgramsSubject.value) {
       return this.studyPrograms$;
     }
 
-    // Prepare headers with the retrieved token, if available
-    let headers = new HttpHeaders();
-    if (accessToken) {
-      headers = headers.set('Authorization', `Bearer ${accessToken}`);
-    }
-
-    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`, { headers }).pipe(
+    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`, {}).pipe(
       tap((programs) => {
         const programsCopy = (programs as StudyProgram[]).sort((a, b) => {
           const nameA = a.name.toLowerCase();
@@ -55,6 +49,7 @@ export class StudyProgramService {
     return this.studyProgramsSubject.value;
   }
 
+<<<<<<< Updated upstream
   addStudyProgram(studyProgramName: string, accessToken: string | null): Observable<StudyProgramDTO> {  
     // Prepare headers with the token
     let headers = new HttpHeaders();
@@ -65,13 +60,18 @@ export class StudyProgramService {
     // Backend API endpoint for creating study programs
     const url = `${environment.backendUrl}/study-programs/create`;
   
+=======
+  addStudyProgram(studyProgramName: string): Observable<StudyProgramDTO> {
+    // Backend API endpoint for creating study programs
+    const url = `${environment.backendUrl}/study-programs/create`;
+>>>>>>> Stashed changes
     // Set up query parameters
     const params = {
       studyProgramName: studyProgramName,
     };
   
     // Make the POST request
-    return this.http.post<StudyProgramDTO>(url, {}, { headers, params }).pipe(
+    return this.http.post<StudyProgramDTO>(url, {}, { params }).pipe(
       tap((newProgram) => {
         // Update the local BehaviorSubject with the new program
         const currentPrograms = this.studyProgramsSubject.value || [];

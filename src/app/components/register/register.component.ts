@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
-  
+
   selectedOrganisation: OrganisationDTO | null = null;
   organisations: OrganisationDTO[] = [];
 
@@ -33,10 +33,10 @@ export class RegisterComponent implements OnInit {
   constructor(
     private organisationService: OrganisationService,
     private authService: AuthenticationService // Use the auth service
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.organisationService.getAllOrganisations()
+    this.organisationService.getOrganisations()
       .subscribe({
         next: (orgs) => {
           this.organisations = orgs;

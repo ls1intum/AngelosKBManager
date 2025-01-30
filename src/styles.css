@@ -2,20 +2,21 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 :root {
-    --primary-color: #072140;
-    --tum-light-blue: #3070b3;
-    --tum-blue-dark: #072140;
-    --tum-blue-light-dark: #0a2d57;
-    --tum-acordion-blue: #f0f5fa;
-    --background-color: #f4f4f4;
-    --border-color: #ccc;
-  }
+  --primary-color: #072140;
+  --tum-light-blue: #3070b3;
+  --tum-blue-dark: #072140;
+  --tum-blue-light-dark: #0a2d57;
+  --tum-acordion-blue: #f0f5fa;
+  --background-color: #f4f4f4;
+  --border-color: #ccc;
+}
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: roboto, sans-serif;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: roboto, sans-serif;
 }
 
 /* Target the simple-snack-bar content */
@@ -42,7 +43,7 @@ mat-snack-bar-container.error-snack-bar simple-snack-bar .mat-mdc-snack-bar-acti
 
 /* Target the simple-snack-bar content */
 mat-snack-bar-container.success-snack-bar simple-snack-bar {
-  background-color: #4caf50!important;
+  background-color: #4caf50 !important;
   color: #ffffff !important;
   padding: 8px
 }
@@ -63,41 +64,48 @@ mat-snack-bar-container.success-snack-bar simple-snack-bar .mat-mdc-snack-bar-ac
 }
 
 .page-header {
-    color: var(--primary-color)
+  color: var(--primary-color)
 }
 
 .page-action-row {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-    margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .study-program-menu {
-    position: absolute;
-    background-color: white;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 8px 0;
-    z-index: 1001;
-    min-width: 200px;
-    max-height: 300px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-  }
-  
-  .menu-item {
-    padding: 8px 16px;
-    cursor: pointer;
-    color: var(--primary-color);
-  }
-  
-  .menu-item:hover {
-    background-color: var(--tum-acordion-blue);
-  }
+  position: absolute;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 1001;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
 
-  .success-snackbar {
-    background-color: #4caf50 !important;
-    color: white !important;
-  }
+.menu-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+.menu-item:hover {
+  background-color: var(--tum-acordion-blue);
+}
+
+.success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+}

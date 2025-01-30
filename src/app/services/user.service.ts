@@ -19,17 +19,15 @@ export class UserService {
    * Get the current authenticated user.
    */
   getCurrentUser(): Observable<UserDTO> {
-    const headers = this.createAuthHeaders();
-    return this.http.get<UserDTO>(`${environment.backendUrl}/users/me`, { headers });
+    return this.http.get<UserDTO>(`${environment.backendUrl}/users/me`, {});
   }
 
   /**
    * Get all users for the authenticated organisation.
    */
   getAllUsers(isAdmin: boolean): Observable<User[]> {
-    const headers = this.createAuthHeaders();
     return this.http
-      .get<UserDTO[]>(`${environment.backendUrl}/users`, { headers })
+      .get<UserDTO[]>(`${environment.backendUrl}/users`, {})
       .pipe(
         map((response: UserDTO[]) => this.transformResponse(response, isAdmin))
       );;
@@ -39,9 +37,8 @@ export class UserService {
    * Approve a user by ID.
    */
   approveUser(userId: number): Observable<User> {
-    const headers = this.createAuthHeaders();
     return this.http
-      .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/approve`, null, { headers })
+      .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/approve`, null, {})
       .pipe(
         map((response: UserDTO) => this.transformSingleResponse(response, true))
       );
@@ -51,9 +48,8 @@ export class UserService {
    * Set a user to admin by ID.
    */
   setUserToAdmin(userId: number): Observable<User> {
-    const headers = this.createAuthHeaders();
     return this.http
-      .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/set-admin`, null, { headers })
+      .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/set-admin`, null, {})
       .pipe(
         map((response: UserDTO) => this.transformSingleResponse(response, true))
       );
@@ -68,18 +64,6 @@ export class UserService {
       params: { token },
       responseType: 'text' // The endpoint returns a String message
     });
-  }
-
-  /**
-   * Creates authorization headers with the JWT if available.
-   */
-  private createAuthHeaders(): HttpHeaders {
-    const token = this.authService.getAccessToken();
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-    return headers;
   }
 
   /**
