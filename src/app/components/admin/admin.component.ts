@@ -29,6 +29,7 @@ import { OrganisationComponent } from "./organisation/organisation.component";
     MainTableComponent,
     MatSnackBarModule,
     NgClass,
+    NgIf,
     AddButtonComponent,
     OrganisationComponent
   ],
@@ -38,6 +39,7 @@ import { OrganisationComponent } from "./organisation/organisation.component";
 export class AdminComponent implements OnInit {
 
   public MailStatus = MailStatus;
+  protected userHasAdminRole: boolean = false;
 
   currentUser: UserDTO | null = null;
 
@@ -116,6 +118,7 @@ export class AdminComponent implements OnInit {
       .pipe(
         concatMap((userDTO) => {
           this.currentUser = userDTO;
+          this.userHasAdminRole = this.currentUser.isAdmin;
           return this.studyProgramService.fetchStudyPrograms();
         }),
         concatMap((programs) => {

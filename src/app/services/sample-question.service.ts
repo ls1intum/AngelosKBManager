@@ -13,12 +13,7 @@ import { AuthenticationService } from './authentication.service';
 export class SampleQuestionService {
   constructor(
     private http: HttpClient,
-<<<<<<< Updated upstream
-    private authService: AuthenticationService
-  ) {}
-=======
   ) { }
->>>>>>> Stashed changes
 
   /**
    * Fetch all sample questions.

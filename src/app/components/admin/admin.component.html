@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <organisation-table></organisation-table>
+      <organisation-table *ngIf="userHasAdminRole"></organisation-table>
 
       <!-- BENUTZER SECTION -->
       <div class="admin-table">
