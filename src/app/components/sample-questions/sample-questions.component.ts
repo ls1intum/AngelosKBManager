@@ -21,6 +21,10 @@ import { SampleQuestionDTO } from '../../data/dto/sample-question.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../../services/authentication.service';
 import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sidebar-filter.component';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { CustomPaginatorIntl } from '../../layout/paginator/custom-paginator-intl.service';
+import { SearchInputComponent } from '../../layout/inputs/search-input/search-input.component';
+import { LoadingContainerComponent } from '../../layout/containers/loading-container/loading-container.component';
 
 @Component({
   selector: 'app-samplequestions',
@@ -32,8 +36,14 @@ import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sid
     MainTableComponent,
     NgIf,
     NgFor,
-    MatSnackBarModule
-],
+    MatSnackBarModule,
+    MatPaginatorModule,
+    SearchInputComponent,
+    LoadingContainerComponent
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }  // Provide custom paginator text
+  ],
   templateUrl: '../base-template/base-template.component.html',
   styleUrl: '../base-template/base-template.component.css'
 })
@@ -45,13 +55,12 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
 
   constructor(
     protected override dialog: MatDialog,
-    protected override authService: AuthenticationService,
     protected override studyProgramService: StudyProgramService,
     protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
     private sampleQuestionService: SampleQuestionService
   ) {
-    super(dialog, authService, studyProgramService, snackBar, document);
+    super(dialog, studyProgramService, snackBar, document);
   }
   
   override fetchData(): void {
@@ -59,9 +68,11 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
       next: (sampleQuestions: SampleQuestion[]) => {
         this.items = sampleQuestions;
         this.displayedItems = [...sampleQuestions];
+        this.loading = false;
       },
       error: (error: any) => {
-        this.handleError("Fehler beim Laden der Websites. Bitte laden Sie die Seite erneut.")
+        this.handleError("Fehler beim Laden der Websites. Bitte laden Sie die Seite erneut.");
+        this.loading = false;
       }
     });
   }
@@ -140,5 +151,17 @@ export class SampleQuestionsComponent extends BaseComponent<SampleQuestion> {
       id: sp.id,
       name: sp.name,
     };
+  }
+
+  protected matchSearch(item: SampleQuestion, searchTerm: string): boolean {
+    if (! searchTerm || searchTerm == "") {
+      return true;
+    }
+    const lowerTerm = searchTerm.toLowerCase();
+    return (
+      item.question.toLowerCase().includes(lowerTerm) ||
+      item.answer.toLowerCase().includes(lowerTerm) ||
+      item.topic.toLowerCase().includes(lowerTerm)
+    );
   }
 }

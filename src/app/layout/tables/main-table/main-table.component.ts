@@ -1,11 +1,12 @@
 import { CommonModule, NgClass, NgComponentOutlet, NgFor, NgForOf, NgIf } from '@angular/common';
-import { Component, Injector, Input, TemplateRef, Type } from '@angular/core';
-import { MatTableModule } from '@angular/material/table'
+import { AfterViewChecked, AfterViewInit, Component, Injector, Input, OnChanges, SimpleChanges, TemplateRef, Type, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table'
 import { MatCardModule } from '@angular/material/card'
 import { ActionsCellComponent } from '../../cells/actions-cell/actions-cell.component';
 import { StudyProgramsCellComponent } from '../../cells/study-programs-cell/study-programs-cell.component';
 import { LinkCellComponent } from '../../cells/link-cell/link-cell.component';
 import { StudyProgram } from '../../../data/model/study-program.model';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-main-table',
@@ -18,16 +19,22 @@ import { StudyProgram } from '../../../data/model/study-program.model';
     CommonModule,
     MatCardModule,
     NgComponentOutlet,
-    NgClass
+    NgClass,
+    MatPaginatorModule
   ],
   templateUrl: './main-table.component.html',
   styleUrl: './main-table.component.css'
 })
-export class MainTableComponent<T> {
+export class MainTableComponent<T> implements AfterViewInit, OnChanges {
   @Input() dataSource: T[] = [];
+
+  matDataSource = new MatTableDataSource<T>();
+
   @Input() columns: TableColumn<T>[] = [];
   @Input() parentComponent: any;
   @Input() availableStudyPrograms: StudyProgram[] = [];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   get displayedColumns(): string[] {
     return this.columns.map(column => column.key as string);
@@ -52,6 +59,16 @@ export class MainTableComponent<T> {
 
   trackByFn(index: number, item: any): any {
     return item.id;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dataSource'] && changes['dataSource'].currentValue) {
+      this.matDataSource.data = changes['dataSource'].currentValue;
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.matDataSource.paginator = this.paginator;
   }
 }
 

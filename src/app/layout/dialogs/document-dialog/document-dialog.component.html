@@ -78,6 +78,7 @@
               </div>
               <!-- Add study program -->
               <button
+                *ngIf="availableStudyPrograms.length > studyProgramsCopy.length"
                 mat-icon-button
                 (click)="toggleMenu($event)"
                 #menuButton 

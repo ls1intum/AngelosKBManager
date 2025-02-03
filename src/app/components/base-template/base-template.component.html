@@ -16,13 +16,25 @@
       <h1 class="page-header">{{ headerText }}</h1>
 
       <div class="page-action-row">
+        <app-search-input
+          [(value)]="searchTerm"
+          (valueChange)="onSearch($event)"
+        ></app-search-input>
+
         <app-add-button
           [text]="addButtonText"
           (click)="openAddOrEditDialog()"
         ></app-add-button>
       </div>
 
+      <div *ngIf="loading" class="loading-wrapper">
+        <app-loading-container
+          [text]="'Daten werden geladen...'"
+        ></app-loading-container>
+      </div>
+
       <app-main-table
+        *ngIf="!loading" 
         [dataSource]="displayedItems"
         [columns]="columns"
         [parentComponent]="this"

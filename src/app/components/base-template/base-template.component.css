@@ -32,3 +32,14 @@
     padding-top: 8px;
     box-sizing: border-box;
   }
+
+  .loading-wrapper {
+    display: flex;
+    justify-content: center; /* Centers the loading text */
+    align-items: center;
+    height: 112px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+  }

@@ -14,6 +14,7 @@
 
     <!-- Add '+' button -->
     <button 
+      *ngIf="numberOfStudyPrograms !== null && (numberOfStudyPrograms > studyPrograms.length)"
       mat-icon-button 
       (click)="onAddButtonClick()" 
       #menuButton 

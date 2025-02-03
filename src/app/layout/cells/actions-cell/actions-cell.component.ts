@@ -53,6 +53,8 @@ export class ActionsCellComponent {
         return 'check_circle';
       case 'setAdmin':
         return 'admin_panel_settings';
+      case 'remove':
+        return 'person_remove'
       default:
         return 'help';
     }

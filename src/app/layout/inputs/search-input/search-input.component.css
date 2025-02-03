@@ -1,0 +1,52 @@
+.search-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    background-color: white;
+    transition: background-color 0.2s;
+    width: 240px;
+    height: 24px;
+    padding: 8px 8px;
+    position: relative;
+  }
+  
+  .search-input {
+    flex: 1; /* Takes up available space */
+    font-size: 16px;
+    color: var(--primary-color);
+    border: none;
+    outline: none;
+    background-color: transparent;
+    height: 100%; /* Ensures it fills the container */
+  }
+  
+  .search-input::placeholder {
+    color: var(--border-color);
+  }
+  
+  /* Clear button styling */
+  .clear-button {
+    margin-left: auto;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 32px;
+    height: 32px; /* Match icon button height */
+    border-radius: 50%;
+  }
+  
+  .clear-button mat-icon {
+    font-size: 24px; /* Slightly bigger for better visibility */
+    color: var(--primary-color);
+  }
+  
+  /* Hover effect */
+  .clear-button:hover {
+    background-color: var(--tum-acordion-blue);
+    border-radius: 50%;
+  }
