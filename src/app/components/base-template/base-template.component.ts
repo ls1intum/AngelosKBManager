@@ -26,6 +26,11 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   menuOpen = false;
   menuPosition = { top: 0, left: 0, openUpwards: false };
 
+  searchTerm: string = '';
+  loading: boolean = true;
+
+  protected abstract matchSearch(item: T, searchTerm: string): boolean;
+
   @ViewChild('containerRef', { static: true }) containerRef!: ElementRef;
 
   // Abstract properties/methods to be implemented by child components
@@ -44,7 +49,6 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
   constructor(
     protected dialog: MatDialog,
-    protected authService: AuthenticationService,
     protected studyProgramService: StudyProgramService,
     protected snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected document: Document,
@@ -54,10 +58,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     if (this.document) {
       this.documentHeight = this.document.documentElement.scrollHeight;
     }
-
-    const accessToken = this.authService.getAccessToken();
   
-    this.studyProgramService.fetchStudyPrograms(accessToken).subscribe({
+    this.studyProgramService.fetchStudyPrograms().subscribe({
       next: (programs) => {
         this.availableStudyPrograms = programs;
         const general: StudyProgram = {
@@ -65,8 +67,9 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
           name: 'Allgemein',
         };
         this.filterOptions = [general, ...this.availableStudyPrograms];
-        console.log("filterOptions", this.filterOptions)
+        
         // Fetch component-specific data after study programs are loaded
+        this.loading = true;
         this.fetchData();
       },
       error: (err) => {
@@ -76,6 +79,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   }
 
   onProgramSelected(program: StudyProgram | null): void {
+    // Remove search term
+    this.searchTerm = "";
     // If we choose the same program again, we unselect
     if (this.selectedProgram && program && this.selectedProgram.id == program.id) {
       this.selectedProgram = null;
@@ -268,5 +273,40 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
       verticalPosition: 'top',
       panelClass: ['success-snack-bar'],
     });
+  }
+
+  onSearch(term: string): void {
+    this.searchTerm = term;
+    this.applyCombinedFilters();
+  }
+
+  getAvailableStudyPrograms(): number {
+    return this.availableStudyPrograms.length;
+  }
+
+  private applyCombinedFilters(): void {
+    // Start with all items
+    let filtered = [...this.items];
+
+    // Filter by selected program, if any
+    if (this.selectedProgram) {
+      if (this.selectedProgram.id !== -1) {
+        filtered = filtered.filter((item) =>
+          item.studyPrograms.some((sp) => sp.id === this.selectedProgram!.id)
+        );
+      } else {
+        // "Allgemein"
+        filtered = filtered.filter((item) => item.studyPrograms.length === 0);
+      }
+    }
+
+    // Then filter by search term, if not empty
+    if (this.searchTerm.trim()) {
+      filtered = filtered.filter((item) =>
+        this.matchSearch(item, this.searchTerm.trim())
+      );
+    }
+
+    this.displayedItems = filtered;
   }
 }

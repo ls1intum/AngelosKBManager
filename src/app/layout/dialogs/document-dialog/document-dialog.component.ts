@@ -128,7 +128,11 @@ export class DocumentDialogComponent extends BaseDialogDirective<DocumentModel> 
 
   protected override makeEditRequest(data: DocumentModel): Observable<DocumentModel> {
     const documentRequestDTO = this.createDTO(data);
-    
+
+    if (this.selectedFile) {
+      return this.documentService.editDocument(data.id, documentRequestDTO, this.selectedFile);
+    }
+
     return this.documentService.editDocument(data.id, documentRequestDTO);
   }
 

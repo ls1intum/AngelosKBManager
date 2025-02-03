@@ -23,19 +23,13 @@ export class StudyProgramService {
     private http: HttpClient,
   ) {}
 
-  fetchStudyPrograms(accessToken: string | null): Observable<StudyProgram[]> {
+  fetchStudyPrograms(): Observable<StudyProgram[]> {
     // Return cached data if available
     if (this.studyProgramsSubject.value) {
       return this.studyPrograms$;
     }
 
-    // Prepare headers with the retrieved token, if available
-    let headers = new HttpHeaders();
-    if (accessToken) {
-      headers = headers.set('Authorization', `Bearer ${accessToken}`);
-    }
-
-    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`, { headers }).pipe(
+    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`).pipe(
       tap((programs) => {
         const programsCopy = (programs as StudyProgram[]).sort((a, b) => {
           const nameA = a.name.toLowerCase();
@@ -76,6 +70,18 @@ export class StudyProgramService {
         // Update the local BehaviorSubject with the new program
         const currentPrograms = this.studyProgramsSubject.value || [];
         this.studyProgramsSubject.next([...currentPrograms, newProgram]);
+      })
+    );
+  }
+
+  deleteStudyProgram(id: number): Observable<void> {  
+    const url = `${environment.backendUrl}/study-programs/${id}`;
+  
+    return this.http.delete<void>(url).pipe(
+      tap(() => {
+        const currentPrograms = this.studyProgramsSubject.value || [];
+        const updatedPrograms = currentPrograms.filter(sp => sp.id !== id);
+        this.studyProgramsSubject.next(updatedPrograms);
       })
     );
   }

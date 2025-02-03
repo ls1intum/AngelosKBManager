@@ -8,7 +8,7 @@
         class="overlay-loading-container">
       </app-loading-container>
   
-      <mat-card-content class="scrollable-content">
+      <mat-card-content class="scrollable-content" [class.loading-overlay]="loading">
   
         <h2 class="dialog-title">
           {{ editMode ? 'Mailzugang konfigurieren' : 'Mailzugang hinzufügen' }}
