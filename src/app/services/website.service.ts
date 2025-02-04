@@ -14,7 +14,7 @@ export class WebsiteService {
   constructor(
     private http: HttpClient,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   /**
    * Fetch all websites.

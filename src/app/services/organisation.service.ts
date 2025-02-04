@@ -8,7 +8,7 @@ import { OrganisationDTO } from '../data/dto/organisation.dto';
   providedIn: 'root'
 })
 export class OrganisationService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllOrganisations(): Observable<OrganisationDTO[]> {
     return this.http.get<OrganisationDTO[]>(`${environment.backendUrl}/organisations`);
