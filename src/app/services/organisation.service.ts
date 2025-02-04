@@ -24,6 +24,6 @@ export class OrganisationService {
 
   updateOrganisation(organisation: Organisation): Observable<Organisation> {
     const url = `${environment.backendUrl}/organisations/${organisation.id}`;
-    return this.http.put<Organisation>(url, { organisation: organisation });
+    return this.http.put<Organisation>(url, organisation);
   }
 }
