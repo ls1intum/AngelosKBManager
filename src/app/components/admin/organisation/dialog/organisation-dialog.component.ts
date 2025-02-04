@@ -50,7 +50,7 @@ export class OrganisationDialogComponent {
   onSave(): void {
     this.loading = true;
     const obs$ = this.editMode
-      ? this.editOrganisation(this.data.name)
+      ? this.editOrganisation(this.data)
       : this.addOrganisation(this.data.name);
 
     obs$.pipe(

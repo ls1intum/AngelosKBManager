@@ -57,7 +57,7 @@ export class OrganisationComponent {
 
     }
 
-    protected editOrganisation(org: Organisation) {
+    protected updateOrganisation(org: Organisation) {
         this.dialog.open(OrganisationDialogComponent, {
             data: { name: org.name, id: org.id }
         }).afterClosed().subscribe({

@@ -4,6 +4,6 @@
         <app-add-button [text]="'Organisation hinzufügen'" (click)="addOrganisation()"></app-add-button>
     </div>
     <simple-table [dataSource]="organisations" [displayedColumns]="displayedColumns" [columnHeaders]="tableHeaders"
-        (rowClicked)="editOrganisation($event)">
+        (rowClicked)="updateOrganisation($event)">
         ></simple-table>
 </div>
