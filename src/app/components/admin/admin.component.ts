@@ -112,7 +112,6 @@ export class AdminComponent implements OnInit {
       .pipe(
         concatMap((userDTO) => {
           this.currentUser = userDTO;
-          console.log(userDTO)
           return this.studyProgramService.fetchStudyPrograms();
         }),
         concatMap((programs) => {
