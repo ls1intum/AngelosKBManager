@@ -14,7 +14,7 @@ export class SampleQuestionService {
   constructor(
     private http: HttpClient,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   /**
    * Fetch all sample questions.

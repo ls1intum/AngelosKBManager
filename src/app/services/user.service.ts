@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     private http: HttpClient,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   /**
    * Get the current authenticated user.
