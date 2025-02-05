@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { UserDTO } from '../data/dto/user.dto';
 import { environment } from '../../environments/environment';
 import { User } from '../data/model/user.model';
+import { UserDetailsDTO } from '../data/dto/user-details.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +19,9 @@ export class UserService {
   /**
    * Get the current authenticated user.
    */
-  getCurrentUser(): Observable<UserDTO> {
+  getCurrentUser(): Observable<UserDetailsDTO> {
     const headers = this.createAuthHeaders();
-    return this.http.get<UserDTO>(`${environment.backendUrl}/users/me`, { headers });
+    return this.http.get<UserDetailsDTO>(`${environment.backendUrl}/users/me`, { headers });
   }
 
   /**
@@ -54,6 +55,18 @@ export class UserService {
     const headers = this.createAuthHeaders();
     return this.http
       .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/set-admin`, null, { headers })
+      .pipe(
+        map((response: UserDTO) => this.transformSingleResponse(response, true))
+      );
+  }
+
+  /**
+   * Remove user from the organisation.
+   */
+  removeUser(userId: number): Observable<User> {
+    const headers = this.createAuthHeaders();
+    return this.http
+      .patch<UserDTO>(`${environment.backendUrl}/users/${userId}/remove`, null, { headers })
       .pipe(
         map((response: UserDTO) => this.transformSingleResponse(response, true))
       );
@@ -103,6 +116,6 @@ export class UserService {
   }
 
   private getActions(dto: UserDTO): string[] {
-    return [!dto.isApproved ? "approve" : "setAdmin"];
+    return ! dto.isApproved ? ["approve"] : ["setAdmin", "remove"];
   }
 }

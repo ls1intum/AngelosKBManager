@@ -7,7 +7,7 @@
         class="overlay-loading-container">
       </app-loading-container>
 
-      <mat-card-content class="scrollable-content">
+      <mat-card-content class="scrollable-content" [class.loading-overlay]="loading">
         <h2 class="dialog-title">
           {{ editMode ? 'Beispielfrage bearbeiten' : 'Beispielfrage hinzufügen' }}
         </h2>
@@ -73,6 +73,7 @@
               </div>
               <!-- Add study program -->
               <button
+                *ngIf="availableStudyPrograms.length > studyProgramsCopy.length"
                 mat-icon-button
                 (click)="toggleMenu($event)"
                 #menuButton 

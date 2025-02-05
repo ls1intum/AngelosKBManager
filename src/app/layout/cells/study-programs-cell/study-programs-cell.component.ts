@@ -22,6 +22,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 export class StudyProgramsCellComponent {
   @ViewChild('menuButton', { static: false }) menuButton!: MatIconButton;
   studyPrograms: StudyProgram[] = [];
+  numberOfStudyPrograms: number | null = null;
 
   constructor(
     @Inject('cellValue') public value: any,
@@ -30,7 +31,7 @@ export class StudyProgramsCellComponent {
     @Inject('uniqueID') public uniqueID: string,
   ) {
     this.studyPrograms = [...value];
-    //this.updateAvailableStudyPrograms();
+    this.numberOfStudyPrograms = parentComponent.getAvailableStudyPrograms();
   }
 
   onAddButtonClick() {

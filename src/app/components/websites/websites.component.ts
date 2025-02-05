@@ -19,6 +19,10 @@ import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../../services/authentication.service';
 import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sidebar-filter.component';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { CustomPaginatorIntl } from '../../layout/paginator/custom-paginator-intl.service';
+import { SearchInputComponent } from '../../layout/inputs/search-input/search-input.component';
+import { LoadingContainerComponent } from '../../layout/containers/loading-container/loading-container.component';
 
 @Component({
   selector: 'app-websites',
@@ -30,8 +34,14 @@ import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sid
     MainTableComponent,
     NgIf,
     NgFor,
-    MatSnackBarModule
-],
+    MatSnackBarModule,
+    MatPaginatorModule,
+    SearchInputComponent,
+    LoadingContainerComponent
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }
+  ],
   templateUrl: '../base-template/base-template.component.html',
   styleUrl: '../base-template/base-template.component.css'
 })
@@ -42,13 +52,12 @@ export class WebsitesComponent extends BaseComponent<Website> {
 
   constructor(
     protected override dialog: MatDialog,
-    protected override authService: AuthenticationService,
     protected override studyProgramService: StudyProgramService,
     protected override snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected override document: Document,
     private websiteService: WebsiteService,
   ) {
-    super(dialog, authService, studyProgramService, snackBar, document);
+    super(dialog, studyProgramService, snackBar, document);
   }
 
   columns: TableColumn<Website>[] = [
@@ -80,14 +89,16 @@ export class WebsitesComponent extends BaseComponent<Website> {
     },
   ];
 
-  override fetchData(): void {
+  override fetchData(): void {  
     this.websiteService.getAllWebsites().subscribe({
       next: (websites) => {
-        this.items = websites;  
+        this.items = websites;
         this.displayedItems = [...websites];
+        this.loading = false;
       },
       error: (error) => {
-        this.handleError("Fehler beim Laden der Websites. Bitte laden Sie die Seite erneut.")
+        this.handleError("Fehler beim Laden der Websites. Bitte laden Sie die Seite erneut.");
+        this.loading = false;
       }
     });
   }
@@ -135,5 +146,16 @@ export class WebsitesComponent extends BaseComponent<Website> {
       studyProgramIds: data.studyPrograms.map(s => s.id)
     };
     return request;
+  }
+
+  protected matchSearch(item: Website, searchTerm: string): boolean {
+    if (! searchTerm || searchTerm == "") {
+      return true;
+    }
+    const lowerTerm = searchTerm.toLowerCase();
+    return (
+      item.title.toLowerCase().includes(lowerTerm) ||
+      item.link.toLowerCase().includes(lowerTerm)
+    );
   }
 }
