@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  knowledge-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ANGULAR_ENV: development
+    container_name: knowledge-manager
+    expose:
+      - "80"
+    networks:
+      - angelos-network
+
+networks:
+  angelos-network:
+    external: true

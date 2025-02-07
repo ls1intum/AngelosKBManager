@@ -1,0 +1,18 @@
+<div class="search-container">
+    <input
+      class="search-input"
+      type="text"
+      [value]="value"
+      (input)="onValueChange($any($event.target).value)"
+      placeholder="Suche..."
+    />
+    <!-- Show an 'X' button if there's any text in the input -->
+    <button
+      *ngIf="value"
+      mat-icon-button
+      class="clear-button"
+      (click)="clearValue()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>

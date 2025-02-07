@@ -20,6 +20,11 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { Organisation } from '../../data/model/organisation.model';
 import { OrganisationDialogComponent } from './organisation/dialog/organisation-dialog.component';
 import { OrganisationComponent } from "./organisation/organisation.component";
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { CustomPaginatorIntl } from '../../layout/paginator/custom-paginator-intl.service';
+import { UserDetailsDTO } from '../../data/dto/user-details.dto';
+import { StudyProgramAdmin } from '../../data/model/study-program-admin.model';
+
 
 @Component({
   selector: 'app-admin',
@@ -31,7 +36,11 @@ import { OrganisationComponent } from "./organisation/organisation.component";
     NgClass,
     NgIf,
     AddButtonComponent,
-    OrganisationComponent
+    OrganisationComponent,
+    MatPaginatorModule
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -41,18 +50,18 @@ export class AdminComponent implements OnInit {
   public MailStatus = MailStatus;
   protected userHasAdminRole: boolean = false;
 
-  currentUser: UserDTO | null = null;
+  currentUser: UserDetailsDTO | null = null;
 
   mailStatus: MailStatus | null = null;
   mailCredentials: string | null = null;
   statusText: string = "";
 
   users: User[] = [];
+
   protected organisations: Organisation[] = [];
   //displayedUsers: User[] = [];
 
-  studyPrograms: StudyProgram[] = [];
-  //displayedStudyPrograms: StudyProgram[] = [];
+  studyPrograms: StudyProgramAdmin[] = [];
 
   // Define user columns
   userColumns: TableColumn<User>[] = [
@@ -84,12 +93,17 @@ export class AdminComponent implements OnInit {
   ];
 
   // Define study program columns
-  studyProgramColumns: TableColumn<StudyProgram>[] = [
+  studyProgramColumns: TableColumn<StudyProgramAdmin>[] = [
     {
       key: 'name',
       header: 'Name',
-      value: (sp: StudyProgram) => sp.name,
+      value: (sp: StudyProgramAdmin) => sp.name,
       primary: true
+    },
+    {
+      key: 'actions',
+      header: '',
+      cellComponent: ActionsCellComponent,
     },
   ];
 
@@ -118,11 +132,12 @@ export class AdminComponent implements OnInit {
       .pipe(
         concatMap((userDTO) => {
           this.currentUser = userDTO;
+
           this.userHasAdminRole = this.currentUser.isAdmin;
           return this.studyProgramService.fetchStudyPrograms();
         }),
         concatMap((programs) => {
-          this.studyPrograms = programs;
+          this.studyPrograms = programs.map(sp => this.mapToAdminStudyProgram(sp));
           return this.userService.getAllUsers(this.currentUser ? this.currentUser.isAdmin : false);
         }),
         concatMap((users) => {
@@ -195,35 +210,72 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  // Delete study program
+  onDelete(studyProgram: StudyProgramAdmin) {
+    const title = "Studiengang löschen"
+    // Erklärung?
+    const message = `Sind Sie sicher, dass sie den Studiengang „${studyProgram.name}“ löschen möchten? Alle damit verbundenen Ressourcen werden ebenfalls gelöscht.`
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { title, message },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.studyProgramService.deleteStudyProgram(studyProgram.id).subscribe({
+          next: () => {
+            this.refreshStudyPrograms();
+            this.handleSuccess('Der Studiengang wurde erfolgreich gelöscht..');
+          },
+          error: (error) => {
+            console.error("Error during deletion of study program", error)
+            this.handleError("Der Studiengang konnte nicht gelöscht werden. Bitte versuchen Sie es später erneut.");
+          }
+        });
+      }
+    });
+  }
+
+  // Remove user from organisation
+  onRemove(user: User) {
+    const title = "Bestätigen"
+    // Erklärung?
+    const message = "Wollen Sie dieses Teammitglied aus Ihrer Organisation entfernen?"
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { title, message },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.userService.removeUser(user.id).subscribe({
+          next: (updatedUser: User) => {
+            this.updateUserInArray(updatedUser);
+            this.handleSuccess('Das Teammitglied wurde erfolgreich entfernt.');
+          },
+          error: (error) => {
+            console.error("Error during remove user", error)
+            this.handleError("Fehler beim Entfernen des Benutzers. Bitte versuchen Sie es später erneut.");
+          }
+        });
+      }
+    });
+  }
+
   addStudyProgram() {
     const accessToken = this.authService.getAccessToken();
     const dialogRef = this.dialog.open(StudyProgramDialogComponent, {
       data: { name: '', token: accessToken }
-    })
-      .afterClosed().subscribe((result: StudyProgramDTO) => {
-        if (result !== null && result !== undefined) {
-          this.handleSuccess("Studiengang erfolgreich hinzugefügt.");
-          // Refresh the list of study programs after adding
-          this.studyProgramService.fetchStudyPrograms().subscribe({
-            next: (programs) => {
-              this.studyPrograms = (programs as StudyProgram[]).sort((a, b) => {
-                const nameA = a.name.toLowerCase();
-                const nameB = b.name.toLowerCase();
+    });
 
-                if (nameA < nameB) return -1;
-                if (nameA > nameB) return 1;
-                return 0;
-              });
-            },
-            error: (err) => {
-              console.error("Error fetching study programs", err);
-              this.handleError("Studiengänge konnten nicht neu geladen werden.");
-            }
-          });
-        } else if (result === null) {
-          this.handleError('Studiengang konnte nicht hinzugefügt werden.');
-        }
-      });
+    dialogRef.afterClosed().subscribe((result: StudyProgramDTO) => {
+      if (result !== null && result !== undefined) {
+        this.refreshStudyPrograms();
+        this.handleSuccess("Studiengang erfolgreich hinzugefügt.");
+      } else if (result === null) {
+        this.handleError('Studiengang konnte nicht hinzugefügt werden.');
+      }
+    });
   }
 
   configureMail(): void {
@@ -250,6 +302,7 @@ export class AdminComponent implements OnInit {
     const index = this.users.findIndex(user => user.id === updatedUser.id);
     if (index !== -1) {
       this.users[index] = updatedUser;
+      this.users = [...this.users];
     }
   }
 
@@ -281,4 +334,32 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  private refreshStudyPrograms() {
+    this.studyProgramService.fetchStudyPrograms().subscribe({
+      next: (programs) => {
+        this.studyPrograms = (programs as StudyProgram[]).map(
+          sp => this.mapToAdminStudyProgram(sp)
+        ).sort((a, b) => {
+          const nameA = a.name.toLowerCase();
+          const nameB = b.name.toLowerCase();
+
+          if (nameA < nameB) return -1;
+          if (nameA > nameB) return 1;
+          return 0;
+        });
+      },
+      error: (err) => {
+        console.error("Error fetching study programs", err);
+        this.handleError("Studiengänge konnten nicht neu geladen werden.");
+      }
+    });
+  }
+
+  private mapToAdminStudyProgram(sp: StudyProgram): StudyProgramAdmin {
+    return {
+      id: sp.id,
+      name: sp.name,
+      actions: this.currentUser && this.currentUser.isAdmin ? ["delete"] : []
+    }
+  }
 }

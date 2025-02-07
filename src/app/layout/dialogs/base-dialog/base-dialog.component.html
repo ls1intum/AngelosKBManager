@@ -1,12 +1,23 @@
-<div class="full-screen-container" (click)="onContainerClick()">
-  <mat-card class="dialog-card" (click)="onDialogClicked($event)">
+<div
+  class="full-screen-container"
+  (click)="onContainerClick()"
+>
+  <mat-card
+    class="dialog-card"
+    (click)="onDialogClicked($event)"
+  >
     <!-- Title -->
     <div class="dialog-title">
-      <h2>{{ title }}</h2>
+      <h2 class="dialog-title">{{ title }}</h2>
     </div>
 
     <!-- Loading Overlay (optional) -->
-    <app-loading-container *ngIf="loading" [text]="title" class="overlay-loading-container"></app-loading-container>
+    <app-loading-container
+      *ngIf="
+        loading"
+      [text]="title"
+      class="overlay-loading-container"
+    ></app-loading-container>
 
     <!-- Projected Form Content -->
     <mat-card-content class="scrollable-content">
@@ -15,11 +26,20 @@
 
     <!-- Dialog actions -->
     <mat-dialog-actions align="end">
-      <button mat-button class="cancel-button" (click)="onCancel()">
+      <button
+        mat-button
+        class="cancel-button"
+        (click)="onCancel()"
+      >
         Abbrechen
       </button>
-      <button mat-raised-button class="confirm-button" color="primary" (click)="onSaveClicked()"
-        [disabled]="disableSave">
+      <button
+        mat-raised-button
+        class="confirm-button"
+        color="primary"
+        (click)="onSaveClicked()"
+        [disabled]="disableSave"
+      >
         {{ confirmButtonText }}
       </button>
     </mat-dialog-actions>

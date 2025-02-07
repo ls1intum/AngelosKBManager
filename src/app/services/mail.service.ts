@@ -20,7 +20,7 @@ export class MailService {
   private mailStatusSubject = new BehaviorSubject<MailStatus | null>(null);
   public mailStatus$ = this.mailStatusSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Fetch mail pipeline status from server
@@ -44,11 +44,11 @@ export class MailService {
   setMailCredentials(account: string, password: string, token: string | null): Observable<void> {
     const headers = this.createAuthHeaders(token).set('Content-Type', 'application/json');
 
-    const credentials : MailCredentialsDTO = {
+    const credentials: MailCredentialsDTO = {
       mailAccount: account,
       mailPassword: password
     };
-  
+
     return this.http.post<void>(
       `${environment.backendUrl}/mail/set-credentials`,
       credentials,

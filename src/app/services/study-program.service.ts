@@ -29,7 +29,8 @@ export class StudyProgramService {
       return this.studyPrograms$;
     }
 
-    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`, {}).pipe(
+
+    return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`).pipe(
       tap((programs) => {
         const programsCopy = (programs as StudyProgram[]).sort((a, b) => {
           const nameA = a.name.toLowerCase();
@@ -59,6 +60,18 @@ export class StudyProgramService {
       tap((newProgram) => {
         const currentPrograms = this.studyProgramsSubject.value || [];
         this.studyProgramsSubject.next([...currentPrograms, newProgram]);
+      })
+    );
+  }
+
+  deleteStudyProgram(id: number): Observable<void> {
+    const url = `${environment.backendUrl}/study-programs/${id}`;
+
+    return this.http.delete<void>(url).pipe(
+      tap(() => {
+        const currentPrograms = this.studyProgramsSubject.value || [];
+        const updatedPrograms = currentPrograms.filter(sp => sp.id !== id);
+        this.studyProgramsSubject.next(updatedPrograms);
       })
     );
   }

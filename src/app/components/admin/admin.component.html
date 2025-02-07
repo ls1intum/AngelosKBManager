@@ -1,5 +1,7 @@
 <div class="page-wrapper">
-  <h1 class="page-header">Administration</h1>
+  <h1 class="page-header">
+    {{ currentUser ? 'Administration - ' + currentUser.organisationName : 'Administration' }}
+  </h1>
 
   <div class="admin-container">
     <!-- LEFT PANE: Mail + Benutzer -->

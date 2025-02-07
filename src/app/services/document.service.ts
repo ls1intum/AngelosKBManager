@@ -15,7 +15,7 @@ export class DocumentService {
   constructor(
     private http: HttpClient,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   /**
    * Fetch all documents metadata for the organization.
@@ -41,15 +41,21 @@ export class DocumentService {
   }
 
   /**
-   * Edit a document's title and study programs.
-   */
-  editDocument(docId: string, documentRequest: DocumentRequestDTO): Observable<DocumentModel> {
+  * Edit a document's title, study programs, and optionally update the PDF file.
+  */
+  editDocument(docId: string, documentRequest: DocumentRequestDTO, file?: File): Observable<DocumentModel> {
     const headers = this.createAuthHeaders();
+    const formData = new FormData();
+
+    formData.append('documentRequestDTO', new Blob([JSON.stringify(documentRequest)], { type: 'application/json' }));
+
+    if (file) {
+      formData.append('file', file, file.name);
+    }
+
     return this.http
-      .put<DocumentDataDTO>(`${environment.backendUrl}/documents/${docId}`, documentRequest, { headers })
-      .pipe(
-        map((dto) => this.transformSingleResponse(dto))
-      );
+      .put<DocumentDataDTO>(`${environment.backendUrl}/documents/${docId}`, formData, { headers })
+      .pipe(map((dto) => this.transformSingleResponse(dto)));
   }
 
   /**
