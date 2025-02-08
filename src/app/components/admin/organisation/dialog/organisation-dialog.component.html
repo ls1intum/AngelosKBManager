@@ -1,11 +1,22 @@
-<app-base-dialog [title]="editMode ? 'Organisation bearbeiten' : 'Organisation hinzufügen'" [loading]="loading"
-  [disableSave]="!canSave" [confirmButtonText]="editMode ? 'Speichern' : 'Hinzufügen'" (cancel)="onCancel()"
-  (save)="onSave()">
+<app-base-dialog
+  [title]="editMode ? 'Organisation bearbeiten' : 'Organisation hinzufügen'"
+  [loading]="loading"
+  [disableSave]="!canSave"
+  [confirmButtonText]="editMode ? 'Speichern' : 'Hinzufügen'"
+  (cancel)="onCancel()"
+  (save)="onSave()"
+>
   <form class="dialog-form">
     <div class="form-field">
       <label for="name">Name</label>
-      <input id="name" matInput [(ngModel)]="data.name" [ngModelOptions]="{standalone: true}"
-        placeholder="Organisation eingeben" class="main-input" />
+      <input
+        id="name"
+        matInput
+        [(ngModel)]="data.name"
+        [ngModelOptions]="{standalone: true}"
+        placeholder="Organisation eingeben"
+        class="main-input"
+      />
     </div>
   </form>
 

@@ -48,7 +48,7 @@ import { StudyProgramAdmin } from '../../data/model/study-program-admin.model';
 export class AdminComponent implements OnInit {
 
   public MailStatus = MailStatus;
-  protected userHasAdminRole: boolean = false;
+  protected userIsSystemAdmin: boolean = false;
 
   currentUser: UserDetailsDTO | null = null;
 
@@ -132,8 +132,7 @@ export class AdminComponent implements OnInit {
       .pipe(
         concatMap((userDTO) => {
           this.currentUser = userDTO;
-
-          this.userHasAdminRole = this.currentUser.isAdmin;
+          this.userIsSystemAdmin = this.currentUser.isSystemAdmin;
           return this.studyProgramService.fetchStudyPrograms();
         }),
         concatMap((programs) => {

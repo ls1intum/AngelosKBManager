@@ -6,11 +6,6 @@
     class="dialog-card"
     (click)="onDialogClicked($event)"
   >
-    <!-- Title -->
-    <div class="dialog-title">
-      <h2 class="dialog-title">{{ title }}</h2>
-    </div>
-
     <!-- Loading Overlay (optional) -->
     <app-loading-container
       *ngIf="
@@ -21,6 +16,7 @@
 
     <!-- Projected Form Content -->
     <mat-card-content class="scrollable-content">
+      <h2 class="dialog-title">{{ title }}</h2>
       <ng-content></ng-content>
     </mat-card-content>
 

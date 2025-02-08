@@ -1,77 +1,94 @@
-<div class="full-screen-container" (click)="onCancel()">
-    <mat-card class="dialog-card" (click)="onDialogClicked($event)">
-  
-      <!-- Loading Overlay -->
-      <app-loading-container
-        *ngIf="loading"
-        [text]="editMode ? 'Mailzugang bearbeiten' : 'Mailzugang hinzufügen'"
-        class="overlay-loading-container">
-      </app-loading-container>
-  
-      <mat-card-content class="scrollable-content" [class.loading-overlay]="loading">
-  
-        <h2 class="dialog-title">
-          {{ editMode ? 'Mailzugang konfigurieren' : 'Mailzugang hinzufügen' }}
-        </h2>
-  
-        <form class="dialog-form">
-          <!-- E-Mail Account Field -->
-          <div class="form-field">
-            <label for="mailAccount" style="font-weight: bold;">E-Mail Adresse</label>
-            <input
-              id="mailAccount"
-              matInput
-              [(ngModel)]="data.mailAccount"
-              [ngModelOptions]="{standalone: true}"
-              placeholder="E-Mail-Adresse eingeben"
-              class="main-input"
-            />
-          </div>
-  
-          <!-- Password Field -->
-          <div class="form-field">
-            <label for="password">Passwort</label>
-            <input
-              id="password"
-              matInput
-              [(ngModel)]="data.password"
-              [ngModelOptions]="{standalone: true}"
-              placeholder="Passwort eingeben"
-              type="password"
-              class="main-input"
-            />
-          </div>
-  
-          <!-- Confirm Password Field -->
-          <div class="form-field">
-            <label for="confirmPassword">Passwort bestätigen</label>
-            <input
-              id="confirmPassword"
-              matInput
-              [(ngModel)]="data.confirmPassword"
-              [ngModelOptions]="{standalone: true}"
-              placeholder="Passwort erneut eingeben"
-              type="password"
-              class="main-input"
-            />
-          </div>
-        </form>
-  
-        <!-- Actions -->
-        <mat-dialog-actions align="end">
-          <button mat-button class="cancel-button" (click)="onCancel()">
-            Abbrechen
-          </button>
-          <button
-            mat-raised-button
-            class="confirm-button"
-            color="primary"
-            (click)="onSave()"
-            [disabled]="!canSave"
-          >
-            {{ editMode ? 'Speichern' : 'Hinzufügen' }}
-          </button>
-        </mat-dialog-actions>
-      </mat-card-content>
-    </mat-card>
-  </div>
+<div
+  class="full-screen-container"
+  (click)="onCancel()"
+>
+  <mat-card
+    class="dialog-card"
+    (click)="onDialogClicked($event)"
+  >
+
+    <!-- Loading Overlay -->
+    <app-loading-container
+      *ngIf="loading"
+      [text]="editMode ? 'Mailzugang bearbeiten' : 'Mailzugang hinzufügen'"
+      class="overlay-loading-container"
+    >
+    </app-loading-container>
+
+    <mat-card-content
+      class="scrollable-content"
+      [class.loading-overlay]="loading"
+    >
+
+      <h2 class="dialog-title">
+        {{ editMode ? 'Mailzugang konfigurieren' : 'Mailzugang hinzufügen' }}
+      </h2>
+
+      <form class="dialog-form">
+        <!-- E-Mail Account Field -->
+        <div class="form-field">
+          <label
+            for="mailAccount"
+            style="font-weight: bold;"
+          >E-Mail Adresse</label>
+          <input
+            id="mailAccount"
+            matInput
+            [(ngModel)]="data.mailAccount"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="E-Mail-Adresse eingeben"
+            class="main-input"
+          />
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-field">
+          <label for="password">Passwort</label>
+          <input
+            id="password"
+            matInput
+            [(ngModel)]="data.password"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Passwort eingeben"
+            type="password"
+            class="main-input"
+          />
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-field">
+          <label for="confirmPassword">Passwort bestätigen</label>
+          <input
+            id="confirmPassword"
+            matInput
+            [(ngModel)]="data.confirmPassword"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Passwort erneut eingeben"
+            type="password"
+            class="main-input"
+          />
+        </div>
+      </form>
+
+      <!-- Actions -->
+      <mat-dialog-actions align="end">
+        <button
+          mat-button
+          class="cancel-button"
+          (click)="onCancel()"
+        >
+          Abbrechen
+        </button>
+        <button
+          mat-raised-button
+          class="confirm-button"
+          color="primary"
+          (click)="onSave()"
+          [disabled]="!canSave"
+        >
+          {{ editMode ? 'Speichern' : 'Hinzufügen' }}
+        </button>
+      </mat-dialog-actions>
+    </mat-card-content>
+  </mat-card>
+</div>
