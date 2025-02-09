@@ -29,7 +29,6 @@ export class StudyProgramService {
       return this.studyPrograms$;
     }
 
-
     return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`).pipe(
       tap((programs) => {
         const programsCopy = (programs as StudyProgram[]).sort((a, b) => {

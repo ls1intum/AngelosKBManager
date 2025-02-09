@@ -3,8 +3,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DOCUMENT, NgClass, NgFor, NgIf } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { StudyProgramService } from '../../services/study-program.service';
-import { UserDTO } from '../../data/dto/user.dto';
-import { User } from '../../data/model/user.model'; // create this file as shown above
+import { User } from '../../data/model/user.model';
 import { StudyProgram } from '../../data/model/study-program.model';
 import { TableColumn, MainTableComponent } from '../../layout/tables/main-table/main-table.component';
 import { ActionsCellComponent } from '../../layout/cells/actions-cell/actions-cell.component';
@@ -18,7 +17,6 @@ import { MailService, MailStatus } from '../../services/mail.service';
 import { MailDialogComponent } from '../../layout/dialogs/mail-dialog/mail-dialog.component';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Organisation } from '../../data/model/organisation.model';
-import { OrganisationDialogComponent } from './organisation/dialog/organisation-dialog.component';
 import { OrganisationComponent } from "./organisation/organisation.component";
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { CustomPaginatorIntl } from '../../layout/paginator/custom-paginator-intl.service';
@@ -60,6 +58,7 @@ export class AdminComponent implements OnInit {
 
   protected organisations: Organisation[] = [];
   //displayedUsers: User[] = [];
+
 
   studyPrograms: StudyProgramAdmin[] = [];
 
@@ -107,14 +106,6 @@ export class AdminComponent implements OnInit {
     },
   ];
 
-  protected organisationColumns: TableColumn<StudyProgram>[] = [
-    {
-      key: 'name',
-      header: 'Name',
-      value: (sp: StudyProgram) => sp.name,
-      primary: true
-    },
-  ];
 
   constructor(
     protected dialog: MatDialog,

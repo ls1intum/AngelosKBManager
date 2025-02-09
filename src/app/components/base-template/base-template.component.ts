@@ -31,6 +31,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
   protected abstract matchSearch(item: T, searchTerm: string): boolean;
 
+
   @ViewChild('containerRef', { static: true }) containerRef!: ElementRef;
 
   // Abstract properties/methods to be implemented by child components
@@ -58,6 +59,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     if (this.document) {
       this.documentHeight = this.document.documentElement.scrollHeight;
     }
+  
     this.studyProgramService.fetchStudyPrograms().subscribe({
       next: (programs) => {
         this.availableStudyPrograms = programs;
@@ -66,7 +68,6 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
           name: 'Allgemein',
         };
         this.filterOptions = [general, ...this.availableStudyPrograms];
-
         // Fetch component-specific data after study programs are loaded
         this.loading = true;
         this.fetchData();
