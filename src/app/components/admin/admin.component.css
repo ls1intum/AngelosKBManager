@@ -1,7 +1,11 @@
 .page-wrapper {
-  width: 80%;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
-  padding-top: 8px;
+  padding: 8px 10% 0 10%;
+  overflow-y: auto;
+  box-sizing: border-box;
+
 }
 
 .admin-container {
@@ -47,11 +51,4 @@
 
 .status-error {
   border-color: red;
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0;
 }

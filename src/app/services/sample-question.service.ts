@@ -5,7 +5,6 @@ import { SampleQuestion } from '../data/model/sample-question.model';
 import { SampleQuestionDTO } from '../data/dto/sample-question.dto';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,22 +12,14 @@ import { AuthenticationService } from './authentication.service';
 export class SampleQuestionService {
   constructor(
     private http: HttpClient,
-    private authService: AuthenticationService
   ) { }
 
   /**
    * Fetch all sample questions.
    */
   getAllSampleQuestions(): Observable<SampleQuestion[]> {
-    const token = this.authService.getAccessToken();
-
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
     return this.http
-      .get<SampleQuestionDTO[]>(`${environment.backendUrl}/sample-questions`, { headers })
+      .get<SampleQuestionDTO[]>(`${environment.backendUrl}/sample-questions`, {})
       .pipe(
         map((response: SampleQuestionDTO[]) => this.transformResponse(response))
       );
@@ -38,15 +29,8 @@ export class SampleQuestionService {
    * Add a new sample question.
    */
   addSampleQuestion(request: SampleQuestionDTO): Observable<SampleQuestion> {
-    const token = this.authService.getAccessToken();
-
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
     return this.http
-      .post<SampleQuestionDTO>(`${environment.backendUrl}/sample-questions`, request, { headers })
+      .post<SampleQuestionDTO>(`${environment.backendUrl}/sample-questions`, request, {})
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -56,15 +40,8 @@ export class SampleQuestionService {
    * Edit an existing sample question.
    */
   editSampleQuestion(sampleQuestionId: string, request: SampleQuestionDTO): Observable<SampleQuestion> {
-    const token = this.authService.getAccessToken();
-
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
     return this.http
-      .put<SampleQuestionDTO>(`${environment.backendUrl}/sample-questions/${sampleQuestionId}`, request, { headers })
+      .put<SampleQuestionDTO>(`${environment.backendUrl}/sample-questions/${sampleQuestionId}`, request, {})
       .pipe(
         map((dto) => this.transformSingleResponse(dto))
       );
@@ -74,14 +51,7 @@ export class SampleQuestionService {
    * Delete a sample question by ID.
    */
   deleteSampleQuestion(sampleQuestionId: string): Observable<void> {
-    const token = this.authService.getAccessToken();
-
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    return this.http.delete<void>(`${environment.backendUrl}/sample-questions/${sampleQuestionId}`, { headers });
+    return this.http.delete<void>(`${environment.backendUrl}/sample-questions/${sampleQuestionId}`, {});
   }
 
   /**

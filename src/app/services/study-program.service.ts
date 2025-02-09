@@ -49,34 +49,23 @@ export class StudyProgramService {
     return this.studyProgramsSubject.value;
   }
 
-  addStudyProgram(studyProgramName: string, accessToken: string | null): Observable<StudyProgramDTO> {
-    // Prepare headers with the token
-    let headers = new HttpHeaders();
-    if (accessToken) {
-      headers = headers.set('Authorization', `Bearer ${accessToken}`);
-    }
-
-    // Backend API endpoint for creating study programs
+  addStudyProgram(studyProgramName: string): Observable<StudyProgramDTO> {
     const url = `${environment.backendUrl}/study-programs/create`;
-
-    // Set up query parameters
     const params = {
       studyProgramName: studyProgramName,
     };
 
-    // Make the POST request
-    return this.http.post<StudyProgramDTO>(url, {}, { headers, params }).pipe(
+    return this.http.post<StudyProgramDTO>(url, {}, { params }).pipe(
       tap((newProgram) => {
-        // Update the local BehaviorSubject with the new program
         const currentPrograms = this.studyProgramsSubject.value || [];
         this.studyProgramsSubject.next([...currentPrograms, newProgram]);
       })
     );
   }
 
-  deleteStudyProgram(id: number): Observable<void> {  
+  deleteStudyProgram(id: number): Observable<void> {
     const url = `${environment.backendUrl}/study-programs/${id}`;
-  
+
     return this.http.delete<void>(url).pipe(
       tap(() => {
         const currentPrograms = this.studyProgramsSubject.value || [];

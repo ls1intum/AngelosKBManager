@@ -31,6 +31,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
   protected abstract matchSearch(item: T, searchTerm: string): boolean;
 
+
   @ViewChild('containerRef', { static: true }) containerRef!: ElementRef;
 
   // Abstract properties/methods to be implemented by child components
@@ -52,7 +53,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     protected studyProgramService: StudyProgramService,
     protected snackBar: MatSnackBar,
     @Inject(DOCUMENT) protected document: Document,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.document) {
@@ -67,7 +68,6 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
           name: 'Allgemein',
         };
         this.filterOptions = [general, ...this.availableStudyPrograms];
-        
         // Fetch component-specific data after study programs are loaded
         this.loading = true;
         this.fetchData();
@@ -106,7 +106,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
 
   openAddOrEditDialog(item?: T): void {
     const { component, data } = this.getDialogConfig(item);
-    
+
     const dialogRef = this.dialog.open(component, { data });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -137,16 +137,16 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
       if (confirmed) {
         this.deleteData(item.id).subscribe({
           next: () => {
-              // Successful deletion: update the state
-              this.handleSuccess("Löschen erfolgreich.")
-              this.items = this.items.filter((i) => i.id !== item.id);
-              this.displayedItems = this.displayedItems.filter((i) => i.id !== item.id);
+            // Successful deletion: update the state
+            this.handleSuccess("Löschen erfolgreich.")
+            this.items = this.items.filter((i) => i.id !== item.id);
+            this.displayedItems = this.displayedItems.filter((i) => i.id !== item.id);
           },
           error: (error) => {
-              console.error('Delete failed:', error);
-              this.handleError("Löschen nicht möglich. Bitte versuchen Sie es noch einmal.");
+            console.error('Delete failed:', error);
+            this.handleError("Löschen nicht möglich. Bitte versuchen Sie es noch einmal.");
           }
-      });
+        });
       }
     });
   }
@@ -174,7 +174,7 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
       openUpwards: buttonPosition.bottom > middleY,
     };
     this.currentMenuButton = button;
-    
+
     const assignedIds = rowData.studyPrograms
       ? rowData.studyPrograms.map((sp: StudyProgram) => sp.id)
       : [];
@@ -193,8 +193,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     // Add the study program to the items's studyPrograms array
     if (this.selectedItem) {
       // Deep copy of item
-      const selectedItemCopy: T = { 
-        ...this.selectedItem, 
+      const selectedItemCopy: T = {
+        ...this.selectedItem,
         studyPrograms: [...this.selectedItem.studyPrograms]
       };
       selectedItemCopy.studyPrograms.push(program);
@@ -213,11 +213,11 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
         error: (error) => {
           console.error('Study program edit failed:', error);
           this.handleError("Bearbeiten der Studiengänge nicht möglich. Bitte versuchen Sie es später erneut.");
-      }
+        }
       });
     }
     this.menuOpen = false;
-    
+
   }
 
   onRemoveStudyProgram(item: T, program: StudyProgram) {

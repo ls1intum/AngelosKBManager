@@ -6,7 +6,7 @@
   <div class="admin-container">
     <!-- LEFT PANE: Mail + Benutzer -->
     <div class="left-pane">
-      
+
       <!-- MAIL SECTION -->
       <div class="admin-table">
         <div class="header-container">
@@ -39,9 +39,11 @@
         </div>
       </div>
 
+      <organisation-table *ngIf="userIsSystemAdmin"></organisation-table>
+
       <!-- BENUTZER SECTION -->
       <div class="admin-table">
-        <h3 class="page-header">Team</h3>
+        <h3 class="page-header">Nutzer</h3>
         <app-main-table
           [dataSource]="users"
           [columns]="userColumns"

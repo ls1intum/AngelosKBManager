@@ -26,14 +26,11 @@
   font-weight: bold;
 }
 
-
-::ng-deep .mat-mdc-paginator .mat-mdc-icon-button {
-  color: var(--primary-color);
-  transition: background-color 0.3s ease-in-out;
-  border-radius: 50%;
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-::ng-deep .mat-mdc-paginator .mat-mdc-icon-button:hover {
-  background-color: var(--tum-acordion-blue);
-  border-radius: 50%;
+.clickable-row:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }

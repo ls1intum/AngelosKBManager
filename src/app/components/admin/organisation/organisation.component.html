@@ -1,0 +1,16 @@
+<div class="admin-table">
+    <div class="header-container">
+        <h3 class="page-header">Organisationen</h3>
+        <app-add-button
+            [text]="'Organisation hinzufügen'"
+            (click)="addOrganisation()"
+        ></app-add-button>
+    </div>
+    <simple-table
+        [dataSource]="organisations"
+        [displayedColumns]="displayedColumns"
+        [columnHeaders]="tableHeaders"
+        (rowClicked)="updateOrganisation($event)"
+    >
+        ></simple-table>
+</div>

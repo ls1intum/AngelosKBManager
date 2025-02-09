@@ -1,15 +1,13 @@
-import { DOCUMENT, NgFor, NgIf } from '@angular/common';
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { StudyProgramService } from '../../../services/study-program.service';
-import { BaseDialogDirective } from '../base-dialog.directive';
 import { StudyProgram } from '../../../data/model/study-program.model';
 import { Observable, throwError } from 'rxjs';
-import { LoadingContainerComponent } from "../../containers/loading-container/loading-container.component";
+import { BaseDialogComponent } from "@layout/dialogs/base-dialog/base-dialog.component";
 
 @Component({
   selector: 'app-study-program-dialog',
@@ -20,13 +18,12 @@ import { LoadingContainerComponent } from "../../containers/loading-container/lo
     MatIconModule,
     MatButtonModule,
     FormsModule,
-    LoadingContainerComponent,
-    NgIf
-],
+    BaseDialogComponent
+  ],
   templateUrl: './study-program-dialog.component.html',
   styleUrls: [
-    './study-program-dialog.component.css', 
-    '../dialog-styles.css'
+    './study-program-dialog.component.css',
+    '../../../layout/dialogs/dialog-styles.css'
   ]
 })
 export class StudyProgramDialogComponent {
@@ -50,7 +47,7 @@ export class StudyProgramDialogComponent {
     this.loading = true;
 
     if (this.editMode) {
-      this.makeEditRequest(this.data.name).subscribe({
+      this.editStudyProgram(this.data.name).subscribe({
         next: (updatedItem) => {
           this.loading = false;
           this.dialogRef.close(updatedItem);
@@ -61,7 +58,7 @@ export class StudyProgramDialogComponent {
         }
       });
     } else {
-      this.makeAddRequest(this.data.name).subscribe({
+      this.addStudyProgram(this.data.name).subscribe({
         next: (newItem) => {
           this.loading = false;
           this.dialogRef.close(newItem);
@@ -82,18 +79,15 @@ export class StudyProgramDialogComponent {
     event.stopPropagation();
   }
 
-  /**
-   * Called when saving a new study program
-   */
-  makeAddRequest(name: string): Observable<StudyProgram> {
-    return this.studyProgramService.addStudyProgram(name, this.data.token);
+  addStudyProgram(name: string): Observable<StudyProgram> {
+    return this.studyProgramService.addStudyProgram(name);
   }
 
   /**
    * TODO
    * Called when editing an existing study program
    */
-  makeEditRequest(data: string): Observable<StudyProgram> {
+  editStudyProgram(data: string): Observable<StudyProgram> {
     return throwError(() => new Error('makeEditRequest is not implemented.'));
   }
 }
