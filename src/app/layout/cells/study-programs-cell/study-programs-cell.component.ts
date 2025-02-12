@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Output, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { StudyProgram } from '../../../data/model/study-program.model';
 import { MatIconModule } from '@angular/material/icon';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { MatButtonModule, MatIconButton } from '@angular/material/button';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @Component({

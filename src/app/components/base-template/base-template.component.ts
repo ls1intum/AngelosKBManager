@@ -1,15 +1,13 @@
-import { Component, Directive, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Directive, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { BaseItem } from '../../data/model/base-item.model';
 import { StudyProgram } from '../../data/model/study-program.model';
 import { MatDialog } from '@angular/material/dialog';
 import { StudyProgramService } from '../../services/study-program.service';
 import { DOCUMENT } from '@angular/common';
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
-import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sidebar-filter.component';
 import { TableColumn } from '../../layout/tables/main-table/main-table.component';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthenticationService } from '../../services/authentication.service';
 
 @Directive()
 export abstract class BaseComponent<T extends BaseItem> implements OnInit {

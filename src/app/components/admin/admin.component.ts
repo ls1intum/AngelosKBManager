@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DOCUMENT, NgClass, NgFor, NgIf } from '@angular/common';
+import { DOCUMENT, NgClass, NgIf } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { StudyProgramService } from '../../services/study-program.service';
 import { User } from '../../data/model/user.model';
