@@ -1,6 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { StudyProgram } from '../../data/model/study-program.model';
-import { StudyProgramFilterButtonComponent } from '../../layout/buttons/study-program-filter/study-program-filter-button.component';
 import { AddButtonComponent } from "../../layout/buttons/add-button/add-button.component";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { TableColumn, MainTableComponent } from '../../layout/tables/main-table/main-table.component';
@@ -17,7 +15,6 @@ import { WebsiteDialogComponent } from '../../layout/dialogs/website-dialog/webs
 import { Observable } from 'rxjs';
 import { WebsiteRequestDTO } from '../../data/dto/website-request.dto';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthenticationService } from '../../services/authentication.service';
 import { SidebarFilterComponent } from '../../layout/sidebars/sidebar-filter/sidebar-filter.component';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { CustomPaginatorIntl } from '../../layout/paginator/custom-paginator-intl.service';

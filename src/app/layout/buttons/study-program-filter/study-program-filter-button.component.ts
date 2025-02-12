@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { StudyProgram } from '../../../data/model/study-program.model';
 import { MatIconModule } from '@angular/material/icon'
 import { NgFor, NgIf } from '@angular/common';
