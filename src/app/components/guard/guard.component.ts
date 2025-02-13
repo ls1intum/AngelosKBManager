@@ -10,5 +10,11 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./guard.component.css']
 })
 export class GuardComponent {
-  // TODO: This is a placeholder due to unexpected behavior of page refresh
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 1000); // Redirect after 1 second
+  }
 }
