@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
 import { map, Observable } from 'rxjs';
@@ -26,11 +26,11 @@ export class UserService {
   /**
    * Get all users for the authenticated organisation.
    */
-  getAllUsers(isAdmin: boolean): Observable<User[]> {
+  getAllUsers(isAdmin: boolean, isSystemAdmin: boolean = false): Observable<User[]> {
     return this.http
       .get<UserDTO[]>(`${environment.backendUrl}/users`, {})
       .pipe(
-        map((response: UserDTO[]) => this.transformResponse(response, isAdmin))
+        map((response: UserDTO[]) => this.transformResponse(response, isAdmin, isSystemAdmin))
       );;
   }
 
@@ -81,24 +81,32 @@ export class UserService {
   /**
    * Transform a list of responses.
    */
-  private transformResponse(response: UserDTO[], isAdmin: boolean): User[] {
-    return response.map((dto) => this.transformSingleResponse(dto, isAdmin));
+  private transformResponse(response: UserDTO[], isAdmin: boolean, isSystemAdmin: boolean = false): User[] {
+    return response.map((dto) => this.transformSingleResponse(dto, isAdmin, isSystemAdmin));
   }
 
   /**
    * Transform a single response.
    */
-  private transformSingleResponse(dto: UserDTO, isAdmin: boolean): User {
+  private transformSingleResponse(dto: UserDTO, isAdmin: boolean, isSystemAdmin: boolean = false): User {
     return {
       id: dto.id,
       mail: dto.mail,
       isApproved: dto.isApproved,
       isAdmin: dto.isAdmin,
-      actions: isAdmin && !dto.isAdmin ? this.getActions(dto) : []
+      actions: this.getActions(dto, isAdmin, isSystemAdmin)
     };
   }
 
-  private getActions(dto: UserDTO): string[] {
-    return !dto.isApproved ? ["approve"] : ["setAdmin", "remove"];
+  private getActions(dto: UserDTO, isAdmin: boolean, isSystemAdmin: boolean = false): string[] {
+    if (!isAdmin) {
+      return [];
+    } else if (isSystemAdmin) {
+      return ! dto.isApproved ? ["approve"] : dto.isAdmin ? ["remove"] : ["setAdmin", "remove"];
+    } else if (! dto.isAdmin) {
+      return !dto.isApproved ? ["approve"] : ["setAdmin", "remove"];
+    } else {
+      return [];
+    }
   }
 }

@@ -5,4 +5,5 @@ export interface UserDetailsDTO {
   isSystemAdmin: boolean;
   isApproved: boolean;
   organisationName: string;
+  organisationActive: boolean;
 }
