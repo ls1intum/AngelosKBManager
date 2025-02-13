@@ -1,0 +1,26 @@
+{
+    "admin": {
+        "organisation": {
+            "title": "Organisation",
+            "button": {
+                "ok": "Speichern",
+                "cancel": "Abbrechen",
+                "delete": "Löschen"
+            }
+        },
+        "studyProgram": {
+            "title": "Studiengang",
+            "button": {
+                "ok": "Speichern",
+                "cancel": "Abbrechen"
+            }
+        }
+    },
+    "common": {
+        "button": {
+            "ok": "OK",
+            "cancel": "Abbrechen",
+            "delete": "Löschen"
+        }
+    }
+}
