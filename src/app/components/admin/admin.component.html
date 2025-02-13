@@ -10,22 +10,22 @@
       <!-- MAIL SECTION -->
       <div class="admin-table">
         <div class="header-container">
-          <h3 class="page-header">E-Mail Account</h3>
-          <app-add-button
-            [text]="'Mailzugang verwalten'"
-            [icon]="'edit'"
-            (click)="configureMail()"
-          ></app-add-button>
+          <h3 class="page-header">Systemstatus</h3>
+          <app-status-button 
+            [active]="organisationActive" 
+            (onClick)="changeStatus()">
+          </app-status-button>
         </div>
 
         <div
-          class="mail-section"
+          class="mail-section mail-button"
           [ngClass]="{
             'status-active': mailStatus === MailStatus.ACTIVE,
             'status-inactive': mailStatus === MailStatus.INACTIVE,
             'status-error': mailStatus === MailStatus.ERROR
           }"
-        >
+          (click)="configureMail()"
+          >
           <div class="mail-section-content">
             <p>
               <strong>E-Mail Adresse:</strong>
@@ -36,6 +36,8 @@
               {{ statusText }}
             </p>
           </div>
+
+          <mat-icon class="edit-icon">edit</mat-icon>
         </div>
       </div>
 

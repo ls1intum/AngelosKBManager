@@ -26,4 +26,9 @@ export class OrganisationService {
     const url = `${environment.backendUrl}/organisations/${organisation.id}`;
     return this.http.put<Organisation>(url, organisation);
   }
+
+  setResponseActive(active: boolean): Observable<string> {
+    const url = `${environment.backendUrl}/organisations/responseActive`;
+    return this.http.put<string>(url, null, { params: { active } });
+  }
 }

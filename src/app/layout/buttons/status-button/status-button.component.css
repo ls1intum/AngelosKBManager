@@ -1,0 +1,33 @@
+.status-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  /* Icon styling */
+  .status-button mat-icon {
+    font-size: 24px;
+  }
+  
+  /* Hover effect (same style as your add-button) */
+  .status-button:hover {
+    background-color: var(--tum-acordion-blue);
+  }
+  
+  /* Active = "deaktivieren" (red) */
+  .active-state {
+    color: red;
+    border: 1px solid red;
+  }
+  
+  /* Inactive = "aktivieren" (green) */
+  .inactive-state {
+    color: green;
+    border: 1px solid green;
+  }
