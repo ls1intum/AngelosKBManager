@@ -52,7 +52,7 @@ export class AdminComponent implements OnInit {
 
   public MailStatus = MailStatus;
   protected userIsSystemAdmin: boolean = false;
-  protected organisationActive: boolean = false;
+  protected chatbotActive: boolean = false;
 
   currentUser: UserDetailsDTO | null = null;
 
@@ -129,7 +129,7 @@ export class AdminComponent implements OnInit {
         concatMap((userDTO) => {
           this.currentUser = userDTO;
           this.userIsSystemAdmin = this.currentUser.isSystemAdmin;
-          this.organisationActive = this.currentUser.organisationActive;
+          this.chatbotActive = this.currentUser.organisationActive;
           return this.studyProgramService.fetchStudyPrograms();
         }),
         concatMap((programs) => {
@@ -295,12 +295,12 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  changeStatus() : void {
-    const title = this.organisationActive ? 'Chatbot & Mail-Antworten pausieren?' : 'Chatbot & Mail-Antworten aktivieren?';
+  changeChatbotStatus() : void {
+    const title = this.chatbotActive ? 'Chatbot pausieren?' : 'Chatbot aktivieren?';
     // Erklärung?
-    const message = this.organisationActive
-      ? 'Möchten Sie die automatische Antwortgenerierung wirklich ausschalten? Chatnachrichten und Mails werden nicht mehr beantwortet.'
-      : 'Möchten Sie die automatische Antwortgenerierung wieder einschalten? Chatbot & Mail-Anfragen werden wieder automatisch beantwortet.';
+    const message = this.chatbotActive
+      ? 'Möchten Sie die automatische Antwortgenerierung wirklich ausschalten? Chatnachrichten werden nicht mehr beantwortet.'
+      : 'Möchten Sie die automatische Antwortgenerierung wieder einschalten? Chatbot-Anfragen werden wieder automatisch beantwortet.';
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: { title, message },
@@ -308,13 +308,45 @@ export class AdminComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
-        this.organisationService.setResponseActive(!this.organisationActive).subscribe({
+        this.organisationService.setResponseActive(!this.chatbotActive).subscribe({
           next: (org: any) => {
-            this.organisationActive = ! this.organisationActive;
+            this.chatbotActive = ! this.chatbotActive;
             this.handleSuccess(
-              this.organisationActive
-                ? 'Automatische Antworten wurden erfolgreich aktiviert. Der Chatbot und die Mail-Pipeline sind jetzt aktiv.'
-                : 'Automatische Antworten wurden erfolgreich pausiert. Der Chatbot ist deaktiviert und Mails werden nicht mehr automatisch beantwortet.'
+              this.chatbotActive
+                ? 'Automatische Antworten wurden erfolgreich aktiviert. Der Chatbot ist jetzt aktiv.'
+                : 'Automatische Antworten wurden erfolgreich pausiert. Der Chatbot ist deaktiviert.'
+            );
+          },
+          error: (error) => {
+            console.error('Error during status change', error);
+            this.handleError('Fehler beim Ändern des Antwortstatus. Bitte versuchen Sie es später erneut.');
+          }
+        });
+      }
+    });
+  }
+
+  changeMailStatus() : void {
+    const mailActive = this.mailStatus === MailStatus.ACTIVE;
+    const title = mailActive ? 'Mail-Antworten pausieren?' : 'Mail-Antworten aktivieren?';
+    // Erklärung?
+    const message = mailActive
+      ? 'Möchten Sie die automatische Antwortgenerierung wirklich ausschalten? Mails werden nicht mehr automatisch beantwortet.'
+      : 'Möchten Sie die automatische Antwortgenerierung wieder einschalten? Mail-Anfragen werden wieder automatisch beantwortet.';
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { title, message },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.organisationService.setMailActive(mailActive).subscribe({
+          next: () => {
+            this.mailStatus = mailActive ? MailStatus.INACTIVE : MailStatus.ACTIVE
+            this.handleSuccess(
+              this.mailStatus === MailStatus.ACTIVE
+                ? 'Automatische Antworten wurden erfolgreich aktiviert. Die Mail-Pipeline ist jetzt aktiv.'
+                : 'Automatische Antworten wurden erfolgreich pausiert. Mails werden nicht mehr automatisch beantwortet.'
             );
           },
           error: (error) => {

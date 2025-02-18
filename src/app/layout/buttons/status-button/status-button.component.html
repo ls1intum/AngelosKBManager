@@ -3,6 +3,6 @@
         (click)="handleClick()">
   <mat-icon>{{ active ? 'pause' : 'play_arrow' }}</mat-icon>
   <span>
-    {{ active ? 'Chatbot & Mail-Antworten pausieren' : 'Chatbot aktivieren' }}
+    {{ active ? stopText : startText }}
   </span>
 </button>

@@ -14,6 +14,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class StatusButtonComponent {
   @Input() active: boolean = true;
+  @Input() stopText: string = "";
+  @Input() startText: string = "";
   @Output() onClick = new EventEmitter<void>();
 
   handleClick() {

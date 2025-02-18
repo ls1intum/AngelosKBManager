@@ -28,7 +28,12 @@ export class OrganisationService {
   }
 
   setResponseActive(active: boolean): Observable<string> {
-    const url = `${environment.backendUrl}/organisations/responseActive`;
+    const url = `${environment.backendUrl}/organisations/chatActive`;
+    return this.http.put<string>(url, null, { params: { active } });
+  }
+
+  setMailActive(active: boolean): Observable<string> {
+    const url = `${environment.backendUrl}/organisations/mailActive`;
     return this.http.put<string>(url, null, { params: { active } });
   }
 }

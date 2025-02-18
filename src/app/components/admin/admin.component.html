@@ -12,8 +12,19 @@
         <div class="header-container">
           <h3 class="page-header">Systemstatus</h3>
           <app-status-button 
-            [active]="organisationActive" 
-            (onClick)="changeStatus()">
+            startText="Chatbot starten"
+            stopText="Chatbot pausieren"
+            [active]="chatbotActive" 
+            (onClick)="changeChatbotStatus()">
+          </app-status-button>
+        </div>
+        <div class="header-container">
+          <div></div>
+          <app-status-button *ngIf="mailStatus === MailStatus.ACTIVE"
+            startText="Mailantworten starten"
+            stopText="Mailantworten pausieren"
+            [active]="mailStatus === MailStatus.ACTIVE" 
+            (onClick)="changeMailStatus()">
           </app-status-button>
         </div>
 
