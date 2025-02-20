@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Directive, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BaseItem } from '../../data/model/base-item.model';
 import { StudyProgram } from '../../data/model/study-program.model';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,11 +6,11 @@ import { StudyProgramService } from '../../services/study-program.service';
 import { DOCUMENT } from '@angular/common';
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
 import { TableColumn } from '../../layout/tables/main-table/main-table.component';
-import { Observable } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Directive()
-export abstract class BaseComponent<T extends BaseItem> implements OnInit {
+export abstract class BaseComponent<T extends BaseItem> implements OnInit, OnDestroy {
   displayedItems: T[] = [];
   selectedProgram: StudyProgram | null = null;
   availableStudyPrograms: StudyProgram[] = [];
@@ -46,6 +46,8 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
   abstract getDialogConfig(item?: T): { data: any; component: any };
   abstract getDeleteDialogText(item: T): { title: string; message: string };
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     protected dialog: MatDialog,
     protected studyProgramService: StudyProgramService,
@@ -57,8 +59,10 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
     if (this.document) {
       this.documentHeight = this.document.documentElement.scrollHeight;
     }
-  
-    this.studyProgramService.fetchStudyPrograms().subscribe({
+
+    this.studyProgramService.fetchStudyPrograms().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (programs) => {
         this.availableStudyPrograms = programs;
         const general: StudyProgram = {
@@ -74,6 +78,12 @@ export abstract class BaseComponent<T extends BaseItem> implements OnInit {
         console.error('Error fetching study programs:', err);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    // Signal completion to all subscriptions to avoid memory leaks
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onProgramSelected(program: StudyProgram | null): void {

@@ -9,7 +9,7 @@ import { TableColumn, MainTableComponent } from '../../layout/tables/main-table/
 import { ActionsCellComponent } from '../../layout/cells/actions-cell/actions-cell.component';
 import { ConfirmDialogComponent } from '../../layout/dialogs/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { concatMap } from 'rxjs';
+import { forkJoin, mergeMap } from 'rxjs';
 import { AddButtonComponent } from "../../layout/buttons/add-button/add-button.component";
 import { StudyProgramDialogComponent } from './study-program-dialog/study-program-dialog.component';
 import { StudyProgramDTO } from '../../data/dto/study-program.dto';
@@ -57,8 +57,6 @@ export class AdminComponent implements OnInit {
   users: User[] = [];
 
   protected organisations: Organisation[] = [];
-  //displayedUsers: User[] = [];
-
 
   studyPrograms: StudyProgramAdmin[] = [];
 
@@ -118,23 +116,27 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userService
-      .getCurrentUser()
-      .pipe(
-        concatMap((userDTO) => {
-          this.currentUser = userDTO;
-          this.userIsSystemAdmin = this.currentUser.isSystemAdmin;
-          return this.studyProgramService.fetchStudyPrograms();
-        }),
-        concatMap((programs) => {
-          this.studyPrograms = programs.map(sp => this.mapToAdminStudyProgram(sp));
-          return this.userService.getAllUsers(this.currentUser ? this.currentUser.isAdmin : false);
-        }),
-        concatMap((users) => {
-          this.users = users;
-          return this.mailService.getMailCredentials(this.authService.getAccessToken());
-        })
-      )
+    this.userService.getCurrentUser().pipe(
+      mergeMap((userDTO) => {
+        this.currentUser = userDTO;
+        this.userIsSystemAdmin = this.currentUser.isSystemAdmin;
+
+        return forkJoin({
+          programs: this.studyProgramService.fetchStudyPrograms(),
+          users: this.userService.getAllUsers(this.currentUser?.isAdmin ?? false)
+        });
+      }),
+      mergeMap(({ programs, users }) => {
+        this.studyPrograms = programs.map(sp => this.mapToAdminStudyProgram(sp));
+        this.users = users;
+        return this.authService.getAccessToken();
+      }),
+      mergeMap(token => {
+        if (!token) {
+          throw new Error("No access token available");
+        }
+        return this.mailService.getMailCredentials(token);
+      }))
       .subscribe({
         next: (mailCredentialsResponse) => {
           this.mailCredentials = mailCredentialsResponse.mailAccount;
