@@ -24,7 +24,7 @@ export class StudyProgramService {
 
   fetchStudyPrograms(): Observable<StudyProgram[]> {
     // Return cached data if available
-    if (this.studyProgramsSubject.value) {
+    if (this.studyProgramsSubject.value && this.studyProgramsSubject.value.length > 0 ) {
       return of(this.studyProgramsSubject.value);
     }
 
