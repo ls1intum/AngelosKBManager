@@ -101,12 +101,18 @@ export class UserService {
   private getActions(dto: UserDTO, isAdmin: boolean, isSystemAdmin: boolean = false): string[] {
     if (!isAdmin) {
       return [];
-    } else if (isSystemAdmin) {
-      return ! dto.isApproved ? ["approve"] : dto.isAdmin ? ["remove"] : ["setAdmin", "remove"];
-    } else if (! dto.isAdmin) {
-      return !dto.isApproved ? ["approve"] : ["setAdmin", "remove"];
-    } else {
-      return [];
-    }
+    }  
+    if (!dto.isApproved) {
+      return ["approve"];
+    }  
+    if (!dto.isAdmin) {
+      // Both normal admin and system admin can remove or set another user to admin
+      return ["remove", "setAdmin"];
+    }  
+    // Only a system admin can remove an admin
+    if (isSystemAdmin) {
+      return ["remove"];
+    }  
+    return [];
   }
 }
