@@ -61,7 +61,7 @@ export class MailDialogComponent {
       .subscribe({
         next: (response) => {
           this.loading = false;
-          this.dialogRef.close(true); 
+          this.dialogRef.close(this.data.mailAccount); 
         },
         error: (err) => {
           this.loading = false;

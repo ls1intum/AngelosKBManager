@@ -35,20 +35,44 @@
   padding: 16px;
   border: 2px solid transparent;
   margin-top: 8px;
+
+  /* Keep status-based border colors */
+  &.status-active {
+    border-color: green;
+  }
+  &.status-inactive {
+    border-color: orange;
+  }
+  &.status-error {
+    border-color: red;
+  }
 }
 
-.mail-section-content p {
-  margin: 8px 0;
+/* Make the entire element behave like a button */
+.mail-button {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  /* Slightly increase padding to give room for the icon on the left */
+  padding-left: 24px;
+
+  /* Hover effect */
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }
 
-.status-active {
-  border-color: green;
+/* Position the icon on the left with some spacing */
+.edit-icon {
+  margin-right: 16px;
+  font-size: 24px;
 }
 
-.status-inactive {
-  border-color: orange;
-}
-
-.status-error {
-  border-color: red;
+/* Center the text within the remaining space */
+.mail-section-content {
+  text-align: left;
+  flex: 1; /* Take up the remaining horizontal space */
+  p {
+    margin: 8px 0;
+  }
 }

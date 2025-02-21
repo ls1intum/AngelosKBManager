@@ -1,0 +1,8 @@
+<button class="status-button" 
+        [ngClass]="active ? 'active-state' : 'inactive-state'"
+        (click)="handleClick()">
+  <mat-icon>{{ active ? 'pause' : 'play_arrow' }}</mat-icon>
+  <span>
+    {{ active ? stopText : startText }}
+  </span>
+</button>
