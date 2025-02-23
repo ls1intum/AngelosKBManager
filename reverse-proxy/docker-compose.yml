@@ -1,6 +1,6 @@
 services:
   nginx-proxy:
-    image: nginx:stable-alpine
+    image: openresty/openresty:alpine
     container_name: nginx-proxy
     ports:
       - "443:443"
