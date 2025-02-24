@@ -11,14 +11,10 @@ export class RedirectGuard implements CanActivate {
   constructor(
     private authService: AuthenticationService,
     private router: Router
-  ) {}
+  ) { }
 
   canActivate(): Observable<boolean | UrlTree> {
-    const accessToken = this.authService.getAccessToken();
-    if (accessToken) {
-        return of(this.router.createUrlTree(['/websites']));
-    } else {
-        return of(true);
-    }
+    this.authService.logout();
+    return of(true);
   }
 }

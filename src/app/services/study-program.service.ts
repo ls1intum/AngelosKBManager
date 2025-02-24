@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { filter, map, shareReplay, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StudyProgram } from '../data/model/study-program.model';
@@ -11,11 +11,10 @@ import { StudyProgramDTO } from '../data/dto/study-program.dto';
   providedIn: 'root',
 })
 export class StudyProgramService {
-  private studyProgramsSubject = new BehaviorSubject<StudyProgram[] | null>(null);
+  private studyProgramsSubject = new BehaviorSubject<StudyProgram[]>([]);
+
 
   studyPrograms$: Observable<StudyProgram[]> = this.studyProgramsSubject.asObservable().pipe(
-    filter((programs) => programs !== null),
-    map((programs) => programs as StudyProgram[]),
     shareReplay(1)
   );
 
@@ -25,27 +24,23 @@ export class StudyProgramService {
 
   fetchStudyPrograms(): Observable<StudyProgram[]> {
     // Return cached data if available
-    if (this.studyProgramsSubject.value) {
-      return this.studyPrograms$;
+    if (this.studyProgramsSubject.value && this.studyProgramsSubject.value.length > 0 ) {
+      return of(this.studyProgramsSubject.value);
     }
 
     return this.http.get<StudyProgram[]>(`${environment.backendUrl}/study-programs`).pipe(
       tap((programs) => {
-        const programsCopy = (programs as StudyProgram[]).sort((a, b) => {
-          const nameA = a.name.toLowerCase();
-          const nameB = b.name.toLowerCase();
-
-          if (nameA < nameB) return -1;
-          if (nameA > nameB) return 1;
-          return 0; // Equal names
-        });
-        this.studyProgramsSubject.next(programsCopy);
+        this.studyProgramsSubject.next(this.sortPrograms(programs));
       }),
       shareReplay(1)
     );
   }
 
-  getStudyPrograms(): StudyProgram[] | null {
+  private sortPrograms(programs: StudyProgram[]): StudyProgram[] {
+    return programs.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  }
+
+  getStudyPrograms(): StudyProgram[] {
     return this.studyProgramsSubject.value;
   }
 
@@ -57,8 +52,8 @@ export class StudyProgramService {
 
     return this.http.post<StudyProgramDTO>(url, {}, { params }).pipe(
       tap((newProgram) => {
-        const currentPrograms = this.studyProgramsSubject.value || [];
-        this.studyProgramsSubject.next([...currentPrograms, newProgram]);
+        const updated = [...this.studyProgramsSubject.value, newProgram] as StudyProgram[];
+        this.studyProgramsSubject.next(this.sortPrograms(updated));
       })
     );
   }
@@ -68,14 +63,13 @@ export class StudyProgramService {
 
     return this.http.delete<void>(url).pipe(
       tap(() => {
-        const currentPrograms = this.studyProgramsSubject.value || [];
-        const updatedPrograms = currentPrograms.filter(sp => sp.id !== id);
+        const updatedPrograms = this.studyProgramsSubject.value.filter(sp => sp.id !== id);
         this.studyProgramsSubject.next(updatedPrograms);
       })
     );
   }
 
   reset(): void {
-    this.studyProgramsSubject.next(null);
+    this.studyProgramsSubject.next([]);
   }
 }

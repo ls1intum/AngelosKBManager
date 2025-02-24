@@ -8,6 +8,12 @@ import { RegisterRequestDTO } from '../data/dto/register-request.dto';
 import { UserDTO } from '../data/dto/user.dto';
 import { StudyProgramService } from './study-program.service';
 import { MailService } from './mail.service';
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtPayload {
+  exp?: number; // Expiration time in seconds
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +60,7 @@ export class AuthenticationService {
     }
 
     this.isRefreshing = true;
-    this.refreshTokenSubject.next(null); // Notify observers that refresh is in progress
+    this.refreshTokenSubject.next(null);
 
     return this.http.post<{ accessToken: string }>(
       `${environment.backendUrl}/users/refresh`,
@@ -67,17 +73,34 @@ export class AuthenticationService {
       }),
       map(response => response.accessToken),
       catchError(error => {
-        this.refreshTokenSubject.next(null); // Notify observers of failure
-        throw error; // Propagate the error
+        this.refreshTokenSubject.error(null);
+        this.logout();
+        this.router.navigate(['/login']);
+        throw error;
       }),
       finalize(() => {
-        this.isRefreshing = false; // Reset the flag once complete
+        this.isRefreshing = false;
       })
     );
   }
 
-  getAccessToken(): string | null {
-    return this.accessToken;
+  getAccessToken(): Observable<string | null> {
+    if (this.accessToken && this.isTokenExpired(this.accessToken)) {
+      return this.refreshToken();
+    }
+    return of(this.accessToken);
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const decoded: JwtPayload = jwtDecode<JwtPayload>(token);
+      if (decoded.exp) {
+        return Date.now() >= decoded.exp * 1000; // Convert seconds to milliseconds
+      }
+      return false;
+    } catch (error) {
+      return true;
+    }
   }
 
   logout() {
