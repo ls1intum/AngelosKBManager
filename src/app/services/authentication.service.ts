@@ -73,8 +73,9 @@ export class AuthenticationService {
       }),
       map(response => response.accessToken),
       catchError(error => {
-        this.refreshTokenSubject.next(null);
-        console.error("Refresh token failed:", error);
+        this.refreshTokenSubject.error(null);
+        this.logout();
+        this.router.navigate(['/login']);
         throw error;
       }),
       finalize(() => {

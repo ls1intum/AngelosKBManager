@@ -64,7 +64,6 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
-
       // Attempt to refresh the token
       return this.authService.refreshToken().pipe(
         switchMap((newAccessToken: string) => {
@@ -77,7 +76,6 @@ export class AuthInterceptor implements HttpInterceptor {
           this.isRefreshing = false;
           // Refresh failed, navigate to login or handle appropriately
           this.authService.logout();
-          this.router.navigate(['/login']);
           return throwError(() => err);
         })
       );
