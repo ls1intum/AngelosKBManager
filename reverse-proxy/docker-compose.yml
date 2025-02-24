@@ -1,6 +1,6 @@
 services:
   nginx-proxy:
-    image: nginx:stable-alpine
+    image: ghcr.io/ls1intum/custom-openresty:latest
     container_name: nginx-proxy
     ports:
       - "443:443"

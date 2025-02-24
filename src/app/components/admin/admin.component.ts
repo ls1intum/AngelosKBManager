@@ -22,6 +22,9 @@ import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginato
 import { CustomPaginatorIntl } from '../../layout/paginator/custom-paginator-intl.service';
 import { UserDetailsDTO } from '../../data/dto/user-details.dto';
 import { StudyProgramAdmin } from '../../data/model/study-program-admin.model';
+import { StatusButtonComponent } from '@app/layout/buttons/status-button/status-button.component';
+import { MatIconModule } from '@angular/material/icon';
+import { OrganisationService } from '@app/services/organisation.service';
 
 
 @Component({
@@ -29,13 +32,15 @@ import { StudyProgramAdmin } from '../../data/model/study-program-admin.model';
   standalone: true,
   imports: [
     MatDialogModule,
+    MatIconModule,
     MainTableComponent,
     MatSnackBarModule,
     NgClass,
     NgIf,
     AddButtonComponent,
     OrganisationComponent,
-    MatPaginatorModule
+    MatPaginatorModule,
+    StatusButtonComponent
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }
@@ -47,6 +52,7 @@ export class AdminComponent implements OnInit {
 
   public MailStatus = MailStatus;
   protected userIsSystemAdmin: boolean = false;
+  protected chatbotActive: boolean = false;
 
   currentUser: UserDetailsDTO | null = null;
 
@@ -112,6 +118,7 @@ export class AdminComponent implements OnInit {
     protected userService: UserService,
     protected snackBar: MatSnackBar,
     protected mailService: MailService,
+    protected organisationService: OrganisationService,
     @Inject(DOCUMENT) protected document: Document
   ) { }
 
@@ -120,10 +127,11 @@ export class AdminComponent implements OnInit {
       mergeMap((userDTO) => {
         this.currentUser = userDTO;
         this.userIsSystemAdmin = this.currentUser.isSystemAdmin;
+        this.chatbotActive = this.currentUser.organisationActive;
 
         return forkJoin({
           programs: this.studyProgramService.fetchStudyPrograms(),
-          users: this.userService.getAllUsers(this.currentUser?.isAdmin ?? false)
+          users: this.userService.getAllUsers(this.currentUser ? this.currentUser.isAdmin : false, this.userIsSystemAdmin)
         });
       }),
       mergeMap(({ programs, users }) => {
@@ -280,14 +288,78 @@ export class AdminComponent implements OnInit {
       width: '600px'
     })
       .afterClosed().subscribe((result: boolean | null) => {
-        if (result === true) {
-          this.mailService.setMailStatus(MailStatus.ACTIVE);
-          this.handleSuccess("E-Mail-Account erfolgreich konfiguriert.");
-        } else if (result == false) {
+        if (result == false) {
           this.mailService.setMailStatus(MailStatus.INACTIVE);
           this.handleError("Fehler bei der Konfiguration des E-Mail-Accounts.");
+        } else if (typeof result === 'string') {
+          this.mailService.setMailStatus(MailStatus.ACTIVE);
+          this.mailCredentials = result;
+          this.handleSuccess("E-Mail-Account erfolgreich konfiguriert.");
         }
       });
+  }
+
+  changeChatbotStatus() : void {
+    const title = this.chatbotActive ? 'Chatbot pausieren?' : 'Chatbot aktivieren?';
+    // Erklärung?
+    const message = this.chatbotActive
+      ? 'Möchten Sie die automatische Antwortgenerierung wirklich ausschalten? Chatnachrichten werden nicht mehr beantwortet.'
+      : 'Möchten Sie die automatische Antwortgenerierung wieder einschalten? Chatbot-Anfragen werden wieder automatisch beantwortet.';
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { title, message },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.organisationService.setResponseActive(!this.chatbotActive).subscribe({
+          next: (org: any) => {
+            this.chatbotActive = ! this.chatbotActive;
+            this.handleSuccess(
+              this.chatbotActive
+                ? 'Automatische Antworten wurden erfolgreich aktiviert. Der Chatbot ist jetzt aktiv.'
+                : 'Automatische Antworten wurden erfolgreich pausiert. Der Chatbot ist deaktiviert.'
+            );
+          },
+          error: (error) => {
+            console.error('Error during status change', error);
+            this.handleError('Fehler beim Ändern des Antwortstatus. Bitte versuchen Sie es später erneut.');
+          }
+        });
+      }
+    });
+  }
+
+  changeMailStatus() : void {
+    const mailActive = this.mailStatus === MailStatus.ACTIVE;
+    const title = mailActive ? 'Mail-Antworten pausieren?' : 'Mail-Antworten aktivieren?';
+    // Erklärung?
+    const message = mailActive
+      ? 'Möchten Sie die automatische Antwortgenerierung wirklich ausschalten? Mails werden nicht mehr automatisch beantwortet.'
+      : 'Möchten Sie die automatische Antwortgenerierung wieder einschalten? Mail-Anfragen werden wieder automatisch beantwortet.';
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { title, message },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.organisationService.setMailActive(mailActive).subscribe({
+          next: () => {
+            this.mailStatus = mailActive ? MailStatus.INACTIVE : MailStatus.ACTIVE
+            this.handleSuccess(
+              this.mailStatus === MailStatus.ACTIVE
+                ? 'Automatische Antworten wurden erfolgreich aktiviert. Die Mail-Pipeline ist jetzt aktiv.'
+                : 'Automatische Antworten wurden erfolgreich pausiert. Mails werden nicht mehr automatisch beantwortet.'
+            );
+          },
+          error: (error) => {
+            console.error('Error during status change', error);
+            this.handleError('Fehler beim Ändern des Antwortstatus. Bitte versuchen Sie es später erneut.');
+          }
+        });
+      }
+    });
   }
 
   private updateUserInArray(updatedUser: User): void {
