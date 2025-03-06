@@ -26,26 +26,27 @@ export class AuthInterceptor implements HttpInterceptor {
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let authReq = req;
-    const accessToken = this.authService.getAccessToken();
-
     if (req.url === this.refreshUrl) {
-      return next.handle(req);
+      return next.handle(req); // Don't attach token to refresh requests
     }
 
-    // Add Authorization header if we have an access token
-    if (accessToken) {
-      authReq = this.addTokenHeader(req, accessToken);
-    }
+    return this.authService.getAccessToken().pipe(
+      switchMap(accessToken => {
+        let authReq = req;
 
-    return next.handle(authReq).pipe(
-      catchError((error: any) => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
-          // If we get a 401, try refreshing the token, but only once
-          return this.handle401Error(authReq, next);
-        } else {
-          return throwError(() => error);
+        if (accessToken) {
+          authReq = this.addTokenHeader(req, accessToken);
         }
+
+        return next.handle(authReq).pipe(
+          catchError((error: any) => {
+            if (error instanceof HttpErrorResponse && error.status === 401) {
+              return this.handle401Error(authReq, next);
+            } else {
+              return throwError(() => error);
+            }
+          })
+        );
       })
     );
   }
@@ -63,7 +64,6 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
-
       // Attempt to refresh the token
       return this.authService.refreshToken().pipe(
         switchMap((newAccessToken: string) => {
@@ -76,7 +76,6 @@ export class AuthInterceptor implements HttpInterceptor {
           this.isRefreshing = false;
           // Refresh failed, navigate to login or handle appropriately
           this.authService.logout();
-          this.router.navigate(['/login']);
           return throwError(() => err);
         })
       );

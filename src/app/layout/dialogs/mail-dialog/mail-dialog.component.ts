@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoadingContainerComponent } from '../../containers/loading-container/loading-container.component';
 import { NgIf } from '@angular/common';
 import { MailService } from '../../../services/mail.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { AuthenticationService } from '../../../services/authentication.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class MailDialogComponent {
     private authService: AuthenticationService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.editMode = !!data.mailAccount; 
+    this.editMode = !!data.mailAccount;
     this.loading = false;
   }
 
@@ -79,11 +79,18 @@ export class MailDialogComponent {
   }
 
   setMailCredentials(mail: string, password: string): Observable<void> {
-    return this.mailService.setMailCredentials(mail, password, this.authService.getAccessToken());
+    return this.authService.getAccessToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          throw new Error("No access token available");
+        }
+        return this.mailService.setMailCredentials(mail, password, token);
+      })
+    );
   }
 
   /**
-   * Basic email validation. 
+   * Basic email validation.
    * Replace with your own logic if needed.
    */
   private isValidEmail(email: string): boolean {
